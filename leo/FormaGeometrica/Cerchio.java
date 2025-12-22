@@ -11,10 +11,14 @@ public class Cerchio extends FormaGeometrica {
     public int getArea() {
         return 0;
     }
-    
+
     @Override
     public int getPerimetro() {
         return 0;
+    }
+
+    public double getRaggio() {
+        return raggio;
     }
     
 }
