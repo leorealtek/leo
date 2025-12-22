@@ -1,11 +1,11 @@
 package leo.FormaGeometrica;
 
 public class FormaGeometrica {
-    public static int getPerimetro() {
+    public int getPerimetro() {
         return 0;
     }
 
-    public static int getArea() {
+    public int getArea() {
         return 0;
     }
 }
