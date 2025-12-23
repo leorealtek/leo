@@ -5,6 +5,7 @@ public class Rettangolo extends FormaGeometrica {
     private final int altezza;
     
     public Rettangolo(int base, int altezza) {
+        super(2*(base+altezza), base*altezza);
         this.base = base;
         this.altezza = altezza;
     }
@@ -17,14 +18,4 @@ public class Rettangolo extends FormaGeometrica {
         return altezza;
     }
 
-    @Override
-    public int getArea() {
-        return 0;
-    }
-
-    @Override
-    public int getPerimetro() {
-        return 0;
-    }
-    
 }

@@ -1,11 +1,20 @@
 package leo.FormaGeometrica;
 
 public class FormaGeometrica {
-    public int getPerimetro() {
-        return 0;
+
+    protected double perimetro;
+    protected double area;
+
+    public FormaGeometrica(double perimetro, double area) {
+        this.perimetro = perimetro;
+        this.area = area;
     }
 
-    public int getArea() {
-        return 0;
+    public double getPerimetro() {
+        return perimetro;
+    }
+
+    public double getArea() {
+        return area;
     }
 }

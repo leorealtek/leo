@@ -1,23 +1,14 @@
 package leo.FormaGeometrica;
 
 public class Cerchio extends FormaGeometrica {
-    private final double raggio;
+    private final float raggio;
 
-    public Cerchio(double raggio) {
+    public Cerchio(float raggio) {
+        super(raggio*2*3.14,raggio*3.14*raggio);
         this.raggio = raggio;
     }
 
-    @Override
-    public int getArea() {
-        return 0;
-    }
-
-    @Override
-    public int getPerimetro() {
-        return 0;
-    }
-
-    public double getRaggio() {
+    public float getRaggio() {
         return raggio;
     }
     
