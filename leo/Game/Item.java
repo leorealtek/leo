@@ -1,16 +1,16 @@
 package leo.Game;
 
 public class Item {
-    private final String nome;
+    private final String name;
     private boolean utilized;
 
-    public Item(String nome) {
-        this.nome = nome;
+    public Item(String name) {
+        this.name = name;
         utilized = false;
     }
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
 
     public boolean isUtilized() {
@@ -21,4 +21,9 @@ public class Item {
         this.utilized = true;
     }
 
+    @Override
+    public String toString() {
+        return "Oggetto [Nome=" + name + ", Usato = " + utilized + "]";
+    }
+    
 }

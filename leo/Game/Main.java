@@ -6,6 +6,7 @@ import java.util.Scanner;
 public class Main {
     private static Scanner s = new Scanner(System.in);
     private static final float HEALTH_PLAYER = 100;
+    private static final float HEALTH_ENEMY = 100;
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -51,8 +52,14 @@ public class Main {
                     break;
             }
         }
+        s.nextLine();
 
         Player player = new Player(namePlayer, HEALTH_PLAYER, weaponPlayer, agePlayer, new ArrayList<Item>());
+        System.out.print("Dimmi il nome dell'avversario: ");
+        String nameEnemy = s.nextLine();
+
+        Enemy enemy = new Enemy(nameEnemy, HEALTH_ENEMY, null);
         System.out.println(player.toString());
+        System.out.println(enemy.toString());
     }
 }

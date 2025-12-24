@@ -38,4 +38,11 @@ public class Entity {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Entità [Nome = " + name + ", Vita = " + health + ", Arma = " + weapon + "]";
+    }
+
+    
+
 }

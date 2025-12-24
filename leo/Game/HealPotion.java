@@ -5,8 +5,8 @@ public class HealPotion extends Item{
     private final float speedOfHealing;
     private final float secondsOfHealing;
 
-    public HealPotion(String nome, int quantityOfHealing, float speedOfHealing, float secondsOfHealing) {
-        super(nome);
+    public HealPotion(String name, int quantityOfHealing, float speedOfHealing, float secondsOfHealing) {
+        super(name);
         this.quantityOfHealing = quantityOfHealing;
         this.speedOfHealing = speedOfHealing;
         this.secondsOfHealing = secondsOfHealing;
