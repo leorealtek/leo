@@ -17,8 +17,8 @@ public class Item {
         return utilized;
     }
 
-    public void setUtilized(boolean utilized) {
-        this.utilized = utilized;
+    public void use(Entity entity) {
+        this.utilized = true;
     }
-    
+
 }

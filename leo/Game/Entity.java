@@ -2,10 +2,10 @@ package leo.Game;
 
 public class Entity {
     private final String name;
-    private int health;
+    private float health;
     private Weapon weapon;
 
-    public Entity(String name, int health, Weapon weapon) {
+    public Entity(String name, float health, Weapon weapon) {
         this.name = name;
         this.health = health;
         this.weapon = weapon;
@@ -15,7 +15,7 @@ public class Entity {
         return name;
     }
 
-    public int getHealth() {
+    public float getHealth() {
         return health;
     }
 
@@ -27,12 +27,15 @@ public class Entity {
         this.weapon = weapon;
     }
 
-    public void setHealth(int health) {
+    public void setHealth(float health) {
         this.health = health;
     }
 
-    public void attack(Entity entity) {
-        entity.setHealth(entity. getHealth() - this.getWeapon().getDamage());
+    public boolean attack(Entity entity) {
+        if (this.getWeapon().getDurability() == 0) return false;
+        entity.setHealth(entity.getHealth() - this.getWeapon().getDamage());
+        this.getWeapon().setDurability(this.getWeapon().getDurability() - 1);
+        return true;
     }
 
 }

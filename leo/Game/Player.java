@@ -1,10 +1,12 @@
 package leo.Game;
 
+import java.util.ArrayList;
+
 public class Player extends Entity{
     private int age;
-    private Item[] inventory;
+    private ArrayList<Item> inventory;
 
-    public Player(String name, int health, Weapon weapon, int age, Item[] inventory) {
+    public Player(String name, float health, Weapon weapon, int age, ArrayList<Item> inventory) {
         super(name, health, weapon);
         this.age = age;
         this.inventory = inventory;
@@ -18,24 +20,30 @@ public class Player extends Entity{
         this.age = age;
     }
 
-    public void regenerate(Item item) {
-        //da fare
-    }
-
-    public Item[] getInventory() {
+    public ArrayList<Item> getInventory() {
         return inventory;
     }
 
-    public void setInventory(Item[] inventory) {
+    public void setInventory(ArrayList<Item> inventory) {
         this.inventory = inventory;
+    }
+
+    public void addItemToInventory(Item item) {
+        inventory.add(item);
     }
 
     public boolean useItem(Item item) {
         if (inventory.contains(item)) {
-            item.setUtilized(true);
+            item.use(this);
             return true;
         }
         else return false;
     }
 
+    @Override
+    public String toString() {
+        return "Giocatore [Età = " + age + ", Inventario = " + inventory + ", Nome = " + getName() + ", Vita = "
+                + getHealth() + ", Arma = " + getWeapon() + "]";
+    }
+    
 }
