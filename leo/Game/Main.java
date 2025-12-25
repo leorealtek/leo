@@ -101,12 +101,20 @@ public class Main {
 
         Enemy enemy = new Enemy(nameEnemy, HEALTH_ENEMY, weaponEnemy);
         
-        while(true) {
-            if (player.getHealth() <= 0 || enemy.getHealth() <= 0) break;
-            player.attack(enemy);
-            enemy.attack(player);
-            System.out.println(player);
-            System.out.println(enemy);
-        }
+        player.attack(enemy);
+        enemy.attack(player);
+        System.out.println(player);
+        System.out.println(enemy);
+
+        HealPotion pozione = new HealPotion("Pozione di cura", 10.0f, 2);
+
+        player.addItemToInventory(pozione);
+        player.useItem(pozione);
+
+        System.out.println(player.getInventory());
+
+        player.useItem(pozione);
+
+        System.out.println(player.getHealth());
     }
 }
