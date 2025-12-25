@@ -1,23 +1,17 @@
 package leo.Game;
 
 public class HealPotion extends Item{
-    private final int quantityOfHealing;
-    private final float speedOfHealing;
+    private final float quantityOfHealing;
     private final float secondsOfHealing;
 
-    public HealPotion(String name, int quantityOfHealing, float speedOfHealing, float secondsOfHealing) {
+    public HealPotion(String name, float quantityOfHealing, float secondsOfHealing) {
         super(name);
         this.quantityOfHealing = quantityOfHealing;
-        this.speedOfHealing = speedOfHealing;
         this.secondsOfHealing = secondsOfHealing;
     }
 
-    public int getQuantityOfHealing() {
+    public float getQuantityOfHealing() {
         return quantityOfHealing;
-    }
-
-    public float getSpeedOfHealing() {
-        return speedOfHealing;
     }
 
     public float getSecondsOfHealing() {
@@ -27,9 +21,6 @@ public class HealPotion extends Item{
     @Override
     public void use(Entity entity) {
         super.use(entity);
-        try {
-            Thread.sleep((long)speedOfHealing);
-        } catch (Exception e) {}
         entity.setHealth(entity.getHealth() + quantityOfHealing * secondsOfHealing);
     }
 

@@ -33,7 +33,7 @@ public class Player extends Entity{
     }
 
     public boolean useItem(Item item) {
-        if (inventory.contains(item)) {
+        if (inventory.contains(item) && !item.isUtilized()) {
             item.use(this);
             return true;
         }
