@@ -32,12 +32,11 @@ public class Player extends Entity{
         inventory.add(item);
     }
 
-    public boolean useItem(Item item) {
+    public void useItem(Item item) {
         if (inventory.contains(item) && !item.isUtilized()) {
             item.use(this);
-            return true;
         }
-        else return false;
+        else System.out.println("La pozione non è nel tuo inventario o è gia stata usata");
     }
 
     @Override
