@@ -33,7 +33,8 @@ public class Weapon {
 
     @Override
     public String toString() {
-        return "[Nome = " + name + ", Danno = " + damage + ", Durabilità = " + durability + "]";
+        String durabilityStr = (durability == Integer.MAX_VALUE) ? "Infinity" : String.valueOf(durability);
+        return "[Nome = " + name + ", Danno = " + damage + ", Durabilità = " + durabilityStr + "]";
     }
 
 }

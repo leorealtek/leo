@@ -40,6 +40,17 @@ public class Player extends Entity{
     }
 
     @Override
+    public boolean attack(Entity entity) {
+        super.attack(entity);
+        for (Item item : inventory) {
+            if (item instanceof StrenghtPotion && item.isUtilized()) {
+                ((StrenghtPotion) item).decrementRemainingAttacks(this);
+            }
+        }
+    return true;
+    }
+
+    @Override
     public String toString() {
         return "Giocatore [Età = " + age + ", Inventario = " + inventory + ", Nome = " + getName() + ", Vita = "
                 + getHealth() + ", Arma = " + getWeapon() + "]";

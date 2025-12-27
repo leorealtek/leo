@@ -34,7 +34,7 @@ public class Entity {
     public boolean attack(Entity entity) {
         if (this.getWeapon().getDurability() == 0) return false;
         entity.setHealth(entity.getHealth() - this.getWeapon().getDamage());
-        this.getWeapon().setDurability(this.getWeapon().getDurability() - 1);
+        if (!this.getWeapon().getName().equals("Mani")) this.getWeapon().setDurability(this.getWeapon().getDurability() - 1);
         return true;
     }
 

@@ -47,6 +47,7 @@ public class Main {
         }
         return weaponPlayer;
     }
+    
     public static void main(String[] args) throws InterruptedException {
 
         System.out.print("Dimmi il nome del giocatore: ");
@@ -58,7 +59,6 @@ public class Main {
         Thread.sleep(300);
         
         Player player = new Player(namePlayer, HEALTH_PLAYER, null, agePlayer, new ArrayList<Item>());
-
         player.setWeapon(chooseWeapon(player));
 
         System.out.print("Dimmi il nome dell'avversario: ");
@@ -66,20 +66,18 @@ public class Main {
         String nameEnemy = s.nextLine();
 
         Enemy enemy = new Enemy(nameEnemy, HEALTH_ENEMY, null);
-
         enemy.setWeapon(chooseWeapon(enemy));
+
+        HealPotion pozione = new HealPotion("Pozione di cura", 10.0f, 2);
+        player.addItemToInventory(pozione);
+
+        StrenghtPotion pozioneForza = new StrenghtPotion("Pozione di forza", 3, 5);
+        player.addItemToInventory(pozioneForza);
 
         player.attack(enemy);
         enemy.attack(player);
 
-        HealPotion pozione = new HealPotion("Pozione di cura", 10.0f, 2);
-
-        player.addItemToInventory(pozione);
-
-        player.useItem(pozione);
-
         Entity[] allEntities = {player, enemy};
-
         for (Entity entity : allEntities) {
             System.out.println(entity);
         }
