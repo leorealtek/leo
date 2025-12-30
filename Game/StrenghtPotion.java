@@ -1,4 +1,4 @@
-package leo.Game;
+package Game;
 
 public class StrenghtPotion extends Item {
     private final int attacksWithBoost;

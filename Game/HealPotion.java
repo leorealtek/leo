@@ -1,4 +1,4 @@
-package leo.Game;
+package Game;
 
 public class HealPotion extends Item{
     private final float quantityOfHealing;

@@ -1,4 +1,4 @@
-package leo.Game;
+package Game;
 
 public class Enemy extends Entity {
     public Enemy(String name, float health, Weapon weapon) {

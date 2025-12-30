@@ -1,4 +1,4 @@
-package leo.Game;
+package Game;
 
 import java.util.ArrayList;
 

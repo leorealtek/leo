@@ -1,4 +1,4 @@
-package leo.FormaGeometrica;
+package FormaGeometrica;
 
 public class Rettangolo extends FormaGeometrica {
     private final int base;

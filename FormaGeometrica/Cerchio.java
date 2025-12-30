@@ -1,4 +1,4 @@
-package leo.FormaGeometrica;
+package FormaGeometrica;
 
 public class Cerchio extends FormaGeometrica {
     private final float raggio;

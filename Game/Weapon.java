@@ -1,4 +1,4 @@
-package leo.Game;
+package Game;
 
 public class Weapon {
     private final String name;

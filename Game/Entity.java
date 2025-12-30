@@ -1,4 +1,4 @@
-package leo.Game;
+package Game;
 
 public class Entity {
     private final String name;

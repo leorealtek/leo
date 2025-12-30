@@ -1,4 +1,4 @@
-package leo.FormaGeometrica;
+package FormaGeometrica;
 
 public class Triangolo extends FormaGeometrica {
 
