@@ -100,7 +100,26 @@ public class CorsaMain {
         for (Corsa corsa : corseAtleta) {
             if (IDmaggiore < corsa.getID()) IDmaggiore = corsa.getID();
         }
-        return "";
+        int length = 0;
+        if (corseAtleta.length - 1 > 0) length = corseAtleta.length - 1;
+
+        if (length == 0) return "Atleta " + nomeAtleta + " non trovato nelle corse";
+
+        Corsa[] corseAtletaSenzaUltima = new Corsa[length];
+
+        for (int i = 0; i < corseAtletaSenzaUltima.length; i++) {
+            corseAtletaSenzaUltima[i] = corseAtleta[i];
+        }
+    
+        float punteggioMedio = calcolaPunteggioMedio(corseAtletaSenzaUltima);
+
+        Corsa ultimaCorsa = corseAtleta[corseAtleta.length - 1];
+
+        if (ultimaCorsa.calcolaPunteggio() > punteggioMedio) return "Ottimo lavoro " + nomeAtleta + "! Sei in miglioramento! (+" + (ultimaCorsa.calcolaPunteggio() - punteggioMedio) + " punti rispetto alla media)";
+        if (ultimaCorsa.calcolaPunteggio() > punteggioMedio) return "Continua ad allenarti " + nomeAtleta + "! (-" + (ultimaCorsa.calcolaPunteggio() - punteggioMedio) + " punti rispetto alla media)";
+        if (corseAtleta.length == 1) return "Prima sessione registrata per " + nomeAtleta + ". Continua così!";
+
+        return "Errore";
     }
 
     public static void main(String[] args) {
@@ -137,6 +156,8 @@ public class CorsaMain {
         for (String statisticheUtente : statisticheUtenti) {
             System.out.println(statisticheUtente);
         }
+
+        System.out.println(analizzaProgressi(corse, "Massimo"));
 
     }
 }
