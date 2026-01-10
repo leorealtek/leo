@@ -17,12 +17,9 @@ public class Punto {
         return y;
     }
 
-    public Punto trasla(Direzione direzione, int distanza) {
-        if (direzione.equals(Direzione.SU)) y += distanza;
-        if (direzione.equals(Direzione.GIU)) y -= distanza;
-        if (direzione.equals(Direzione.DESTRA)) x += distanza;
-        if (direzione.equals(Direzione.SINISTRA)) x -= distanza;
-        return this;
+    public void trasla(Direzione direzione, int distanza) {
+        x += direzione.getX() * distanza;
+        y += direzione.getY() * distanza;
     }
 
     @Override

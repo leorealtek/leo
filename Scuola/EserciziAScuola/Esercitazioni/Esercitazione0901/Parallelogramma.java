@@ -10,9 +10,9 @@ public class Parallelogramma extends Quadrilatero{
     public Parallelogramma(Punto a, int lunghezza1, int lunghezza2, int angolo) {
         super(a,null,null,null);
         Punto[] punti = creaCostruttore(a, lunghezza1, lunghezza2, angolo);
-        this.b = punti[1];
-        this.c = punti[2];
-        this.d = punti[3];
+        this.b = punti[0];
+        this.c = punti[1];
+        this.d = punti[2];
         this.angolo = angolo;
         this.lato1 = lunghezza1;
         this.lato2 = lunghezza2;
@@ -22,20 +22,9 @@ public class Parallelogramma extends Quadrilatero{
 
     public static Punto[] creaCostruttore(Punto a, int lunghezza1, int lunghezza2, int angolo) {
         Punto[] punti = new Punto[3];
-        int theta = (int) Math.toRadians(angolo);
-        int x1 = a.getX();
-        int y1 = a.getY();
-        int x2 = x1 + lunghezza1;
-        int y2 = y1;
-        int x3 = x1 + lunghezza1 + lunghezza2 * (int) Math.cos(theta);
-        int y3 = y1 + lunghezza2 * (int) Math.sin(theta); 
-        int x4 = x1 + lunghezza2 * (int) Math.cos(theta);
-        int y4 = y1 + lunghezza2 * (int) Math.sin(theta);
-
-        punti[0] = new Punto(x2, y2);
-        punti[1] = new Punto(x3, y3);
-        punti[2] = new Punto(x4, y4);
-
+        punti[0] = new Punto(a.getX() + lunghezza1, a.getY());
+        punti[1] = new Punto(a.getX() + lunghezza1 + (int)(lunghezza2 * Math.cos(Math.toRadians(angolo))), a.getY() + (int)(lunghezza2 * Math.sin(Math.toRadians(angolo))));
+        punti[2] = new Punto(a.getX() + (int)(lunghezza2 * Math.cos(Math.toRadians(angolo))), a.getY() + (int)(lunghezza2 * Math.sin(Math.toRadians(angolo))));
         return punti;
     }
 

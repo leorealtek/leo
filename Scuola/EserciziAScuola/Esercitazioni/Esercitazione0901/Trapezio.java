@@ -20,6 +20,7 @@ public class Trapezio extends Quadrilatero{
         super(a, null, null, null);
         this.lunghezzaBaseMaggiore = lunghezzaBaseMaggiore;
         this.lunghezzaBaseMinore = lunghezzaBaseMinore;
+        this.altezza = altezza;
         Punto[] punti = creaCostruttore(a, lunghezzaBaseMinore, lunghezzaBaseMaggiore, altezza, 0);
         b = punti[0];
         c = punti[1];
@@ -29,8 +30,8 @@ public class Trapezio extends Quadrilatero{
     public static Punto[] creaCostruttore(Punto a, int lunghezzaBaseMinore, int lunghezzaBaseMaggiore, int altezza, int offsetDaSinistra) {
         Punto[] punti = new Punto[3];
         punti[0] = new Punto(a.getX() + lunghezzaBaseMaggiore, a.getY());
-        punti[1] = new Punto(punti[1].getX() - offsetDaSinistra, punti[1].getY() + altezza);
-        punti[2] = new Punto(punti[2].getX() - lunghezzaBaseMinore, punti[2].getY());
+        punti[1] = new Punto(punti[0].getX() - offsetDaSinistra, punti[0].getY() + altezza);
+        punti[2] = new Punto(punti[1].getX() - lunghezzaBaseMinore, punti[1].getY());
         return punti;
     }
 
