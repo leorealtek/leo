@@ -1,4 +1,4 @@
-package Scuola.Sort;
+package Scuola.EserciziAScuola.Sort;
 
 public class BubbleSort {
     public static long[] bubbleSort(long[] array, boolean crescente) {

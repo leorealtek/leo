@@ -1,4 +1,4 @@
-package Scuola.Sort;
+package Scuola.EserciziAScuola.Sort;
 
 import java.util.Random;
 

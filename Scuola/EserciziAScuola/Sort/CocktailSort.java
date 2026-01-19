@@ -1,4 +1,4 @@
-package Scuola.Sort;
+package Scuola.EserciziAScuola.Sort;
 
 public class CocktailSort {
     public static int[] cocktailSort (int[] array) {
