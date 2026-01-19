@@ -8,7 +8,7 @@ public class Esercizio {
         int[] array = new int[n];
         Random generator = new Random();
         for (int i = 0; i < array.length; i++) {
-            array[i] = generator.nextInt(min, max);
+            array[i] = generator.nextInt(max);
         }
         return array;
     }
