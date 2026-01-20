@@ -2,10 +2,10 @@ import java.util.Scanner;
 
 public class Esercizio_IEEE754 {
 
-    public static final int LUNGHEZZA_MANTISSA = 23;
-    public static final int LUNGHEZZA_ESPONENTE = 8;
+    private static final int LUNGHEZZA_MANTISSA = 23;
+    private static final int LUNGHEZZA_ESPONENTE = 8;
 
-    public static int parteIntera(float numero) {
+    private static int parteIntera(float numero) {
         String parteIntera = "";
         int indice = 0;
 
@@ -27,7 +27,7 @@ public class Esercizio_IEEE754 {
         return Integer.parseInt(parteIntera);
     }
 
-    public static float parteDecimale(float numero) {
+    private static float parteDecimale(float numero) {
         String numeroString = String.valueOf(numero);
         String parteDecimale = "";
         int indice = 0;
@@ -49,7 +49,7 @@ public class Esercizio_IEEE754 {
         return valoreFinale;
     }
 
-    public static String conversioneParteIntera(int numero){
+    private static String conversioneParteIntera(int numero){
         int resto;
         String binario = "";
 
@@ -64,7 +64,7 @@ public class Esercizio_IEEE754 {
         return binario;
     }
 
-    public static String conversioneParteDecimale(float numero) {
+    private static String conversioneParteDecimale(float numero) {
         String finale = "";
 
         for (int i = 0; i < LUNGHEZZA_MANTISSA; i++) {
@@ -78,7 +78,7 @@ public class Esercizio_IEEE754 {
         return finale;
     }
 
-    public static Object[] calcolaMantissaEdEsponente(String parteIntera, String parteDecimale) {
+    private static Object[] calcolaMantissaEdEsponente(String parteIntera, String parteDecimale) {
         Object[] oggetti = new Object[2];
         String finale = "";
         int esp = 127;
@@ -109,11 +109,11 @@ public class Esercizio_IEEE754 {
         return oggetti;
     }
 
-    public static String binarioFinale(String esponente, String mantissa, float num) {
+    private static String binarioFinale(String esponente, String mantissa, float num) {
         return (num < 0) ? "1" + esponente + mantissa : "0" + esponente + mantissa;
     }
 
-    public static String convEsadecimale(String numeroFinale) {
+    private static String conversioneEsadecimale(String numeroFinale) {
         String[] valori = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
         String risultato = "";
     
@@ -131,20 +131,24 @@ public class Esercizio_IEEE754 {
         return "0x" + risultato;
     }
 
+    public static String convertiIEEE754(float numero) {
+        int parteIntera = parteIntera(numero);
+        float parteDecimale = parteDecimale(numero);
+        String conversioneParteIntera = conversioneParteIntera(parteIntera);
+        String conversioneParteDecimale = conversioneParteDecimale(parteDecimale);
+        Object[] esponenteEMantissa = calcolaMantissaEdEsponente(conversioneParteIntera, conversioneParteDecimale);
+        String esponente = (String) esponenteEMantissa[0];
+        String mantissa = (String) esponenteEMantissa[1];
+        String numeroBinario = binarioFinale(esponente, mantissa, numero);
+        String numeroInEsadecimale = conversioneEsadecimale(numeroBinario);
+        return numeroInEsadecimale;
+    }
+
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
         System.out.println("Dimmi il numero floating point da convertire in standard IEEE-754");
         float numero = s.nextFloat();
         s.close();
-        int parteIntera = parteIntera(numero);
-        float parteDecimale = parteDecimale(numero);
-        String convParteInt = conversioneParteIntera(parteIntera);
-        String convParteDec = conversioneParteDecimale(parteDecimale);
-        Object[] notazione = calcolaMantissaEdEsponente(convParteInt, convParteDec);
-        String esp = (String) notazione[0];
-        String mantissa = (String) notazione[1];
-        String numeroFinale = binarioFinale(esp, mantissa, numero);
-        System.out.println(convEsadecimale(numeroFinale));
-
+        System.out.println(numero + " in IEEE-754 è: " + convertiIEEE754(numero));
     }
 }
