@@ -78,25 +78,24 @@ public class Esercizio_IEEE754 {
         return finale;
     }
 
-    private static Object[] calcolaMantissaEdEsponente(String parteIntera, String parteDecimale) {
-        Object[] oggetti = new Object[2];
-        String finale = "";
+    private static String calcolaNumeroIEEE(String parteIntera, String parteDecimale, float num) {
+        String mantissa = "";
         int esp = 127;
 
         if (parteIntera.equals("")) {
             for (int i = 0; i < parteDecimale.length(); i++) {
                 if (parteDecimale.charAt(i) == '1') {
                     esp -= (i + 1); 
-                    finale = parteDecimale.substring(i + 1, parteDecimale.length());
-                    while (finale.length() < LUNGHEZZA_MANTISSA) {
-                        finale += '0';
+                    mantissa = parteDecimale.substring(i + 1, parteDecimale.length());
+                    while (mantissa.length() < LUNGHEZZA_MANTISSA) {
+                        mantissa += '0';
                     }
                     break;
                 }   
             }
         }
         else {
-            finale = parteIntera.substring(1) + parteDecimale.substring(0, parteDecimale.length() + 1 - parteIntera.length());
+            mantissa = parteIntera.substring(1) + parteDecimale.substring(0, parteDecimale.length() + 1 - parteIntera.length());
             esp += parteIntera.length() - 1;
         }
 
@@ -104,19 +103,15 @@ public class Esercizio_IEEE754 {
         while (espBinario.length() < LUNGHEZZA_ESPONENTE) {
             espBinario = "0" + espBinario;
         }
-        oggetti[0] = espBinario;
-        oggetti[1] = finale;
-        return oggetti;
-    }
 
-    private static String binarioFinale(String esponente, String mantissa, float num) {
-        return (num < 0) ? "1" + esponente + mantissa : "0" + esponente + mantissa;
+        String finale = (num < 0) ? "1" + espBinario + mantissa : "0" + espBinario + mantissa;
+        return finale;
     }
 
     private static String conversioneEsadecimale(String numeroFinale) {
         String[] valori = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
         String risultato = "";
-    
+
         for (int i = 0; i < numeroFinale.length() / 4; i++) {
             String gruppo = numeroFinale.substring(i * 4, i * 4 + 4);
             int valore = 0;
@@ -136,10 +131,7 @@ public class Esercizio_IEEE754 {
         float parteDecimale = parteDecimale(numero);
         String conversioneParteIntera = conversioneParteIntera(parteIntera);
         String conversioneParteDecimale = conversioneParteDecimale(parteDecimale);
-        Object[] esponenteEMantissa = calcolaMantissaEdEsponente(conversioneParteIntera, conversioneParteDecimale);
-        String esponente = (String) esponenteEMantissa[0];
-        String mantissa = (String) esponenteEMantissa[1];
-        String numeroBinario = binarioFinale(esponente, mantissa, numero);
+        String numeroBinario = calcolaNumeroIEEE(conversioneParteIntera, conversioneParteDecimale, numero);
         String numeroInEsadecimale = conversioneEsadecimale(numeroBinario);
         return numeroInEsadecimale;
     }
