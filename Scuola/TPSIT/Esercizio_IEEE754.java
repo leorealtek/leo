@@ -127,6 +127,7 @@ public class Esercizio_IEEE754 {
     }
 
     public static String convertiIEEE754(float numero) {
+        if (numero == 0) return "0x00000000";
         int parteIntera = parteIntera(numero);
         float parteDecimale = parteDecimale(numero);
         String conversioneParteIntera = conversioneParteIntera(parteIntera);
@@ -141,10 +142,16 @@ public class Esercizio_IEEE754 {
         System.out.println("Dimmi il numero floating point da convertire in standard IEEE-754");
         String numeroString = s.nextLine();
         s.close();
-        if (numeroString.contains(".")) {
-            numeroString.replace('.',',');
+        String numeroConIlPunto = "";
+        for (int i = 0; i < numeroString.length(); i++) {
+            if (numeroString.charAt(i) == ',') {
+                numeroConIlPunto += '.';
+            }
+            else {
+                numeroConIlPunto += numeroString.charAt(i);
+            }
         }
-        float numero = Float.valueOf(numeroString);
+        float numero = Float.valueOf(numeroConIlPunto);
         System.out.println(numero + " in IEEE-754 è: " + convertiIEEE754(numero));
     }
 }
