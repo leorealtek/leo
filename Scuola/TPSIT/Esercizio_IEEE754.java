@@ -137,6 +137,8 @@ public class Esercizio_IEEE754 {
         return numeroInEsadecimale;
     }
 
+    // Componenti gruppo: Leonardo Giacomin, Leonardo Frison
+
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
         System.out.println("Dimmi il numero floating point da convertire in standard IEEE-754");
