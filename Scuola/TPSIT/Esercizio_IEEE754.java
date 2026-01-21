@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Esercizio_IEEE754 {
@@ -139,8 +140,12 @@ public class Esercizio_IEEE754 {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
         System.out.println("Dimmi il numero floating point da convertire in standard IEEE-754");
-        float numero = s.nextFloat();
+        String numeroString = s.nextLine();
         s.close();
+        if (numeroString.contains(".")) {
+            numeroString.replace('.',',');
+        }
+        float numero = Float.valueOf(numeroString);
         System.out.println(numero + " in IEEE-754 è: " + convertiIEEE754(numero));
     }
 }
