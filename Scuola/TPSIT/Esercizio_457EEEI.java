@@ -1,6 +1,8 @@
+import java.util.Scanner;
+
 public class Esercizio_457EEEI {
 
-    private static String conversioneParteIntera(int numero){
+    private static String convertiDecimaleInBinario(int numero){
         int resto;
         String binario = "";
 
@@ -15,29 +17,28 @@ public class Esercizio_457EEEI {
         return binario;
     }
 
-    public static int convertiDaBinarioADecimale(String numero) {
+    public static int convertiBinarioInDecimale(String binario) {
         int decimale = 0;
         int esponente = 0;
-        for (int i = numero.length() - 1; i >= 0; i--) {
-            decimale += Integer.parseInt(String.valueOf(numero.charAt(i))) * Math.pow(2, esponente++);
+        for (int i = binario.length() - 1; i >= 0; i--) {
+            decimale += Integer.parseInt(String.valueOf(binario.charAt(i))) * Math.pow(2, esponente++);
         }
         return decimale;
     }
 
-    public static String conversioneDaEsadecimaleABinario(String esadecimale) {
+    public static String convertiEsadecimaleInBinario(String esadecimale) {
         esadecimale = esadecimale.substring(2);
         String binario = "";
         String valori = "0123456789ABCDEF";
 
         for (int i = 0; i < esadecimale.length(); i++) {
             int indice = valori.indexOf(esadecimale.charAt(i));
-            String numero = conversioneParteIntera(indice);
+            String numero = convertiDecimaleInBinario(indice);
             while (numero.length() < 4) {
                 numero = "0" + numero;
             }
             binario += numero;
         }
-    
         return binario;
     }
 
@@ -53,36 +54,64 @@ public class Esercizio_457EEEI {
     }
 
     public static String spostaVirgola(String mantissa, int esponente) {
-        String finito = "";
+        String risultato = "";
         if (esponente < 0) {
-            finito = "0.";
-            for (int i = 1; i < esponente; i++) {
-                finito += '0';
+            risultato = "0.";
+            for (int i = 1; i < -esponente; i++) {
+                risultato += '0';
             }
-            finito += '1';
-            finito += mantissa;
+            risultato += '1';
+            risultato += mantissa;
         }
         else if (esponente > 0) {
-            finito = "1";
+            risultato = "1";
             for (int i = 0; i < esponente; i++) {
-                finito += mantissa.charAt(i);
+                risultato += mantissa.charAt(i);
             }
-            finito += '.';
-            finito += mantissa.substring(esponente);
+            risultato += '.';
+            risultato += mantissa.substring(esponente);
         }
-        else {
-            return "mamt";
+        return risultato;
+    }
+
+    public static String ottieniRisultato(String numero, String segno) {
+        int indicePunto = 0;
+        float parteDecimale = 0;
+        int esponente = -1;
+
+        for (int i = 0; i < numero.length(); i++) {
+            if (numero.charAt(i) == '.') {
+                indicePunto = i;
+                break;
+            }
         }
-        return finito;
+
+        int parteIntera = convertiBinarioInDecimale(numero.substring(0, indicePunto));
+        String parteDecimaleBinaria = numero.substring(indicePunto + 1);
+        for (int i = 0; i < parteDecimaleBinaria.length(); i++) {
+            parteDecimale += Integer.parseInt(String.valueOf(parteDecimaleBinaria.charAt(i))) * Math.pow(2, esponente--);
+        }
+        float valore = parteIntera + parteDecimale;
+
+        return (segno.charAt(0) == '0') ? String.valueOf(valore) : "-" + String.valueOf(valore);
+    }
+
+    public static String elaboraEsadecimale(String esadecimale) {
+        String binario = convertiEsadecimaleInBinario(esadecimale);
+        String[] diviso = dividiNumero(binario);
+        int esponente = convertiBinarioInDecimale(diviso[1]) - 127;
+        String mantissa = diviso[2];
+        String numero = spostaVirgola(mantissa, esponente);
+        return ottieniRisultato(numero, diviso[0]);
     }
 
     public static void main(String[] args) {
-        String esadecimale = "0x3F000000";
-        String binario = conversioneDaEsadecimaleABinario(esadecimale);
-        String[] divisi = dividiNumero(binario);
-        int esponente = convertiDaBinarioADecimale(divisi[1]) - 127;
-        System.out.println(binario);
-        System.out.println(spostaVirgola(divisi[2], esponente));
+        Scanner scanner = new Scanner(System.in);
 
+        System.out.print("Inserisci il numero esadecimale (es. 0xC7004B58): ");
+        String esadecimale = scanner.nextLine().toUpperCase();
+        scanner.close();
+        
+        System.out.println("Risultato: " + elaboraEsadecimale(esadecimale));
     }
 }
