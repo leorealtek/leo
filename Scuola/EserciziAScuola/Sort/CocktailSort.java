@@ -1,7 +1,7 @@
 package Scuola.EserciziAScuola.Sort;
 
 public class CocktailSort {
-    public static int[] cocktailSort (int[] array) {
+    public static void cocktailSort (int[] array) {
         boolean swapped = true;
         int start = 0;
         int end = array.length - 1;
@@ -31,6 +31,5 @@ public class CocktailSort {
             }
             start++;
         }
-        return array;
     }
 }

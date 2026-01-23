@@ -1,7 +1,7 @@
 package Scuola.EserciziAScuola.Sort;
 
 public class BubbleSort {
-    public static long[] bubbleSort(long[] array, boolean crescente) {
+    public static void bubbleSort(long[] array, boolean crescente) {
         long temp;
         boolean swapped;
 
@@ -27,10 +27,9 @@ public class BubbleSort {
             }
             if (!swapped) break;
         }
-        return array;
     }
 
-    public static double[] bubbleSort(double[] array, boolean crescente) {
+    public static void bubbleSort(double[] array, boolean crescente) {
         double temp;
         boolean swapped;
 
@@ -56,33 +55,29 @@ public class BubbleSort {
             }
             if (!swapped) break;
         }
-        return array;
     }
 
-    public static float[] bubbleSort(float[] array, boolean crescente) {
+    public static void  bubbleSort(float[] array, boolean crescente) {
         double[] array2 = new double[array.length];
         for (int i = 0; i < array.length; i++) {
             array2[i] = (double) array[i];
         }
-        array2 = bubbleSort(array2, crescente);
+        bubbleSort(array2, crescente);
 
         for (int i = 0; i < array2.length; i++) {
             array[i] = (float) array2[i];
         }
-        return array;
     }
 
-    public static int[] bubbleSort(int[] array, boolean crescente) {
+    public static void bubbleSort(int[] array, boolean crescente) {
         long[] array2 = new long[array.length];
         for (int i = 0; i < array.length; i++) {
             array2[i] = (long) array[i];
         }
-        array2 = bubbleSort(array2, crescente);
+        bubbleSort(array2, crescente);
 
         for (int i = 0; i < array2.length; i++) {
             array[i] = (int) array2[i];
         }
-        return array;
     } 
-
 }

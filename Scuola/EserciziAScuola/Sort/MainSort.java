@@ -2,7 +2,7 @@ package Scuola.EserciziAScuola.Sort;
 
 import java.util.Random;
 
-public class Esercizio {
+public class MainSort {
 
     public static int[] creaArray(int n, int min, int max) {
         int[] array = new int[n];

@@ -13,12 +13,4 @@ public class InserctionSort {
             arr[j + 1] = key;
         }
     }
-
-    public static void main(String[] args) {
-        int[] array = {5, 2, 9, 1, 5, 6};
-        insertionSort(array);
-        for (int num : array) {
-            System.out.print(num + " ");
-        }
-    }
 }
