@@ -37,8 +37,27 @@ public class MainSort {
         }
     }
 
-    public static void main(String[] args) {
-        provaTempoEsecuzioneBubble();
-        provaTempoEsecuzioneCocktail();
+    public static void provaTempoEsecuzioneSelection() {
+        int length = 10;
+        for (int i = 0; i < 5; i++) {
+            int[] array = creaArray(length, 0, 100);
+            long startTime = System.nanoTime();
+            SelectionSort.selectionSort(array);
+            long endTime = System.nanoTime();
+            System.out.println("Elementi: " + length + " Tempo: " + (endTime - startTime) + " ns");
+            length *= 10;
+        }
+    }
+
+    public static void provaTempoEsecuzioneInserction() {
+        int length = 10;
+        for (int i = 0; i < 5; i++) {
+            int[] array = creaArray(length, 0, 100);
+            long startTime = System.nanoTime();
+            InserctionSort.insertionSort(array);
+            long endTime = System.nanoTime();
+            System.out.println("Elementi: " + length + " Tempo: " + (endTime - startTime) + " ns");
+            length *= 10;
+        }
     }
 }

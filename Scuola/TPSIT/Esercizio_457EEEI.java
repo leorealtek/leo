@@ -99,10 +99,14 @@ public class Esercizio_457EEEI {
     }
 
     public static String elaboraEsadecimale(String esadecimale) {
+        if (esadecimale.equalsIgnoreCase("0x00000000")) return "0";
         String binario = convertiEsadecimaleInBinario(esadecimale);
         String[] diviso = dividiNumero(binario);
         int esponente = convertiBinarioInDecimale(diviso[1]) - 127;
         String mantissa = diviso[2];
+        if (esponente == 128 && Integer.valueOf(mantissa) == 0) return (diviso[0].equalsIgnoreCase("0")) ? "+Infinito" : "-Infinito"; 
+        if (esponente == 128 && Integer.valueOf(mantissa) != 0) return "NaN";
+        if (esponente == -127 && Integer.valueOf(mantissa) != 0) return String.valueOf(convertiBinarioInDecimale(mantissa));
         String numero = spostaVirgola(mantissa, esponente);
         return ottieniRisultato(numero, diviso[0]);
     }
@@ -110,7 +114,7 @@ public class Esercizio_457EEEI {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Inserisci il numero esadecimale (es. 0xC7004B58): ");
+        System.out.print("Inserisci il numero esadecimale con '0x' prima dell'esadecimale: ");
         String esadecimale = scanner.nextLine().toUpperCase();
         scanner.close();
         

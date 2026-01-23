@@ -16,13 +16,4 @@ public class SelectionSort {
             array[i] = temp;
         }
     }
-
-    public static void main(String[] args) {
-        int[] array = {64, 25, 12, 22, 11};
-        selectionSort(array);
-        System.out.println("Array ordinato:");
-        for (int num : array) {
-            System.out.print(num + " ");
-        }
-    }
 }
