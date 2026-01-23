@@ -96,15 +96,46 @@ public class Esercizio_457EEEI {
         return (segno.charAt(0) == '0') ? String.valueOf(valore) : "-" + String.valueOf(valore);
     }
 
+    public static String rappresentazioneSubnormale(String mantissa, String segno) {
+        float parteDecimale = 0;
+        int esponente = -1;
+    
+        for (int i = 0; i < mantissa.length(); i++) {
+            if (mantissa.charAt(i) == '1') {
+                parteDecimale += Math.pow(2, esponente);
+            }
+            esponente--;
+        }
+    
+        double valore = parteDecimale * Math.pow(2, -126);
+
+        if (segno.charAt(0) == '1') {
+            valore = -valore;
+        }
+
+        return String.valueOf(valore);
+    }    
+
     public static String elaboraEsadecimale(String esadecimale) {
-        if (esadecimale.equalsIgnoreCase("0x00000000")) return "0";
+        if (esadecimale.length() != 10) {
+            return "Errore: L'esadecimale deve essere di 8 cifre precedute da '0x'.";
+        }
+
+        if (esadecimale.equalsIgnoreCase("0x00000000")) {
+            return "+0";  
+        }
+
+        else if (esadecimale.equalsIgnoreCase("0x80000000")) {
+            return "-0";  
+        }
+
         String binario = convertiEsadecimaleInBinario(esadecimale);
         String[] diviso = dividiNumero(binario);
         int esponente = convertiBinarioInDecimale(diviso[1]) - 127;
         String mantissa = diviso[2];
-        if (esponente == 128 && Integer.valueOf(mantissa) == 0) return (diviso[0].equalsIgnoreCase("0")) ? "+Infinito" : "-Infinito"; 
-        if (esponente == 128 && Integer.valueOf(mantissa) != 0) return "NaN";
-        if (esponente == -127 && Integer.valueOf(mantissa) != 0) return String.valueOf(convertiBinarioInDecimale(mantissa));
+        if (esponente == 128 && mantissa.equals("00000000000000000000000")) return (diviso[0].equalsIgnoreCase("0")) ? "+Infinito" : "-Infinito"; 
+        if (esponente == 128 && !mantissa.equals("00000000000000000000000")) return "NaN";
+        if (esponente == -127 && !mantissa.equals("00000000000000000000000")) return String.valueOf(rappresentazioneSubnormale(mantissa, diviso[0]));
         String numero = spostaVirgola(mantissa, esponente);
         return ottieniRisultato(numero, diviso[0]);
     }
