@@ -1,4 +1,4 @@
-package Scuola.EserciziAScuola.Progettino;
+package Scuola.Progettino;
 
 import java.util.Random;
 
@@ -7,7 +7,7 @@ public enum TipoTarget {
 
     public static TipoTarget generaTarget() {
         Random generatoreNum = new Random();
-        int idx = generatoreNum.nextInt(0, TipoTarget.values().length - 1);
+        int idx = generatoreNum.nextInt(0, TipoTarget.values().length);
         return TipoTarget.values()[idx];
     }
 }

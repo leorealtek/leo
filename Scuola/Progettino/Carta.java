@@ -1,12 +1,12 @@
-package Scuola.EserciziAScuola.Progettino;
+package Scuola.Progettino;
 
 import java.util.Random;
 
 public class Carta {
-    protected String nome;
+    protected final String nome;
     protected int puntiVita;
-    protected int puntiAttacco;
-    protected int puntiDifesa;
+    protected final int puntiAttacco;
+    protected final int puntiDifesa;
     protected TipoTarget target;
 
     private static String[] prefissi = {
@@ -33,7 +33,7 @@ public class Carta {
         String nome = "";
         String prefissoNome = prefissi[generatoreNum.nextInt(0, prefissi.length - 1)];
         nome = prefissoNome + " ";
-        String suffissoNome = suffissi[generatoreNum.nextInt(0, prefissi.length - 1)];
+        String suffissoNome = suffissi[generatoreNum.nextInt(0, suffissi.length - 1)];
         nome += suffissoNome;
         return nome;
     }
@@ -62,7 +62,7 @@ public class Carta {
             puntiAttacco = generatoreNum.nextInt(0,maxPunti);
         }
 
-        maxPunti -= puntiVita;
+        maxPunti -= puntiAttacco;
 
         if (maxPunti > 50) {
             puntiDifesa = generatoreNum.nextInt(0,50);
@@ -79,17 +79,36 @@ public class Carta {
 
     @Override
     public String toString() {
-        return "Carta [nome=" + nome + ", puntiVita=" + puntiVita + ", puntiAttacco=" + puntiAttacco + ", puntiDifesa="
-                + puntiDifesa + ", target=" + target + "]";
+        return "Carta [Nome: " + nome + ", Punti vita: " + puntiVita + ", Punti attacco: " + puntiAttacco + ", Punti difesa: "
+                + puntiDifesa + ", Target: " + target + "]";
     }
 
     public int getPuntiTotali() {
         return puntiVita + puntiAttacco + puntiDifesa;
     }
 
-    public static void main(String[] args) {
-        Carta c = new Carta();
-
-        System.out.println(c);
+    public String getNome() {
+        return nome;
     }
+
+    public int getPuntiVita() {
+        return puntiVita;
+    }
+
+    public int getPuntiAttacco() {
+        return puntiAttacco;
+    }
+
+    public int getPuntiDifesa() {
+        return puntiDifesa;
+    }
+
+    public TipoTarget getTarget() {
+        return target;
+    }
+
+    public void setPuntiVita(int puntiVita) {
+        this.puntiVita = puntiVita;
+    }
+    
 }
