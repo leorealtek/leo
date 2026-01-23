@@ -22,10 +22,17 @@ public class Partita {
         giocatore1.mostraMano();
         System.out.println("\n" + giocatore2.getNome() + ":");
         giocatore2.mostraMano();
+        Giocatore[] giocatori = {giocatore1, giocatore2};
         
         while (!isFinita()) {
             turno();
             turno++;
+        }
+
+        for (Giocatore giocatore : giocatori) {
+            System.out.println("\n--- STATISTICHE FINALI DI " + giocatore.getNome() + " ---");
+            System.out.println("Carte distrutte: " + giocatore.getCarteDistrutte());
+            System.out.println("Danno inflitto: " + giocatore.getDannoInflitto());
         }
         
         Giocatore vincitore = getVincitore();

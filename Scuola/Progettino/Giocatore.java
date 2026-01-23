@@ -1,18 +1,25 @@
 package Scuola.Progettino;
 
+import java.util.Random;
+
 public class Giocatore {
     protected final String nome;
     protected Carta[] mazzo;
     protected Carta[] mano;
     protected Carta[] campo;
     protected int puntiVita;
+    protected int carteDistrutte;
+    protected int dannoInflitto;
     private int indiceMazzo = 5;
+    private Random random = new Random();
 
     public Giocatore(String nome) {
         this.nome = nome;
         mazzo = creaMazzo();
         mano = new Carta[10];
         campo = new Carta[5];
+        carteDistrutte = 0;
+        dannoInflitto = 0;
         puntiVita = 3;
         
         for (int i = 0; i < 5; i++) {
@@ -138,15 +145,53 @@ public class Giocatore {
             avversario.puntiVita--;
             System.out.println("  " + avversario.nome + " subisce un attacco diretto! Punti vita: " + avversario.puntiVita + "/3");
         } else {
-            int danno = Math.max(1, cartaAttaccante.getPuntiAttacco() - bersaglio.getPuntiDifesa());
+            if (bersaglio.getAbilita() == Abilita.EVASIONE && random.nextInt(100) < 30) {
+                System.out.println("  " + cartaAttaccante.getNome() + " attacca " + bersaglio.getNome());
+                System.out.println("  >>> ABILITÀ EVASIONE attivata! " + bersaglio.getNome() + " schiva l'attacco! <<<");
+                return;
+            }
+            
+            int attacco = cartaAttaccante.getPuntiAttacco();
+            int difesa = bersaglio.getPuntiDifesa();
+            
+            if (cartaAttaccante.getAbilita() == Abilita.VELENO) {
+                System.out.println("  >>> ABILITÀ VELENO attivata! <<<");
+                attacco += 5;
+                difesa = 0;
+            }
+            
+            boolean criticoAttivato = false;
+            if (cartaAttaccante.getAbilita() == Abilita.CRITICO && random.nextInt(100) < 25) {
+                System.out.println("  >>> ABILITÀ CRITICO attivata! <<<");
+                attacco *= 2;
+                criticoAttivato = true;
+            }
+            
+            int danno = Math.max(1, attacco - difesa);
+            
+            if (bersaglio.getAbilita() == Abilita.SCUDO) {
+                System.out.println("  >>> ABILITÀ SCUDO attivata! <<<");
+                danno = danno / 2;
+                if (danno < 1) danno = 1;
+            }
+            
             bersaglio.setPuntiVita(bersaglio.getPuntiVita() - danno);
             
             System.out.println("  " + cartaAttaccante.getNome() + " (ATK:" + cartaAttaccante.getPuntiAttacco() + 
-                             ") attacca " + bersaglio.getNome() + " (DEF:" + bersaglio.getPuntiDifesa() + ")");
+                             (criticoAttivato ? " x2" : "") + ") attacca " + bersaglio.getNome() + " (DEF:" + bersaglio.getPuntiDifesa() + ")");
+            dannoInflitto += danno;
             System.out.println("  Danno inflitto: " + danno + " | HP rimanenti: " + bersaglio.getPuntiVita());
+            
+            if (cartaAttaccante.getAbilita() == Abilita.VAMPIRO) {
+                int curaVampiro = danno;
+                cartaAttaccante.setPuntiVita(cartaAttaccante.getPuntiVita() + curaVampiro);
+                System.out.println("  >>> ABILITÀ VAMPIRO attivata! " + cartaAttaccante.getNome() + 
+                                 " recupera " + curaVampiro + " HP (Totale: " + cartaAttaccante.getPuntiVita() + ") <<<");
+            }
             
             if (bersaglio.getPuntiVita() <= 0) {
                 System.out.println("  >>> " + bersaglio.getNome() + " è stato DISTRUTTO! <<<");
+                carteDistrutte++;
                 avversario.rimuoviCarta(bersaglio);
             }
         }
@@ -254,5 +299,13 @@ public class Giocatore {
 
     public String getNome() {
         return nome;
+    }
+
+    public int getCarteDistrutte() {
+        return carteDistrutte;
+    }
+
+    public int getDannoInflitto() {
+        return dannoInflitto;
     }
 }

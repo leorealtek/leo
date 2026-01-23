@@ -7,17 +7,18 @@ public class Carta {
     protected int puntiVita;
     protected final int puntiAttacco;
     protected final int puntiDifesa;
+    protected final Abilita abilita;
     protected TipoTarget target;
 
     private static String[] prefissi = {
         "Drago", "Lupo", "Tigre", "Serpente", "Aquila","Golem", "Spirito", "Ombra",
         "Fuoco", "Ghiaccio","Tuono", "Terra", "Vento", "Luce", "Oscuro"
-        };
+    };
 
     private static String[] suffissi = {
         "Antico", "Furioso", "Mistico", "Selvaggio", "Celeste","Infernale","Glaciale",
         "Tonante","Sacro", "Maledetto","Supremo", "Eterno", "Fatale", "Divino", "Spettrale"
-        };
+    };
 
     public Carta() {
         int[] statCarta = creaStatisticheCarta();
@@ -26,6 +27,7 @@ public class Carta {
         puntiAttacco = statCarta[1];
         puntiDifesa = statCarta[2];
         target = TipoTarget.generaTarget();
+        abilita = Abilita.getRandomAbilita();
     }
 
     private static String creaNomeCarta() {
@@ -77,10 +79,9 @@ public class Carta {
         return statCarta;
     }   
 
-    @Override
-    public String toString() {
-        return "Carta [Nome: " + nome + ", Punti vita: " + puntiVita + ", Punti attacco: " + puntiAttacco + ", Punti difesa: "
-                + puntiDifesa + ", Target: " + target + "]";
+    public static String toString(Carta carta) {
+        return "Carta [Nome: " + carta.nome + ", Punti vita: " + carta.puntiVita + ", Punti attacco: " + carta.puntiAttacco + ", Punti difesa: "
+                + carta.puntiDifesa + ", Target: " + carta.target + ", Abilità: " + carta.abilita + "]";
     }
 
     public int getPuntiTotali() {
@@ -105,6 +106,10 @@ public class Carta {
 
     public TipoTarget getTarget() {
         return target;
+    }
+
+    public Abilita getAbilita() {
+        return abilita;
     }
 
     public void setPuntiVita(int puntiVita) {
