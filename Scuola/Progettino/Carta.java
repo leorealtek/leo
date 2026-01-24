@@ -5,10 +5,11 @@ import java.util.Random;
 public class Carta {
     protected final String nome;
     protected int puntiVita;
-    protected final int puntiAttacco;
-    protected final int puntiDifesa;
+    protected int puntiAttacco;
+    protected int puntiDifesa;
     protected final Abilita abilita;
     protected TipoTarget target;
+    protected boolean isZuccanTech = false;
 
     private static String[] prefissi = {
         "Drago", "Lupo", "Tigre", "Serpente", "Aquila","Golem", "Spirito", "Ombra",
@@ -79,9 +80,11 @@ public class Carta {
         return statCarta;
     }   
 
-    public static String toString(Carta carta) {
-        return "Carta [Nome: " + carta.nome + ", Punti vita: " + carta.puntiVita + ", Punti attacco: " + carta.puntiAttacco + ", Punti difesa: "
-                + carta.puntiDifesa + ", Target: " + carta.target + ", Abilità: " + carta.abilita + "]";
+
+    @Override
+    public String toString() {
+        return "Carta [Nome: " + nome + ", Punti vita: " + puntiVita + ", Punti attacco: " + puntiAttacco + ", Punti difesa: "
+                + puntiDifesa + ", Target: " + target + ", Abilità: " + abilita + "]";
     }
 
     public int getPuntiTotali() {
@@ -115,5 +118,13 @@ public class Carta {
     public void setPuntiVita(int puntiVita) {
         this.puntiVita = puntiVita;
     }
-    
+
+    public void setPuntiAttacco(int puntiAttacco) {
+        this.puntiAttacco = puntiAttacco;
+    }
+
+    public void setPuntiDifesa(int puntiDifesa) {
+        this.puntiDifesa = puntiDifesa;
+    }
+
 }

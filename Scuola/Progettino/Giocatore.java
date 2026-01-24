@@ -30,7 +30,11 @@ public class Giocatore {
     private static Carta[] creaMazzo() {
         Carta[] mazzo = new Carta[50];
         for (int i = 0; i < mazzo.length; i++) {
-            mazzo[i] = new Carta();
+            if (Math.random() < 0.05) {
+                mazzo[i] = new ZuccanTech();
+            } else {
+                mazzo[i] = new Carta();
+            }
         }
         return mazzo;
     }
@@ -39,7 +43,8 @@ public class Giocatore {
         System.out.println("Mano di " + nome + ":");
         for (int i = 0; i < mano.length; i++) {
             if (mano[i] != null) {
-                System.out.println("  " + mano[i]);
+                String tipoCartaIcon = mano[i].isZuccanTech ? " [TECH]" : "";
+                System.out.println("  " + mano[i] + tipoCartaIcon);
             }
         }
     }
@@ -51,7 +56,8 @@ public class Giocatore {
         } else {
             for (int i = 0; i < campo.length; i++) {
                 if (campo[i] != null) {
-                    System.out.println("  " + campo[i]);
+                    String tipoCartaIcon = campo[i].isZuccanTech ? " [TECH]" : "";
+                    System.out.println("  " + campo[i] + tipoCartaIcon);
                 }
             }
         }
@@ -82,7 +88,9 @@ public class Giocatore {
         Carta cartaPescata = mazzo[indiceMazzo];
         indiceMazzo++;
         mano[posLibera] = cartaPescata;
-        System.out.println(nome + " ha pescato: " + cartaPescata.getNome());
+        
+        String tipoMsg = cartaPescata.isZuccanTech ? " ZUCCAN-TECH" : "";
+        System.out.println(nome + " ha pescato: " + cartaPescata.getNome() + tipoMsg);
     }
 
     public void evocaCarta() {
@@ -112,8 +120,40 @@ public class Giocatore {
             int posLibera = trovaPrimoSpazioVuoto(campo);
             campo[posLibera] = cartaDaEvocare;
             mano[indiceCarta] = null;
-            System.out.println(nome + " evoca: " + cartaDaEvocare.getNome() + " (HP: " + cartaDaEvocare.getPuntiVita() + ")");
+            
+            String tipoMsg = cartaDaEvocare.isZuccanTech ? " ZUCCAN-TECH" : "";
+            System.out.println(nome + " evoca: " + cartaDaEvocare.getNome() + 
+                              " (HP: " + cartaDaEvocare.getPuntiVita() + ")" + tipoMsg);
+            
+            if (cartaDaEvocare instanceof ZuccanTech) {
+                ZuccanTech zuccanTech = (ZuccanTech) cartaDaEvocare;
+                attivaEffettoZuccanTech(zuccanTech);
+            }
         }
+    }
+
+    private void attivaEffettoZuccanTech(ZuccanTech zuccanTech) {
+        EffettoTech effetto = zuccanTech.getEffettoTech();
+        
+        if (effetto == null) {
+            System.out.println("  >>> Questa ZuccanTech non ha effetti speciali <<<");
+            return;
+        }
+        
+        if (effetto.isUsato()) {
+            System.out.println("  >>> Effetto già utilizzato <<<");
+            return;
+        }
+        
+        System.out.println("  >>> ATTIVAZIONE EFFETTO ZUCCAN-TECH <<<");
+        
+        switch (effetto) {
+            case PESCA_CARTA -> effetto.usaEffettoPescaCarta(this);
+            case SCUDO -> effetto.usaEffettoScudo(zuccanTech);
+            case CAMBIA_STATISTICHE -> effetto.usaEffettoCambiaStatistiche(zuccanTech);
+        }
+        
+        effetto.setUsato(true);
     }
 
     public void faseBattaglia(Giocatore avversario) {
@@ -135,6 +175,43 @@ public class Giocatore {
                 }
             }
         }
+    }
+
+    public Carta pescaCartaConAbilita(Abilita abilita) {
+        if (indiceMazzo >= mazzo.length) {
+            System.out.println(nome + " - Mazzo esaurito! Non puoi pescare altre carte.");
+            return null;
+        }
+        
+        int posLibera = trovaPrimoSpazioVuoto(mano);
+        
+        if (posLibera == -1) {
+            System.out.println(nome + " - Mano piena! Non puoi pescare altre carte.");
+            return null;
+        }
+        
+        Carta cartaDaPescare = trovaCartaPerAbilita(abilita);
+        if (cartaDaPescare != null) {
+            mano[posLibera] = cartaDaPescare;
+            System.out.println(nome + " pesca: " + cartaDaPescare.getNome() + " con abilità " + abilita);
+            return cartaDaPescare;
+        }
+        
+        System.out.println("Nessuna carta con l'abilità " + abilita + " trovata nel mazzo.");
+        return null;
+    }
+
+    private Carta trovaCartaPerAbilita(Abilita abilitaDaCercare) {
+        for (int i = indiceMazzo; i < mazzo.length; i++) {
+            if (mazzo[i] != null && mazzo[i].getAbilita() == abilitaDaCercare) {
+                Carta cartaTrovata = mazzo[i];
+                mazzo[i] = mazzo[indiceMazzo];
+                mazzo[indiceMazzo] = cartaTrovata;
+                indiceMazzo++;
+                return cartaTrovata;
+            }
+        }
+        return null;
     }
 
     private void attacca(Giocatore avversario, Carta cartaAttaccante) {
@@ -175,10 +252,19 @@ public class Giocatore {
                 if (danno < 1) danno = 1;
             }
             
+            if (bersaglio instanceof ZuccanTech) {
+                ZuccanTech zuccanTech = (ZuccanTech) bersaglio;
+                EffettoTech effetto = zuccanTech.getEffettoTech();
+                
+                if (effetto == EffettoTech.SCUDO && effetto.isScudoAttivo()) {
+                    danno = effetto.applicaScudo(danno);
+                }
+            }
+            
             bersaglio.setPuntiVita(bersaglio.getPuntiVita() - danno);
             
             System.out.println("  " + cartaAttaccante.getNome() + " (ATK:" + cartaAttaccante.getPuntiAttacco() + 
-                             (criticoAttivato ? " x2" : "") + ") attacca " + bersaglio.getNome() + " (DEF:" + bersaglio.getPuntiDifesa() + ")");
+                            (criticoAttivato ? " x2" : "") + ") attacca " + bersaglio.getNome() + " (DEF:" + bersaglio.getPuntiDifesa() + ")");
             dannoInflitto += danno;
             System.out.println("  Danno inflitto: " + danno + " | HP rimanenti: " + bersaglio.getPuntiVita());
             
@@ -307,5 +393,13 @@ public class Giocatore {
 
     public int getDannoInflitto() {
         return dannoInflitto;
+    }
+
+    public int getIndiceMazzo() {
+        return indiceMazzo;
+    }
+
+    public void setIndiceMazzo(int i) {
+        indiceMazzo = i;
     }
 }
