@@ -6,7 +6,7 @@ public class Esercizio_457EEEI {
         int resto;
         String binario = "";
 
-        if (numero < 0) numero = numero * -1;
+        if (numero < 0) numero = -numero;
 
         while (numero > 0){
             resto = numero % 2;
