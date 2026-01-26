@@ -33,7 +33,7 @@ public class Carta {
 
     private static String creaNomeCarta() {
         Random generatoreNum = new Random();
-        String nome = "";
+        String nome;
         String prefissoNome = prefissi[generatoreNum.nextInt(0, prefissi.length - 1)];
         nome = prefissoNome + " ";
         String suffissoNome = suffissi[generatoreNum.nextInt(0, suffissi.length - 1)];
@@ -45,15 +45,15 @@ public class Carta {
         Random generatoreNum = new Random();
         int maxPunti = 100;
         int[] statCarta = new int[3];
-        int puntiVita = 0;
-        int puntiAttacco = 0;
-        int puntiDifesa = 0;
+        int puntiVita;
+        int puntiAttacco;
+        int puntiDifesa;
 
         if (maxPunti > 50) {
-            puntiVita = generatoreNum.nextInt(0,50);
+            puntiVita = generatoreNum.nextInt(1,50);
         }
         else {
-            puntiVita = generatoreNum.nextInt(0,maxPunti);
+            puntiVita = generatoreNum.nextInt(1,maxPunti);
         }
 
         maxPunti -= puntiVita;
