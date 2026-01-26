@@ -144,8 +144,8 @@ public class Esercizio_IEEE754 {
     }
 
     public static String convertiIEEE754(String numero) {
-        if (numero.equalsIgnoreCase("+Infinity")) return "0x7F800000";
-        if (numero.equalsIgnoreCase("-Infinity")) return "0xFF800000";
+        if (numero.equalsIgnoreCase("+Infinity") || Float.parseFloat(numero) >= 3.4 * Math.pow(10, 38)) return "0x7F800000";
+        if (numero.equalsIgnoreCase("-Infinity") || Float.parseFloat(numero) <= -3.4 * Math.pow(10, 38)) return "0xFF800000";
         if (numero.equalsIgnoreCase("NaN")) return "0xFF800001";
         
         float numeroFloat = Float.parseFloat(numero);
@@ -159,9 +159,12 @@ public class Esercizio_IEEE754 {
         String conversioneParteIntera = conversioneParteIntera(parteIntera);
         String conversioneParteDecimale = conversioneParteDecimale(parteDecimale);
         String numeroBinario = calcolaNumeroIEEE(conversioneParteIntera, conversioneParteDecimale, numeroFloat);
+        System.out.println(numeroBinario);
         String numeroInEsadecimale = conversioneEsadecimale(numeroBinario);
         return numeroInEsadecimale;
     }
+
+    // Componenti gruppo: Leonardo Frison, Leonardo Giacomin
 
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);

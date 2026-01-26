@@ -7,7 +7,7 @@ public enum Abilita {
     CRITICO("Possibilità del 25% di infliggere il doppio del danno"),
     EVASIONE("Possibilità del 30% di evitare l'attacco");
 
-    private String descrizione;
+    private final String descrizione;
 
     Abilita(String descrizione) {
         this.descrizione = descrizione;

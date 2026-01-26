@@ -29,6 +29,7 @@ public class ZuccanTech extends Carta {
         }
     }
 
+    @Override
     public String toString() {
         return nome + " [ZUCCAN-TECH] - HP: " + puntiVita + ", ATK: " + puntiAttacco + 
                ", DEF: " + puntiDifesa + ", Abilità: " + abilita + 

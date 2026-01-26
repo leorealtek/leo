@@ -11,12 +11,12 @@ public class Carta {
     protected TipoTarget target;
     protected boolean isZuccanTech = false;
 
-    private static String[] prefissi = {
+    private final static String[] prefissi = {
         "Drago", "Lupo", "Tigre", "Serpente", "Aquila","Golem", "Spirito", "Ombra",
         "Fuoco", "Ghiaccio","Tuono", "Terra", "Vento", "Luce", "Oscuro"
     };
 
-    private static String[] suffissi = {
+    private final static String[] suffissi = {
         "Antico", "Furioso", "Mistico", "Selvaggio", "Celeste","Infernale","Glaciale",
         "Tonante","Sacro", "Maledetto","Supremo", "Eterno", "Fatale", "Divino", "Spettrale"
     };

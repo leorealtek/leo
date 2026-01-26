@@ -11,7 +11,7 @@ public class Giocatore {
     protected int carteDistrutte;
     protected int dannoInflitto;
     private int indiceMazzo = 5;
-    private Random random = new Random();
+    private final Random random = new Random();
 
     public Giocatore(String nome) {
         this.nome = nome;
@@ -296,7 +296,7 @@ public class Giocatore {
         Carta cartaTrovata = null;
         
         switch (tipoTarget) {
-            case ATK_FORTE:
+            case ATK_FORTE -> {
                 for (Carta carta : campo) {
                     if (carta != null) {
                         if (cartaTrovata == null || carta.getPuntiAttacco() > cartaTrovata.getPuntiAttacco()) {
@@ -304,8 +304,8 @@ public class Giocatore {
                         }
                     }
                 }
-                break;
-            case ATK_DEBOLE:
+            }
+            case ATK_DEBOLE -> {
                 for (Carta carta : campo) {
                     if (carta != null) {
                         if (cartaTrovata == null || carta.getPuntiAttacco() < cartaTrovata.getPuntiAttacco()) {
@@ -313,8 +313,8 @@ public class Giocatore {
                         }
                     }
                 }
-                break;
-            case DEF_FORTE:
+            }
+            case DEF_FORTE -> {
                 for (Carta carta : campo) {
                     if (carta != null) {
                         if (cartaTrovata == null || carta.getPuntiDifesa() > cartaTrovata.getPuntiDifesa()) {
@@ -322,8 +322,8 @@ public class Giocatore {
                         }
                     }
                 }
-                break;
-            case DEF_DEBOLE:
+            }
+            case DEF_DEBOLE -> {
                 for (Carta carta : campo) {
                     if (carta != null) {
                         if (cartaTrovata == null || carta.getPuntiDifesa() < cartaTrovata.getPuntiDifesa()) {
@@ -331,8 +331,8 @@ public class Giocatore {
                         }
                     }
                 }
-                break;
-            case HP_ALTO:
+            }
+            case HP_ALTO -> {
                 for (Carta carta : campo) {
                     if (carta != null) {
                         if (cartaTrovata == null || carta.getPuntiVita() > cartaTrovata.getPuntiVita()) {
@@ -340,8 +340,8 @@ public class Giocatore {
                         }
                     }
                 }
-                break;
-            case HP_BASSO:
+            }
+            case HP_BASSO -> {
                 for (Carta carta : campo) {
                     if (carta != null) {
                         if (cartaTrovata == null || carta.getPuntiVita() < cartaTrovata.getPuntiVita()) {
@@ -349,7 +349,7 @@ public class Giocatore {
                         }
                     }
                 }
-                break;
+            }
         }
         
         return cartaTrovata;

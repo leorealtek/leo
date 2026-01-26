@@ -7,7 +7,7 @@ public enum EffettoTech {
     SCUDO("Riduce il danno del prossimo attacco dell'80%"),
     CAMBIA_STATISTICHE("Cambia casualmente in modo positivo una statistica della carta");
 
-    private String descrizione;
+    private final String descrizione;
     private boolean isUsato = false;
     private boolean scudoAttivo = false;
 
@@ -61,14 +61,10 @@ public enum EffettoTech {
 
         int puntiMiglioramento = new Random().nextInt(10, 21);
 
-        if (statisticaDaMigliorare == 0) {
-            carta.setPuntiVita(carta.getPuntiVita() + puntiMiglioramento);
-        } 
-        else if (statisticaDaMigliorare == 1) {
-            carta.setPuntiAttacco(carta.getPuntiAttacco() + puntiMiglioramento);
-        } 
-        else {
-            carta.setPuntiDifesa(carta.getPuntiDifesa() + puntiMiglioramento);
+        switch (statisticaDaMigliorare) {
+            case 0 -> carta.setPuntiVita(carta.getPuntiVita() + puntiMiglioramento);
+            case 1 -> carta.setPuntiAttacco(carta.getPuntiAttacco() + puntiMiglioramento);
+            default -> carta.setPuntiDifesa(carta.getPuntiDifesa() + puntiMiglioramento);
         }
         System.out.println("Statistica migliorata: " + statisticaNome + " di " + puntiMiglioramento);
     }

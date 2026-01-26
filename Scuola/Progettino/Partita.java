@@ -1,8 +1,8 @@
 package Scuola.Progettino;
 
 public class Partita {
-    private Giocatore giocatore1;
-    private Giocatore giocatore2;
+    private final Giocatore giocatore1;
+    private final Giocatore giocatore2;
     private int turno;
     private boolean primoTurno;
 
