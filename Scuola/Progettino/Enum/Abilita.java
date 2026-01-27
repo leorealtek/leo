@@ -1,4 +1,4 @@
-package Scuola.Progettino;
+package Scuola.Progettino.Enum;
 
 public enum Abilita {
     VELENO("Danno +5, Difesa Avversario = 0"),

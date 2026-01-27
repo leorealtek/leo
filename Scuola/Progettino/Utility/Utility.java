@@ -1,4 +1,6 @@
-package Scuola.Progettino;
+package Scuola.Progettino.Utility;
+
+import Scuola.Progettino.Carte.Carta;
 
 public class Utility {
     

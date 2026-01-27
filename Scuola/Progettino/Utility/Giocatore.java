@@ -1,6 +1,9 @@
-package Scuola.Progettino;
+package Scuola.Progettino.Utility;
 
 import java.util.Random;
+
+import Scuola.Progettino.Carte.*;
+import Scuola.Progettino.Enum.*;
 
 public class Giocatore {
     protected final String nome;
@@ -43,7 +46,7 @@ public class Giocatore {
         System.out.println("Mano di " + nome + ":");
         for (int i = 0; i < mano.length; i++) {
             if (mano[i] != null) {
-                String tipoCartaIcon = mano[i].isZuccanTech ? " [TECH]" : "";
+                String tipoCartaIcon = mano[i].isZuccanTech() ? " [TECH]" : "";
                 System.out.println("  " + mano[i] + tipoCartaIcon);
             }
         }
@@ -56,7 +59,7 @@ public class Giocatore {
         } else {
             for (int i = 0; i < campo.length; i++) {
                 if (campo[i] != null) {
-                    String tipoCartaIcon = campo[i].isZuccanTech ? " [TECH]" : "";
+                    String tipoCartaIcon = campo[i].isZuccanTech() ? " [TECH]" : "";
                     System.out.println("  " + campo[i] + tipoCartaIcon);
                 }
             }
@@ -89,7 +92,7 @@ public class Giocatore {
         indiceMazzo++;
         mano[posLibera] = cartaPescata;
         
-        String tipoMsg = cartaPescata.isZuccanTech ? " ZUCCAN-TECH" : "";
+        String tipoMsg = cartaPescata.isZuccanTech() ? " ZUCCAN-TECH" : "";
         System.out.println(nome + " ha pescato: " + cartaPescata.getNome() + tipoMsg);
     }
 
@@ -121,7 +124,7 @@ public class Giocatore {
             campo[posLibera] = cartaDaEvocare;
             mano[indiceCarta] = null;
             
-            String tipoMsg = cartaDaEvocare.isZuccanTech ? " ZUCCAN-TECH" : "";
+            String tipoMsg = cartaDaEvocare.isZuccanTech() ? " ZUCCAN-TECH" : "";
             System.out.println(nome + " evoca: " + cartaDaEvocare.getNome() + 
                               " (HP: " + cartaDaEvocare.getPuntiVita() + ")" + tipoMsg);
             
@@ -215,7 +218,7 @@ public class Giocatore {
     }
 
     private void attacca(Giocatore avversario, Carta cartaAttaccante) {
-        Carta bersaglio = avversario.trovaCartaPerStatistica(cartaAttaccante.target);
+        Carta bersaglio = avversario.trovaCartaPerStatistica(cartaAttaccante.getTarget());
         
         if (bersaglio == null) {
             System.out.println("  " + cartaAttaccante.getNome() + " effettua un ATTACCO DIRETTO!");

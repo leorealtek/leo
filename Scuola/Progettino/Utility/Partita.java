@@ -1,4 +1,4 @@
-package Scuola.Progettino;
+package Scuola.Progettino.Utility;
 
 public class Partita {
     private final Giocatore giocatore1;

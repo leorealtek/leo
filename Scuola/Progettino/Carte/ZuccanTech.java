@@ -1,4 +1,7 @@
-package Scuola.Progettino;
+package Scuola.Progettino.Carte;
+
+import Scuola.Progettino.Enum.*;
+import Scuola.Progettino.Utility.*;
 
 public class ZuccanTech extends Carta {
 

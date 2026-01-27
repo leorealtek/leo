@@ -1,6 +1,8 @@
-package Scuola.Progettino;
+package Scuola.Progettino.Carte;
 
 import java.util.Random;
+
+import Scuola.Progettino.Enum.*;
 
 public class Carta {
     protected final String nome;
@@ -10,7 +12,7 @@ public class Carta {
     protected final Abilita abilita;
     protected TipoTarget target;
     protected boolean isZuccanTech = false;
-
+    
     private final static String[] prefissi = {
         "Drago", "Lupo", "Tigre", "Serpente", "Aquila","Golem", "Spirito", "Ombra",
         "Fuoco", "Ghiaccio","Tuono", "Terra", "Vento", "Luce", "Oscuro"
@@ -125,6 +127,10 @@ public class Carta {
 
     public void setPuntiDifesa(int puntiDifesa) {
         this.puntiDifesa = puntiDifesa;
+    }
+
+    public boolean isZuccanTech() {
+        return isZuccanTech;
     }
 
 }
