@@ -3,6 +3,7 @@ package Scuola.Progettino.Utility;
 import java.util.Random;
 
 import Scuola.Progettino.Carte.*;
+import Scuola.Progettino.Carte.Exodia.*;
 import Scuola.Progettino.Enum.*;
 
 public class Giocatore {
@@ -33,9 +34,22 @@ public class Giocatore {
     private static Carta[] creaMazzo() {
         Carta[] mazzo = new Carta[50];
         for (int i = 0; i < mazzo.length; i++) {
-            if (Math.random() < 0.05) {
+            if (Math.random() < 0.05 && ExodiaGambe.contatoreIstanze < 1) {
+                mazzo[i] = new ExodiaGambe();
+                continue;
+            }
+            if (Math.random() < 0.025 && ExodiaBraccio.contatoreIstanze < 1) {
+                mazzo[i] = new ExodiaBraccio();
+                continue;
+            }
+            if (Math.random() < 0.025 && ExodiaTesta.contatoreIstanze < 1) {
+                mazzo[i] = new ExodiaTesta();
+                continue;
+            }
+            if (Math.random() < 0.25) {
                 mazzo[i] = new ZuccanTech();
-            } else {
+            }
+            else {
                 mazzo[i] = new Carta();
             }
         }
@@ -46,8 +60,8 @@ public class Giocatore {
         System.out.println("Mano di " + nome + ":");
         for (int i = 0; i < mano.length; i++) {
             if (mano[i] != null) {
-                String tipoCartaIcon = mano[i].isZuccanTech() ? " [TECH]" : "";
-                System.out.println("  " + mano[i] + tipoCartaIcon);
+                String tipoCarta = mano[i].isZuccanTech() ? " [TECH]" : "";
+                System.out.println("  " + mano[i] + tipoCarta);
             }
         }
     }
@@ -113,6 +127,12 @@ public class Giocatore {
         for (int i = 0; i < mano.length; i++) {
             if (mano[i] != null) {
                 if (cartaDaEvocare == null || mano[i].getPuntiVita() > cartaDaEvocare.getPuntiVita()) {
+                    if (mano[i] instanceof ExodiaTesta ||
+                        mano[i] instanceof ExodiaBraccio ||
+                        mano[i] instanceof ExodiaGambe) {
+                        continue;
+                    }
+                    
                     cartaDaEvocare = mano[i];
                     indiceCarta = i;
                 }
@@ -162,6 +182,12 @@ public class Giocatore {
     public void faseBattaglia(Giocatore avversario) {
         if (contaCarte(campo) == 0) {
             System.out.println(nome + " non ha carte in campo per attaccare!");
+            return;
+        }
+
+        if (controllaExodia()) {
+            System.out.println("\n>>> " + nome + " ha assemblato EXODIA IL PROIBITO! VITTORIA IMMEDIATA! <<<");
+            avversario.puntiVita = 0;
             return;
         }
         
@@ -356,6 +382,27 @@ public class Giocatore {
         }
         
         return cartaTrovata;
+    }
+
+    public boolean controllaExodia() {
+        boolean haTesta = false;
+        boolean haBraccia = false;
+        boolean haGambe = false;
+        
+        for (Carta carta : mano) {
+            if (carta instanceof ExodiaTesta) {
+                haTesta = true;
+            } else if (carta instanceof ExodiaBraccio) {
+                haBraccia = true;
+            } else if (carta instanceof ExodiaGambe) {
+                haGambe = true;
+            }
+        }
+        
+        if (haTesta && haBraccia && haGambe) {
+            return true;
+        }
+        return false;
     }
 
     public boolean isSconfitto() {

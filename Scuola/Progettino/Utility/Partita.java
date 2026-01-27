@@ -38,6 +38,9 @@ public class Partita {
         Giocatore vincitore = getVincitore();
         System.out.println("   PARTITA TERMINATA!");
         System.out.println("   VINCITORE: " + vincitore.getNome());
+        if (vincitore.controllaExodia()) {
+            System.out.println("   EXODIA È STATO EVOCATO! \n" + "  " + vincitore.getNome() + "    VINCE AUTOMATICAMENTE!");
+        }
     }
 
     public void turno() {

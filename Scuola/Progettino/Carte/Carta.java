@@ -5,11 +5,11 @@ import java.util.Random;
 import Scuola.Progettino.Enum.*;
 
 public class Carta {
-    protected final String nome;
+    protected String nome;
     protected int puntiVita;
     protected int puntiAttacco;
     protected int puntiDifesa;
-    protected final Abilita abilita;
+    protected Abilita abilita;
     protected TipoTarget target;
     protected boolean isZuccanTech = false;
     
