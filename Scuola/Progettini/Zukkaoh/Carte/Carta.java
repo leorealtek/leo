@@ -1,8 +1,8 @@
-package Scuola.Progettino.Carte;
+package Scuola.Progettini.Zukkaoh.Carte;
 
 import java.util.Random;
 
-import Scuola.Progettino.Enum.*;
+import Scuola.Progettini.Zukkaoh.Enum.*;
 
 public class Carta {
     protected String nome;

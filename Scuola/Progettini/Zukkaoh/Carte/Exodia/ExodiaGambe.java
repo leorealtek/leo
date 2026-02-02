@@ -1,6 +1,6 @@
-package Scuola.Progettino.Carte.Exodia;
+package Scuola.Progettini.Zukkaoh.Carte.Exodia;
 
-import Scuola.Progettino.Carte.Carta;
+import Scuola.Progettini.Zukkaoh.Carte.Carta;
 
 public class ExodiaGambe extends Carta {
 

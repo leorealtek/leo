@@ -1,9 +1,9 @@
-package Scuola.Progettino.Enum;
+package Scuola.Progettini.Zukkaoh.Enum;
 
 import java.util.Random;
 
-import Scuola.Progettino.Carte.*;
-import Scuola.Progettino.Utility.*;
+import Scuola.Progettini.Zukkaoh.Carte.*;
+import Scuola.Progettini.Zukkaoh.Utility.*;
 
 public enum EffettoTech {
     PESCA_CARTA("Pesca una carta con un'abilità specifica casuale"),

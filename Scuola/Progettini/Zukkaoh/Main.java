@@ -1,6 +1,6 @@
-package Scuola.Progettino;
+package Scuola.Progettini.Zukkaoh;
 
-import Scuola.Progettino.Utility.Partita;
+import Scuola.Progettini.Zukkaoh.Utility.Partita;
 
 public class Main {
     public static void main(String[] args) {

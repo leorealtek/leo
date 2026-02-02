@@ -1,6 +1,6 @@
-package Scuola.Progettino.Utility;
+package Scuola.Progettini.Zukkaoh.Utility;
 
-import Scuola.Progettino.Carte.Carta;
+import Scuola.Progettini.Zukkaoh.Carte.Carta;
 
 public class Utility {
     
