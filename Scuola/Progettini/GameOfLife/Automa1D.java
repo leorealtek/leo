@@ -4,8 +4,8 @@ public class Automa1D {
     public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
     public static final String ANSI_PURPLE_BACKGROUND = "\u001B[45m";
     public static final String ANSI_RESET = "\u001B[0m";
-    private String striscia;
-    private final int regola;
+    protected String striscia;
+    protected final int regola;
 
     public Automa1D(int larghezza, int regola) {
         this.striscia = creaStriscia(larghezza);
@@ -25,7 +25,7 @@ public class Automa1D {
         return striscia;
     }
 
-    private String calcolaStato(char sinistra, char centro, char destra) {
+    protected String calcolaStato(char sinistra, char centro, char destra) {
         String[] abbinamenti = new String[8];
         String binario = Integer.toBinaryString(regola);
         while (binario.length() < 8) binario = "0" + binario;
@@ -63,7 +63,7 @@ public class Automa1D {
     }
 
     public static void main(String[] args) {
-        Automa1D a = new Automa1D(100, 90);
+        AutomaPersonalizzato a = new AutomaPersonalizzato(100);
         a.eseguiStati(100);
     }
 }
