@@ -37,7 +37,7 @@ public class Automa1D {
         return abbinamenti[Integer.parseInt(stato, 2)];
     }
 
-    public void nextStato() {
+    protected void nextStato() {
         striscia = "0" + striscia + "0";
         String nuovoStato = "";
         for (int i = 1; i < striscia.length() - 1; i++) {
@@ -46,7 +46,7 @@ public class Automa1D {
         striscia = nuovoStato;
     }
 
-    public void stampaStriscia() {
+    protected void stampaStriscia() {
         for (int i = 0; i < striscia.length(); i++) {
             if (striscia.charAt(i) == '0') System.out.print(ANSI_PURPLE_BACKGROUND + " " + ANSI_RESET);
             else System.out.print(ANSI_WHITE_BACKGROUND + " " + ANSI_RESET);
@@ -54,7 +54,7 @@ public class Automa1D {
         System.out.println();
     }
     
-    public void eseguiStati(int quanti) {
+    protected void eseguiStati(int quanti) {
         for (int i = 0; i < quanti; i++) {
             stampaStriscia();
             nextStato();
@@ -63,7 +63,7 @@ public class Automa1D {
     }
 
     public static void main(String[] args) {
-        AutomaPersonalizzato a = new AutomaPersonalizzato(100);
+        Automa1D a = new Automa1D(100, 90);
         a.eseguiStati(100);
     }
 }
