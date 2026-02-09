@@ -1,18 +1,15 @@
 package Scuola.Progettini.GameOfLife.LangtonAnt;
 
-public enum Cella {
-    antViva, antMorta, viva, morta;
+public class Cella {
+    public boolean ant = false;
+    public boolean viva = false;
 
-    public Cella cambiaCella() {
-        switch (this) {
-            case antMorta:
-                return viva;   
-            case antViva:
-                return morta;
-            case viva:
-                return morta;         
-            default:
-                return viva;
-        }
+    public void cambiaStato() {
+        viva = !viva;
     }
+
+    public void cambiaAnt() {
+        ant = !ant;
+    }
+
 }

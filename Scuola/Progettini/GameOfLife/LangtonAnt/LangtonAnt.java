@@ -17,8 +17,8 @@ public class LangtonAnt {
         mappa = creaMappa(larghezza);
         posizioneRiga = larghezza / 2;
         posizioneColonna = larghezza / 2;
-        mappa[posizioneRiga][posizioneColonna] = Cella.antMorta;
-        direzione = Direzione.SU;
+        mappa[posizioneRiga][posizioneColonna].ant = true;
+        direzione = Direzione.SINISTRA;
         this.larghezza = larghezza;
     }
 
@@ -26,20 +26,30 @@ public class LangtonAnt {
         Cella[][] mappa = new Cella[larghezza][larghezza];
         for (int i = 0; i < mappa.length; i++) {
             for (int j = 0; j < mappa[i].length; j++) {
-                mappa[i][j] = Cella.morta;
+                mappa[i][j] = new Cella();
             }
         }
         return mappa;
     }
 
-    public void stampaMappa() {
+    private void stampaMappa() {
         for (int i = 0; i < mappa.length; i++) {
             for (int j = 0; j < mappa[i].length; j++) {
-                switch (mappa[i][j]) {
-                    case viva -> System.out.print(ANSI_GREEN_BACKGROUND + " " + ANSI_RESET);
-                    case antMorta -> System.out.print(ANSI_WHITE_BACKGROUND + "A" + ANSI_RESET);
-                    case antViva -> System.out.print(ANSI_GREEN_BACKGROUND + "A" + ANSI_RESET);
-                    default -> System.out.print(ANSI_WHITE_BACKGROUND + " " + ANSI_RESET);
+                if (mappa[i][j].viva) {
+                    if (mappa[i][j].ant) {
+                        System.out.print(ANSI_GREEN_BACKGROUND + "A" + ANSI_RESET);   
+                    }
+                    else {
+                        System.out.print(ANSI_GREEN_BACKGROUND + " " + ANSI_RESET);
+                    }
+                } 
+                else {
+                    if (mappa[i][j].ant) {
+                        System.out.print(ANSI_WHITE_BACKGROUND + "A" + ANSI_RESET);
+                    }
+                    else {
+                        System.out.print(ANSI_WHITE_BACKGROUND + " " + ANSI_RESET);
+                    }
                 }
             }
             System.out.println();
@@ -47,69 +57,58 @@ public class LangtonAnt {
         System.out.println();
     }
 
-    public void round() {
-        switch (direzione) {
-            case SU:
-                if (mappa[posizioneRiga - 1][posizioneColonna].equals(Cella.viva)) {
-                    direzione = direzione.cambiaDirezioneAntiOrario();
-                }
-                else {
-                    direzione = direzione.cambiaDirezioneOrario();
-                }
-                break;
-            case DESTRA:
-                if (mappa[posizioneRiga][posizioneColonna + 1].equals(Cella.viva)) {
-                    direzione = direzione.cambiaDirezioneAntiOrario();
-                }
-                else {
-                    direzione = direzione.cambiaDirezioneOrario();
-                }
-                break;
-            case GIU:
-                if (mappa[posizioneRiga + 1][posizioneColonna].equals(Cella.viva)) {
-                    direzione = direzione.cambiaDirezioneAntiOrario();
-                }
-                else {
-                    direzione = direzione.cambiaDirezioneOrario();
-                }
-                break;
-            default:
-                if (mappa[posizioneRiga][posizioneColonna - 1].equals(Cella.viva)) {
-                    direzione = direzione.cambiaDirezioneAntiOrario();
-                }
-                else {
-                    direzione = direzione.cambiaDirezioneOrario();
-                }
-                break;
+    private void round() {
+        if (mappa[posizioneRiga][posizioneColonna].viva) {
+            direzione = direzione.cambiaDirezioneAntiOrario();
+        }
+        else {
+            direzione = direzione.cambiaDirezioneOrario();
         }
 
-        mappa[posizioneRiga][posizioneColonna] = mappa[posizioneRiga][posizioneColonna].cambiaCella();
+        mappa[posizioneRiga][posizioneColonna].cambiaAnt();
+        mappa[posizioneRiga][posizioneColonna].cambiaStato();
 
         switch (direzione) {
             case SU:
-                mappa[++posizioneRiga][posizioneColonna] = Cella.antViva;
+                posizioneRiga--;
                 break;
             case DESTRA:
-                mappa[posizioneRiga][++posizioneColonna] = Cella.antViva;
+                posizioneColonna++;
                 break;
             case GIU:
-                mappa[--posizioneRiga][posizioneColonna] = Cella.antViva;
+                posizioneRiga++;
                 break;
             default:
-                mappa[posizioneRiga][--posizioneColonna] = Cella.antViva;
+                posizioneColonna--;
                 break;
         }
+
+        spostaFormica();
+    }
+
+    private boolean spostaFormica() {
+        try {
+            mappa[posizioneRiga][posizioneColonna].ant = true;
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
     
     public void eseguiNround(int Nround) {
         stampaMappa();
         for (int i = 0; i < Nround; i++) {
+            if (!spostaFormica()) {
+                System.out.println("La formica è uscita dai bordi al round " + i);
+                break;
+            }
             round();
-            stampaMappa();
         }
+        stampaMappa();
+
     }
     public static void main(String[] args) {
-        LangtonAnt a = new LangtonAnt(5);
-        a.eseguiNround(3);
+        LangtonAnt a = new LangtonAnt(100);
+        a.eseguiNround(12000);
     }
 }
