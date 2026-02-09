@@ -18,7 +18,7 @@ public class LangtonAnt {
         posizioneRiga = larghezza / 2;
         posizioneColonna = larghezza / 2;
         mappa[posizioneRiga][posizioneColonna] = Cella.antMorta;
-        direzione = Direzione.SINISTRA;
+        direzione = Direzione.SU;
         this.larghezza = larghezza;
     }
 
@@ -38,7 +38,7 @@ public class LangtonAnt {
                 switch (mappa[i][j]) {
                     case viva -> System.out.print(ANSI_GREEN_BACKGROUND + " " + ANSI_RESET);
                     case antMorta -> System.out.print(ANSI_WHITE_BACKGROUND + "A" + ANSI_RESET);
-                    case antViva -> System.out.print(ANSI_RED_BACKGROUND + "A" + ANSI_RESET);
+                    case antViva -> System.out.print(ANSI_GREEN_BACKGROUND + "A" + ANSI_RESET);
                     default -> System.out.print(ANSI_WHITE_BACKGROUND + " " + ANSI_RESET);
                 }
             }
@@ -50,7 +50,7 @@ public class LangtonAnt {
     public void round() {
         switch (direzione) {
             case SU:
-                if (mappa[posizioneRiga + 1][posizioneColonna].equals(Cella.viva)) {
+                if (mappa[posizioneRiga - 1][posizioneColonna].equals(Cella.viva)) {
                     direzione = direzione.cambiaDirezioneAntiOrario();
                 }
                 else {
@@ -64,13 +64,15 @@ public class LangtonAnt {
                 else {
                     direzione = direzione.cambiaDirezioneOrario();
                 }
+                break;
             case GIU:
-                if (mappa[posizioneRiga - 1][posizioneColonna].equals(Cella.viva)) {
+                if (mappa[posizioneRiga + 1][posizioneColonna].equals(Cella.viva)) {
                     direzione = direzione.cambiaDirezioneAntiOrario();
                 }
                 else {
                     direzione = direzione.cambiaDirezioneOrario();
                 }
+                break;
             default:
                 if (mappa[posizioneRiga][posizioneColonna - 1].equals(Cella.viva)) {
                     direzione = direzione.cambiaDirezioneAntiOrario();
@@ -78,6 +80,7 @@ public class LangtonAnt {
                 else {
                     direzione = direzione.cambiaDirezioneOrario();
                 }
+                break;
         }
 
         mappa[posizioneRiga][posizioneColonna] = mappa[posizioneRiga][posizioneColonna].cambiaCella();
@@ -106,7 +109,7 @@ public class LangtonAnt {
         }
     }
     public static void main(String[] args) {
-        LangtonAnt a = new LangtonAnt(16);
-        a.eseguiNround(9);
+        LangtonAnt a = new LangtonAnt(5);
+        a.eseguiNround(3);
     }
 }
