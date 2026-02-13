@@ -14,7 +14,7 @@ public class Cerchio implements Forma {
     @Override
     public boolean contiene(double x, double y) {
         double distanza = Math.pow(x - centroX, 2) + Math.pow(y - centroY, 2);
-        return distanza <= raggio;
+        return distanza <= Math.pow(raggio, 2);
     }
     
     @Override

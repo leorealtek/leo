@@ -51,11 +51,11 @@ public class ASCII {
     }
 
     public static void main(String[] args) {
-        Forma r = new Rettangolo(2, 7, 3, 4, '*');
-        Forma c = new Cerchio(5, 5, 6, 'I');
+        // Forma r = new Rettangolo(2, 7, 3, 4, '*');
+        Forma c = new Cerchio(15, 15, 3, 'I');
         ASCII a = new ASCII(25, 25, 4);
         a.aggiungiForma(c);
-        a.aggiungiForma(r);
+       //  a.aggiungiForma(r);
         a.disegna();
         a.stampaMappa();
     }
