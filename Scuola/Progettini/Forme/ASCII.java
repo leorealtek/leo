@@ -6,9 +6,20 @@ public class ASCII {
     private int indiceForme;
     private char[][] mappa;
 
-    public ASCII(int colonne, int righe, int quanteForme) {
+    public ASCII(int righe, int colonne, int quanteForme) {
         forme = new Forma[quanteForme];
-        mappa = new char[colonne][righe];
+        mappa = creaMappa(righe, colonne);
+    }
+
+    private char[][] creaMappa(int righe, int colonne) {
+        char[][] mappa = new char[righe][colonne];
+
+        for (int i = 0; i < mappa.length; i++) {
+            for (int j = 0; j < mappa[0].length; j++) {
+                mappa[i][j] = ' ';
+            }
+        }
+        return mappa;
     }
 
     public void aggiungiForma(Forma f) {
@@ -42,7 +53,7 @@ public class ASCII {
         for (int i = 0; i < indiceForme; i++) {
             for (int j = 0; j < mappa.length; j++) {
                 for (int k = 0; k < mappa[i].length; k++) {
-                    if (forme[i].contiene(k, j)) {
+                    if (forme[i].contiene(j, k)) {
                         mappa[j][k] = forme[i].getCarattere();
                     }
                 }
@@ -51,11 +62,11 @@ public class ASCII {
     }
 
     public static void main(String[] args) {
-        // Forma r = new Rettangolo(2, 7, 3, 4, '*');
-        Forma c = new Cerchio(15, 15, 3, 'I');
+        Forma r = new Rettangolo(2, 7, 3, 4, '*');
+        Forma c = new Cerchio(0, 0, 3, 'O');
         ASCII a = new ASCII(25, 25, 4);
         a.aggiungiForma(c);
-       //  a.aggiungiForma(r);
+        a.aggiungiForma(r);
         a.disegna();
         a.stampaMappa();
     }

@@ -8,8 +8,8 @@ public class Rettangolo implements Forma {
     public Rettangolo(double puntoX, double puntoY, double base, double altezza, char carattere) {
         this.puntoX = puntoX;
         this.puntoY = puntoY;
-        this.base = --base;
-        this.altezza = --altezza;
+        this.altezza = base - 1;
+        this.base = altezza - 1;
         this.carattere = carattere;
     }
 
