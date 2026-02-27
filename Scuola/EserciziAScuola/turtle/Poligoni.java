@@ -2,8 +2,8 @@ package turtle;
 
 public class Poligoni extends TurtleScreen {
     private Turtle t;
-    private int quantiLati;
-    private int quantiPol;
+    private final int quantiLati;
+    private final int quantiPol;
 
     public Poligoni(int quantiLati, int quantiPol) {
         super(800,600);
