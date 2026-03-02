@@ -1,4 +1,4 @@
-package turtle;
+package Forme;
 
 public class Poligoni extends TurtleScreen {
     private Turtle t;
