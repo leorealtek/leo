@@ -1,18 +1,16 @@
 package Scuola.EserciziAScuola.Sort;
 
+import java.util.Arrays;
+
 public class SelectionSort {
     public static void selectionSort(int[] array) {
-        int n = array.length;
-
-        for (int i = 0; i < n - 1; i++) {
-            int minIndex = i;
-            for (int j = i + 1; j < n; j++) {
-                if (array[j] < array[minIndex]) {
-                    minIndex = j;
-                }
+        for (int i = 0; i < array.length; i++) {
+            int idxMin = i;
+            for (int j = i; j < array.length; j++) {
+                if (array[idxMin] > array[j]) idxMin = j;
             }
-            int temp = array[minIndex];
-            array[minIndex] = array[i];
+            int temp = array[idxMin];
+            array[idxMin] = array[i];
             array[i] = temp;
         }
     }
