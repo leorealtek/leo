@@ -1,4 +1,4 @@
-package Scuola.EserciziAScuola.Sort;
+package Sort;
 
 public class MergeSort {
     public static int[] mergeSort(int[] array) {
