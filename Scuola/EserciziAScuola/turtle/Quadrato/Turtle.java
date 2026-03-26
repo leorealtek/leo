@@ -1,4 +1,4 @@
-package turtle;
+package Quadrato;
 
 import java.awt.*;
 import java.awt.geom.*;

@@ -63,7 +63,7 @@ public class Automa1D {
     }
 
     public static void main(String[] args) {
-        Automa1D a = new Automa1D(100, 90);
+        AutomaPersonalizzato a = new AutomaPersonalizzato(100);
         a.eseguiStati(100);
     }
 }

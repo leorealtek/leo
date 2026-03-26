@@ -63,7 +63,7 @@ public class ASCII {
 
     public static void main(String[] args) {
         Forma r = new Rettangolo(2, 7, 3, 4, '*');
-        Forma c = new Cerchio(0, 0, 3, 'O');
+        Forma c = new Cerchio(2, 2, 3, 'O');
         ASCII a = new ASCII(25, 25, 4);
         a.aggiungiForma(c);
         a.aggiungiForma(r);

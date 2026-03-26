@@ -87,15 +87,21 @@ public class LangtonAnt {
     }
 
     private boolean spostaFormica() {
+        if (posizioneRiga >= mappa.length || posizioneColonna >= mappa[0].length || posizioneRiga < 0 || posizioneColonna < 0) return false;
+        mappa[posizioneRiga][posizioneColonna].ant = true;
+        return true;
+
+        /*
         try {
             mappa[posizioneRiga][posizioneColonna].ant = true;
         } catch (Exception e) {
             return false;
         }
         return true;
+        */
     }
     
-    public void eseguiNround(int Nround) {
+    public void eseguiNRound(int Nround) {
         stampaMappa();
         for (int i = 0; i < Nround; i++) {
             if (!spostaFormica()) {
@@ -109,6 +115,6 @@ public class LangtonAnt {
     }
     public static void main(String[] args) {
         LangtonAnt a = new LangtonAnt(100);
-        a.eseguiNround(12000);
+        a.eseguiNRound(12000);
     }
 }
