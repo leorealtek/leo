@@ -1,7 +1,7 @@
 package Scuola.EserciziAScuola.OOP;
 
 public class Abbigliamento extends Prodotto implements Scontabile {
-    private double taglia;
+    private final double taglia;
 
     public Abbigliamento(String nome, double prezzo, double taglia) {
         super(nome, prezzo);

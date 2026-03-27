@@ -1,7 +1,7 @@
 package Scuola.EserciziAScuola.OOP;
 
 public class Elettronico extends Prodotto implements Scontabile{
-    private int garanziaMesi;
+    private final int garanziaMesi;
 
     public Elettronico(String nome, double prezzo, int garanziaMesi) {
         super(nome, prezzo);

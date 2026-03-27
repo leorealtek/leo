@@ -1,7 +1,7 @@
 package Scuola.EserciziAScuola.OOP;
 
 public class ProdottoAlimentare extends Prodotto{
-    private double calorie;
+    private final double calorie;
     protected boolean richiedeRefrigerazione;
     
     public ProdottoAlimentare(String nome, double prezzo, double calorie, boolean richiedeRefrigerazione) {
