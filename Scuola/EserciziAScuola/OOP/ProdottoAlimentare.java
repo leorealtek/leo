@@ -20,6 +20,6 @@ public class ProdottoAlimentare extends Prodotto{
 
     @Override
     public String toString() {
-        return "ProdottoAlimentare [nome=" + nome + ", calorie=" + calorie + ", prezzo=" + prezzo + ", richiedeRefrigerazione=" + richiedeRefrigerazione + "]";
+        return "ProdottoAlimentare [Nome: " + nome + " Calorie: " + calorie + " Prezzo: " + prezzo + " Richiede configurazione: " + richiedeRefrigerazione + "]";
     }
 }

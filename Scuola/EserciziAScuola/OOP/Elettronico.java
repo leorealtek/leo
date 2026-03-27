@@ -24,7 +24,7 @@ public class Elettronico extends Prodotto implements Scontabile{
 
     @Override
     public String toString() {
-        return "Elettronico [nome=" + nome + ", garanziaMesi=" + garanziaMesi + ", prezzo=" + prezzo + "]";
+        return "Elettronico [Nome: " + nome + " Garanzia mesi: " + garanziaMesi + " prezzo: " + prezzo + "]";
     }
     
 }
