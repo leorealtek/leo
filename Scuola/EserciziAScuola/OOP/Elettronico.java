@@ -1,7 +1,7 @@
 package Scuola.EserciziAScuola.OOP;
 
 public class Elettronico extends Prodotto implements Scontabile{
-    private int garanziaMesi;
+    private final int garanziaMesi;
 
     public Elettronico(String nome, double prezzo, int garanziaMesi) {
         super(nome, prezzo);
@@ -24,7 +24,7 @@ public class Elettronico extends Prodotto implements Scontabile{
 
     @Override
     public String toString() {
-        return "Elettronico [nome=" + nome + ", garanziaMesi=" + garanziaMesi + ", prezzo=" + prezzo + "]";
+        return "Elettronico [Nome: " + nome + " Garanzia mesi: " + garanziaMesi + " prezzo: " + prezzo + "]";
     }
     
 }
