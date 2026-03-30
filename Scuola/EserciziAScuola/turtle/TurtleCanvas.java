@@ -1,4 +1,4 @@
-package Scuola.EserciziAScuola.turtle.Quadrato;
+package Scuola.EserciziAScuola.turtle;
 
 import java.awt.*;
 import java.awt.geom.*;

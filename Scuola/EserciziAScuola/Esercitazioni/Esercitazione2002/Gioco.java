@@ -2,12 +2,10 @@ package Scuola.EserciziAScuola.Esercitazioni.Esercitazione2002;
 
 public class Gioco {
     private Giocatore[] giocatori;
-    private int ultimoVincitore;
     private int indicePartite;
 
     public Gioco(int quantiGiocatori) {
         giocatori = creaGiocatori(quantiGiocatori);
-        ultimoVincitore = -1;
         indicePartite = 0;
     }
 
@@ -30,7 +28,6 @@ public class Gioco {
         int indiceVincitore = somma % giocatori.length;
         Giocatore vincitore = giocatori[indiceVincitore];
         vincitore.setPartiteVinte(vincitore.getPartiteVinte() + 1);
-        ultimoVincitore = indiceVincitore;
         System.out.println("Ha vinto " + vincitore.getNome() + " alla partita: " + indicePartite);
     }
 
@@ -68,5 +65,4 @@ public class Gioco {
         g.torneo(5);
         g.classifica();
     }
-
 }

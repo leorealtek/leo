@@ -7,7 +7,6 @@ public class LangtonAnt {
     public static final String ANSI_GREEN_BACKGROUND = "\u001B[42m";
     public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 
-    private final int larghezza;
     private Cella[][] mappa;
     private Direzione direzione;
     private int posizioneRiga;
@@ -19,7 +18,6 @@ public class LangtonAnt {
         posizioneColonna = larghezza / 2;
         mappa[posizioneRiga][posizioneColonna].ant = true;
         direzione = Direzione.SINISTRA;
-        this.larghezza = larghezza;
     }
 
     private Cella[][] creaMappa(int larghezza){
