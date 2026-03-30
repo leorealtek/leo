@@ -12,4 +12,29 @@ public abstract class Item {
         this.quantity = quantity;
         this.stack = stack;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void addQuantity(int quantity) {
+        this.quantity += quantity;
+    }
+
+    public int getStack() {
+        return stack;
+    }
+
+    @Override
+    public String toString() {
+        return "Item [Name: " + name + " Description: " + description + " Quantity: " + quantity + " Stack: " + stack + "]";
+    }
 }

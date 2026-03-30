@@ -1,7 +1,6 @@
 package Scuola.Progettini.Pokemon.Types.HeldItems;
 
 import Scuola.Progettini.Pokemon.Other.Pokemon;
-import Scuola.Progettini.Pokemon.Types.HeldItem;
 import Scuola.Progettini.Pokemon.Types.Item;
 
 public class Focalnastro extends Item implements HeldItem {
@@ -16,9 +15,14 @@ public class Focalnastro extends Item implements HeldItem {
     }
 
     @Override
-    public void use(Pokemon p) {
+    public void activate(Pokemon p) {
+        p.setHP(1);
         quantity--;
-        if (condition(p)) p.setHP(1);
+        removeTo(p);
     }
-    
+
+    @Override
+    public String toString() {
+        return "Focalnastro [Name: " + name + " Description: " + description + " Quantity: " + quantity + " Stack: " + stack + "]";
+    }
 }

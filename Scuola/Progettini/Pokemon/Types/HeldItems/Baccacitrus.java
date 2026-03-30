@@ -1,7 +1,6 @@
 package Scuola.Progettini.Pokemon.Types.HeldItems;
 
 import Scuola.Progettini.Pokemon.Other.Pokemon;
-import Scuola.Progettini.Pokemon.Types.HeldItem;
 import Scuola.Progettini.Pokemon.Types.Item;
 
 public class Baccacitrus extends Item implements HeldItem {
@@ -16,9 +15,16 @@ public class Baccacitrus extends Item implements HeldItem {
     }
 
     @Override
-    public void use(Pokemon p) {
-        quantity--;
-        if (condition(p)) p.setHP(p.getHP() + heal);
+    public void activate(Pokemon p) {
+        if (condition(p)) {
+            quantity--;
+            p.setHP(Math.min(p.getHP() + 30, p.getHPmax()));
+            removeTo(p);
+        }
     }
-    
+
+    @Override
+    public String toString() {
+        return "Baccacitrus [Name: " + name + " Description: " + description + " Quantity: " + quantity + " Stack: " + stack + "]";
+    }
 }

@@ -5,4 +5,9 @@ public class SuperHeal extends HealPotion {
         super(name, description, quantity, stack);
         heal = 50;
     }
+
+    @Override
+    public String toString() {
+        return "Super Heal Potion [Name: " + name + " Description: " + description + " Quantity: " + quantity + " Stack: " + stack + "]";
+    }
 }

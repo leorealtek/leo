@@ -1,8 +1,8 @@
-package Scuola.Progettini.Pokemon.Types;
+package Scuola.Progettini.Pokemon.Types.HeldItems;
 
 import Scuola.Progettini.Pokemon.Other.Pokemon;
 
-public interface HeldItem{
+public interface HeldItem {
     public default void giveTo(Pokemon p) {
         p.setHeldItem(this);
     }
@@ -12,5 +12,5 @@ public interface HeldItem{
     }
 
     public boolean condition(Pokemon p);
-    public void use(Pokemon p);
+    public void activate(Pokemon p);
 }
