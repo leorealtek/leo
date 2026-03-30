@@ -1,4 +1,4 @@
-package Sort;
+package Scuola.EserciziAScuola.Sort;
 
 import java.util.Arrays;
 

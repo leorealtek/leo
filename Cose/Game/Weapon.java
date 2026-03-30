@@ -1,4 +1,4 @@
-package Game;
+package Cose.Game;
 
 public class Weapon {
     private final String name;

@@ -1,3 +1,5 @@
+package Scuola.Progettini.Forme;
+
 public class Rettangolo implements Forma {
     private final double puntoX;
     private final double puntoY;

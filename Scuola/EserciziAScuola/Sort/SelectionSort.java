@@ -1,4 +1,4 @@
-package Sort;
+package Scuola.EserciziAScuola.Sort;
 
 public class SelectionSort {
     public static void selectionSort(int[] array) {

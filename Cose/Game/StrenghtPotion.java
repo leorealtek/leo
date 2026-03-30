@@ -1,4 +1,4 @@
-package Game;
+package Cose.Game;
 
 public class StrenghtPotion extends Item {
     private final int attacksWithBoost;

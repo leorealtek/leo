@@ -1,4 +1,4 @@
-package Quadrato;
+package Scuola.EserciziAScuola.turtle.Quadrato;
 
 import java.awt.Color;
 import java.awt.Font;

@@ -1,3 +1,5 @@
+package Scuola.TPSIT;
+
 import java.util.Scanner;
 
 public class Esercizio_457EEEI {

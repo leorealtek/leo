@@ -1,4 +1,4 @@
-package Game;
+package Cose.Game;
 
 public class Armory {
     private static final Weapon mani = new Weapon("Mani", 2, Integer.MAX_VALUE);

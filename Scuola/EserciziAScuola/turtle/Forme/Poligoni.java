@@ -1,4 +1,4 @@
-package Forme;
+package Scuola.EserciziAScuola.turtle.Forme;
 
 public class Poligoni extends TurtleScreen {
     private Turtle t;

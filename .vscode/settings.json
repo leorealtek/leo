@@ -1,0 +1,19 @@
+{
+  "java.compile.nullAnalysis.mode": "disabled",
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.errors.incompleteClasspath.severity": "ignore",
+  "java.import.gradle.enabled": true,
+  "java.import.maven.enabled": true,
+  "java.project.importHint": false,
+  "java.recommendations.dependency.analytics.show": false,
+  "java.silentNotification": true,
+  "java.sharedIndexes.enabled": "off",
+  "java.configuration.detectJdksAtStart": false,
+  "java.project.sourcePaths": [
+    "."
+  ],
+  "java.project.referencedLibraries": {
+    "include": [],
+    "exclude": []
+  }
+}

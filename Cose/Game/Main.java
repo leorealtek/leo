@@ -1,4 +1,4 @@
-package Game;
+package Cose.Game;
 
 import java.util.ArrayList;
 import java.util.Scanner;
