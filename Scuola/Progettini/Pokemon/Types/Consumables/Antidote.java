@@ -15,7 +15,6 @@ public class Antidote extends Item implements Consumable{
     public void use(Pokemon p) throws UnsupportedActionException {
         if (p.getStatus() != Status.Poisoned)
             throw new UnsupportedActionException("Can't use " + name + ": " + p.getName() + " is not poisoned.");
-        quantity--;
         p.setStatus(Status.Normal);
     }
 

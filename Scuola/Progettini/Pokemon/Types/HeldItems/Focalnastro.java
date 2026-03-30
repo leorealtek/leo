@@ -17,7 +17,6 @@ public class Focalnastro extends Item implements HeldItem {
     @Override
     public void activate(Pokemon p) {
         p.setHP(1);
-        quantity--;
         removeTo(p);
     }
 

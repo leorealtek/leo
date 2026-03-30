@@ -15,7 +15,6 @@ public class Revitalizing extends Item implements Consumable{
     public void use(Pokemon p) throws UnsupportedActionException {
         if (p.getStatus() != Status.KO)
             throw new UnsupportedActionException("Can't use " + name + ": " + p.getName() + " is not KO.");
-        quantity--;
         p.setStatus(Status.Normal);
         p.setHP(p.getHPmax() / 2);
     }

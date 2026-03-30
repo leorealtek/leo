@@ -17,7 +17,6 @@ public class AttackBoost extends Item implements HybridItem {
 
     @Override
     public void use(Pokemon p) throws UnsupportedActionException {
-        quantity--;
         p.setAttack(p.getAttack() + 10);
     }
 

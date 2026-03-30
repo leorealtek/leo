@@ -15,7 +15,6 @@ public class HealPotion extends Item implements Consumable {
         if (p.getHP() == p.getHPmax())
             throw new UnsupportedActionException("Can't use " + name + ": " + p.getName() + " already has full HP.");
         p.setHP(Math.min(p.getHP() + heal, p.getHPmax()));
-        quantity--;
     }
 
     public int getHeal() {

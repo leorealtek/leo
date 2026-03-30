@@ -1,83 +1,99 @@
 package Scuola.Progettini.Pokemon.Other;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import Scuola.Progettini.Pokemon.Exceptions.FullStackException;
+import java.util.*;
 import Scuola.Progettini.Pokemon.Exceptions.UnsupportedActionException;
+import Scuola.Progettini.Pokemon.Types.Item;
 import Scuola.Progettini.Pokemon.Types.Consumables.Consumable;
 import Scuola.Progettini.Pokemon.Types.HeldItems.HeldItem;
-import Scuola.Progettini.Pokemon.Types.Item;
 
 public class Inventory {
 
-    private List<Item> items;
+    private List<Item> items = new ArrayList<>();
+    private List<Integer> quantities = new ArrayList<>();
 
-    public Inventory() {
-        items = new ArrayList<>();
+    public void addItem(Item newItem, int amount) {
+        int index = findIndex(newItem.getName());
+        int maxStack = newItem.getStack();
+
+        if (index == -1) {
+            int toAdd = Math.min(maxStack, amount);
+            items.add(newItem);
+            quantities.add(toAdd);
+        } else {
+            int current = quantities.get(index);
+            int spaceLeft = maxStack - current;
+            int toAdd = Math.min(spaceLeft, amount);
+            quantities.set(index, current + toAdd);
+        }
     }
 
-    public void addItem(Item newItem) throws FullStackException {
+    public void useItem(String name, Pokemon target) throws UnsupportedActionException {
+        int index = findIndex(name);
 
-        for (Item existing : items) {
-            if (existing.getClass().equals(newItem.getClass())) {
-                int total = existing.getQuantity() + newItem.getQuantity();
-                if (total > existing.getStack()) {
-                    throw new FullStackException(newItem);
-                }
-                existing.addQuantity(newItem.getQuantity());
-                return;
+        if (index == -1 || quantities.get(index) <= 0) {
+            throw new RuntimeException("Item not found: " + name);
+        }
+
+        Item item = items.get(index);
+
+        if (!(item instanceof Consumable)) {
+            throw new UnsupportedActionException("Item is not consumable: " + name);
+        }
+
+        Consumable consumable = (Consumable) item;
+        consumable.use(target);
+
+        decreaseQuantity(index, 1);
+    }
+
+    public void giveHeldItem(String name, Pokemon target) throws UnsupportedActionException {
+        int index = findIndex(name);
+
+        if (index == -1 || quantities.get(index) <= 0) {
+            throw new RuntimeException("Item not found: " + name);
+        }
+
+        Item item = items.get(index);
+
+        if (!(item instanceof HeldItem)) {
+            throw new UnsupportedActionException("Item not holdable: " + name);
+        }
+
+        HeldItem held = (HeldItem) item;
+        held.giveTo(target);
+
+        decreaseQuantity(index, 1);
+    }
+
+    private void decreaseQuantity(int index, int amount) {
+        int updated = quantities.get(index) - amount;
+
+        if (updated <= 0) {
+            items.remove(index);
+            quantities.remove(index);
+        } else {
+            quantities.set(index, updated);
+        }
+    }
+
+    private int findIndex(String name) {
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).getName().equals(name)) {
+                return i;
             }
         }
-        items.add(newItem);
+        return -1;
     }
 
-    public void useItem(Item item, Pokemon target) throws UnsupportedActionException {
-        if (!(item instanceof Consumable)) {
-            throw new UnsupportedActionException(
-                "Can't use " + item.getName() + ": it's not a consumable item."
-            );
-        }
-        Consumable c = (Consumable) item;
-        c.use(target);
-
-        if (item.getQuantity() <= 0) {
-            items.remove(item);
-        }
+    public int getQuantity(String name) {
+        int index = findIndex(name);
+        return (index == -1) ? 0 : quantities.get(index);
     }
 
-    public void giveItemTo(Item item, Pokemon target) throws UnsupportedActionException {
-        if (!(item instanceof HeldItem)) {
-            throw new UnsupportedActionException(
-                "Can't give " + item.getName() + ": it's not a held item."
-            );
+    public void printInventory() {
+        System.out.println("--- Inventory ---");
+        for (int i = 0; i < items.size(); i++) {
+            System.out.println(items.get(i).getName() + " x" + quantities.get(i));
         }
-        if (target.getHeldItem() != null) {
-            throw new UnsupportedActionException(
-                target.getName() + " already holds an item: " + target.getHeldItem()
-            );
-        }
-        HeldItem h = (HeldItem) item;
-        h.giveTo(target);
-    }
-
-    public List<Item> getAllItems() {
-        return new ArrayList<>(items);
-    }
-
-    public List<Consumable> getConsumables() {
-        List<Consumable> result = new ArrayList<>();
-        for (Item i : items) {
-            if (i instanceof Consumable) result.add((Consumable) i);
-        }
-        return result;
-    }
-
-    public List<HeldItem> getHeldItems() {
-        List<HeldItem> result = new ArrayList<>();
-        for (Item i : items) {
-            if (i instanceof HeldItem) result.add((HeldItem) i);
-        }
-        return result;
     }
 }
