@@ -1,6 +1,6 @@
 package Scuola.Progettini.Pokemon.Types.Consumables;
 
-import Scuola.Progettini.Pokemon.Exceptions.UnsupportedActionException;
+import Scuola.Progettini.Pokemon.Exceptions.OverMaxHpException;
 import Scuola.Progettini.Pokemon.Other.Pokemon;
 import Scuola.Progettini.Pokemon.Types.Item;
 
@@ -11,9 +11,9 @@ public class HealPotion extends Item implements Consumable {
     }
     
     @Override
-    public void use(Pokemon p) throws UnsupportedActionException {
+    public void use(Pokemon p) throws OverMaxHpException {
         if (p.getHP() == p.getHPmax())
-            throw new UnsupportedActionException("Can't use " + name + ": " + p.getName() + " already has full HP.");
+            throw new OverMaxHpException(p.getHP(), p.getHPmax());
         p.setHP(Math.min(p.getHP() + heal, p.getHPmax()));
     }
 

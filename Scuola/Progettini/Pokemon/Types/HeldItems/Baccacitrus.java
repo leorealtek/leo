@@ -17,7 +17,7 @@ public class Baccacitrus extends Item implements HeldItem {
     @Override
     public void activate(Pokemon p) {
         if (condition(p)) {
-            p.setHP(Math.min(p.getHP() + 30, p.getHPmax()));
+            p.setHP(Math.min(p.getHP() + heal, p.getHPmax()));
             removeTo(p);
         }
     }
