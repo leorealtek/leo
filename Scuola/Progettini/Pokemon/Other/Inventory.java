@@ -31,7 +31,7 @@ public class Inventory {
         int index = findIndex(name);
 
         if (index == -1 || quantities.get(index) <= 0) {
-            throw new RuntimeException("Item not found: " + name);
+            throw new UnsupportedActionException("Item not found: " + name);
         }
 
         Item item = items.get(index);
@@ -50,7 +50,7 @@ public class Inventory {
         int index = findIndex(name);
 
         if (index == -1 || quantities.get(index) <= 0) {
-            throw new RuntimeException("Item not found: " + name);
+            throw new UnsupportedActionException("Item not found: " + name);
         }
 
         Item item = items.get(index);
