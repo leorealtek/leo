@@ -89,6 +89,7 @@ public class ZImageSaturation {
 
         System.out.println("Dimmi una percentuale tra -100 e 100%: ");
         double percentuale = s.nextDouble();
+        s.close();
 
         ZImageSaturation zd = new ZImageSaturation(percentuale);  // Si crea un oggetto ZImageDemo
 
