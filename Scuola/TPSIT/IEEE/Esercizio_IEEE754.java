@@ -1,4 +1,4 @@
-package Scuola.TPSIT;
+package Scuola.TPSIT.IEEE;
 
 import java.util.Scanner;
 
