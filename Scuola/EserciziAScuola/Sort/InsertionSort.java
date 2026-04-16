@@ -1,7 +1,5 @@
 package Scuola.EserciziAScuola.Sort;
 
-import java.util.Arrays;
-
 public class InsertionSort {
     public static void insertionSort(int[] arr) {
         for (int i = 1; i < arr.length; i++) {
@@ -13,10 +11,5 @@ public class InsertionSort {
             }
             arr[j + 1] = key;
         }
-    }
-    public static void main(String[] args) {
-        int[] arr = {2,4,6,2,2,2,1,4,56,7,8};
-        insertionSort(arr);
-        System.out.println(Arrays.toString(arr));
     }
 }
