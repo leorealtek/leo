@@ -18,6 +18,10 @@ public class Casella {
         this.pezzoContenuto = pezzoContenuto;
     }
 
+    public void rimuoviPezzo() {
+        pezzoContenuto = null;
+    }
+
     public boolean isVuota() {
         return pezzoContenuto == null;
     }
