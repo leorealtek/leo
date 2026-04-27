@@ -7,8 +7,8 @@ public class Pedone extends Pezzo {
 
     private boolean primaMossa;
 
-    public Pedone(char nome, int posX, int posY, Casella[][] mappa) {
-        super(nome, posX, posY, mappa);
+    public Pedone(char nome, int riga, int colonna, Casella[][] mappa) {
+        super(nome, riga, colonna, mappa);
         primaMossa = true;
     }
 
@@ -19,22 +19,21 @@ public class Pedone extends Pezzo {
     }
 
     @Override
-    protected Casella[][] mossePossibili() {
+    public Casella[][] mossePossibili() {
         Casella[][] casellePossibili = new Casella[8][8];
 
-        int direzione = isBianco ? 1 : -1;
+        int direzione = isBianco ? -1 : +1;
+        int x1 = riga + direzione;
+        if (x1 >= 0 && x1 < 8 && mappa[x1][colonna].isVuota()) {
+            casellePossibili[x1][colonna] = mappa[x1][colonna];
 
-        int x1 = posX - direzione;
-        if (x1 >= 0 && x1 < 8 && mappa[x1][posY].isVuota()) {
-            casellePossibili[x1][posY] = mappa[x1][posY];
-
-            int x2 = posX + direzione * 2;
-            if (primaMossa && x2 >= 0 && x2 < 8 && mappa[x2][posY].isVuota()) {
-                casellePossibili[x2][posY] = mappa[x2][posY];
+            int x2 = riga + direzione * 2;
+            if (primaMossa && x2 >= 0 && x2 < 8 && mappa[x2][colonna].isVuota()) {
+                casellePossibili[x2][colonna] = mappa[x2][colonna];
             }
         }
 
-        int[] colonneDiagonali = {posY - 1, posY + 1};
+        int[] colonneDiagonali = {colonna - 1, colonna + 1};
         for (int y : colonneDiagonali) {
             if (x1 >= 0 && x1 < 8 && y >= 0 && y < 8) {
                 Casella casella = mappa[x1][y];
@@ -50,5 +49,4 @@ public class Pedone extends Pezzo {
     public boolean isPrimaMossa() {
         return primaMossa;
     }
-    
 }

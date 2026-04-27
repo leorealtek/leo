@@ -5,12 +5,12 @@ import Scuola.Progettini.Scacchi.Util.Pezzo;
 
 public class Alfiere extends Pezzo {
 
-    public Alfiere(char nome, int posX, int posY, Casella[][] mappa) {
-        super(nome, posX, posY, mappa);
+    public Alfiere(char nome, int riga, int colonna, Casella[][] mappa) {
+        super(nome, riga, colonna, mappa);
     }
     
     @Override
-    protected Casella[][] mossePossibili() {
+    public Casella[][] mossePossibili() {
         Casella[][] casellePossibili = new Casella[8][8];
 
         int[][] direzioni = {
@@ -18,8 +18,8 @@ public class Alfiere extends Pezzo {
         };
 
         for (int[] dir : direzioni) {
-            int x = posX + dir[0];
-            int y = posY + dir[1];
+            int x = riga + dir[0];
+            int y = colonna + dir[1];
 
             while (x >= 0 && x < 8 && y >= 0 && y < 8) {
                 Casella casella = mappa[x][y];

@@ -4,20 +4,20 @@ import Scuola.Progettini.Scacchi.Exception.MossaNonValidaException;
 
 public abstract class Pezzo {
     protected char nome;
-    protected int posX;
-    protected int posY;
+    protected int riga;
+    protected int colonna;
     protected boolean isBianco;
     protected Casella[][] mappa;
 
-    public Pezzo(char nome, int posX, int posY, Casella[][] mappa) {
+    public Pezzo(char nome, int riga, int colonna, Casella[][] mappa) {
         this.nome = nome;
-        this.posX = posX;
-        this.posY = posY;
+        this.riga = riga;
+        this.colonna = colonna;
         isBianco = Character.isUpperCase(nome);
         this.mappa = mappa;
     }
 
-    public void muovi(int x, int y)  {
+    public void muovi(int x, int y) {
         Casella[][] possibili = mossePossibili();
 
         if (x < 0 || x >= 8 || y < 0 || y >= 8 || possibili[x][y] == null) {
@@ -26,23 +26,26 @@ public abstract class Pezzo {
             );
         }
 
-        mappa[posX][posY].inserisciPezzo(null);
+        mappa[riga][colonna].inserisciPezzo(null);
         mappa[x][y].inserisciPezzo(this);
-        posX = x;
-        posY = y;
+        riga = x;
+        colonna = y;
     }
 
-    protected abstract Casella[][] mossePossibili();
+    public abstract Casella[][] mossePossibili();
 
     public void mostraMossePossibili() {
         Casella[][] mossePossibili = mossePossibili();
         for (Casella[] caselle : mossePossibili) {
             for (Casella casella : caselle) {
                 if (casella != null) {
-                    System.out.print(casella.getPezzoContenuto().getNome() + " ");
-                }
-                else {
-                    System.out.print(" ");
+                    if (casella.getPezzoContenuto() != null) {
+                        System.out.print(casella.getPezzoContenuto().getNome() + " ");
+                    } else {
+                        System.out.print("X ");
+                    }
+                } else {
+                    System.out.print(". ");
                 }
             }
             System.out.println();
@@ -53,18 +56,15 @@ public abstract class Pezzo {
         return nome;
     }
 
-    public int getPosX() {
-        return posX;
+    public int getRiga() {
+        return riga;
     }
 
-    public int getPosY() {
-        return posY;
+    public int getColonna() {
+        return colonna;
     }
 
     public boolean isBianco() {
         return isBianco;
     }
-
-    
-    
 }

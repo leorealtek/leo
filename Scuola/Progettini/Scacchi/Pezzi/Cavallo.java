@@ -5,12 +5,12 @@ import Scuola.Progettini.Scacchi.Util.Pezzo;
 
 public class Cavallo extends Pezzo {
 
-    public Cavallo(char nome, int posX, int posY, Casella[][] mappa) {
-        super(nome, posX, posY, mappa);
+    public Cavallo(char nome, int riga, int colonna, Casella[][] mappa) {
+        super(nome, riga, colonna, mappa);
     }
 
     @Override
-    protected Casella[][] mossePossibili() {
+    public Casella[][] mossePossibili() {
         Casella[][] casellePossibili = new Casella[8][8];
 
         int[][] mosse = {
@@ -21,8 +21,8 @@ public class Cavallo extends Pezzo {
         };
 
         for (int[] mossa : mosse) {
-            int x = posX + mossa[0];
-            int y = posY + mossa[1];
+            int x = riga + mossa[0];
+            int y = colonna + mossa[1];
 
             if (x < 0 || x >= 8 || y < 0 || y >= 8) continue;
 

@@ -7,8 +7,8 @@ public class Torre extends Pezzo {
 
     private boolean haMosso;
 
-    public Torre(char nome, int posX, int posY, Casella[][] mappa) {
-        super(nome, posX, posY, mappa);
+    public Torre(char nome, int riga, int colonna, Casella[][] mappa) {
+        super(nome, riga, colonna, mappa);
         haMosso = false;
     }
 
@@ -17,9 +17,17 @@ public class Torre extends Pezzo {
         super.muovi(x, y);
         haMosso = true;
     }
+    
+    public void muoviArrocco(int x, int y) {
+        mappa[riga][colonna].inserisciPezzo(null);
+        riga = x;
+        colonna = y;
+        haMosso = true;
+        mappa[riga][colonna].inserisciPezzo(this);
+    }
 
     @Override
-    protected Casella[][] mossePossibili() {
+    public Casella[][] mossePossibili() {
         Casella[][] casellePossibili = new Casella[8][8];
 
         int[][] direzioni = {
@@ -27,8 +35,8 @@ public class Torre extends Pezzo {
         };
 
         for (int[] dir : direzioni) {
-            int x = posX + dir[0];
-            int y = posY + dir[1];
+            int x = riga + dir[0];
+            int y = colonna + dir[1];
 
             while (x >= 0 && x < 8 && y >= 0 && y < 8) {
                 Casella casella = mappa[x][y];
@@ -57,6 +65,4 @@ public class Torre extends Pezzo {
     public void setHaMosso(boolean haMosso) {
         this.haMosso = haMosso;
     }
-
-    
 }

@@ -8,8 +8,8 @@ public class Re extends Pezzo {
 
     private boolean haMosso;
 
-    public Re(char nome, int posX, int posY, Casella[][] mappa) {
-        super(nome, posX, posY, mappa);
+    public Re(char nome, int riga, int colonna, Casella[][] mappa) {
+        super(nome, riga, colonna, mappa);
         haMosso = false;
     }
 
@@ -20,7 +20,7 @@ public class Re extends Pezzo {
     }
 
     @Override
-    protected Casella[][] mossePossibili() {
+    public Casella[][] mossePossibili() {
         Casella[][] casellePossibili = new Casella[8][8];
 
         int[][] direzioni = {
@@ -29,8 +29,8 @@ public class Re extends Pezzo {
         };
 
         for (int[] dir : direzioni) {
-            int x = posX + dir[0];
-            int y = posY + dir[1];
+            int x = riga + dir[0];
+            int y = colonna + dir[1];
 
             if (x < 0 || x >= 8 || y < 0 || y >= 8) continue;
 
@@ -52,30 +52,30 @@ public class Re extends Pezzo {
                 "Arrocco non consentito: il Re ha già mosso."
             );
         }
- 
-        int riga = this.posY;
+
+        int riga = this.riga;
+
         int colonnaTorre;
         int colonnaReDestinazione;
         int colonnaTorreDestinazione;
-        int colonnaCheckInizio; 
-        int colonnaCheckFine;  
- 
+        int colonnaCheckInizio;
+        int colonnaCheckFine;
+
         if (!latoLungo) {
             colonnaTorre             = 7;
             colonnaReDestinazione    = 6;
             colonnaTorreDestinazione = 5;
             colonnaCheckInizio       = 5;
             colonnaCheckFine         = 6;
-        } 
-        else {
+        } else {
             colonnaTorre             = 0;
             colonnaReDestinazione    = 2;
             colonnaTorreDestinazione = 3;
             colonnaCheckInizio       = 1;
             colonnaCheckFine         = 3;
         }
- 
-        Casella casellaTorre = mappa[colonnaTorre][riga];
+
+        Casella casellaTorre = mappa[riga][colonnaTorre];
         if (casellaTorre.isVuota()) {
             throw new MossaNonValidaException(
                 "Arrocco non consentito: non c'è una Torre sul lato " + (latoLungo ? "lungo" : "corto") + "."
@@ -101,31 +101,29 @@ public class Re extends Pezzo {
                 "Arrocco non consentito: la Torre ha già mosso."
             );
         }
- 
+
         for (int col = colonnaCheckInizio; col <= colonnaCheckFine; col++) {
-            if (!mappa[col][riga].isVuota()) {
+            if (!mappa[riga][col].isVuota()) {
                 throw new MossaNonValidaException(
                     "Arrocco non consentito: la casella " +
                     (char) ('a' + col) + (riga + 1) + " non è libera."
                 );
             }
         }
- 
-        mappa[this.posX][riga].rimuoviPezzo();
-        mappa[colonnaTorre][riga].rimuoviPezzo();
- 
-        this.posX  = colonnaReDestinazione;
-        this.posY  = riga;
+
+        mappa[riga][this.colonna].rimuoviPezzo();
+        mappa[riga][colonnaTorre].rimuoviPezzo();
+
+        this.riga = riga;
+        this.colonna = colonnaReDestinazione;
         this.haMosso = true;
-        mappa[colonnaReDestinazione][riga].inserisciPezzo(this);
- 
-        torre.muovi(colonnaTorreDestinazione, riga);
-        torre.setHaMosso(true);
-        mappa[colonnaTorreDestinazione][riga].inserisciPezzo(torre);
+        mappa[riga][colonnaReDestinazione].inserisciPezzo(this);
+
+        torre.muoviArrocco(riga, colonnaTorreDestinazione);
+        mappa[riga][colonnaTorreDestinazione].inserisciPezzo(torre);
     }
 
     public boolean haMosso() {
         return haMosso;
     }
-    
 }
