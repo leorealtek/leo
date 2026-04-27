@@ -14,19 +14,8 @@ public class Re extends Pezzo {
     }
 
     @Override
-    protected void muovi(int x, int y) {
-        Casella[][] possibili = mossePossibili();
-
-        if (x < 0 || x >= 8 || y < 0 || y >= 8 || possibili[x][y] == null) {
-            throw new MossaNonValidaException(
-                "Il re non può muoversi in (" + x + ", " + y + ")"
-            );
-        }
-
-        mappa[posX][posY].inserisciPezzo(null);
-        mappa[x][y].inserisciPezzo(this);
-        posX = x;
-        posY = y;
+    public void muovi(int x, int y) {
+        super.muovi(x, y);
         haMosso = true;
     }
 

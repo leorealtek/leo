@@ -1,6 +1,5 @@
 package Scuola.Progettini.Scacchi.Pezzi;
 
-import Scuola.Progettini.Scacchi.Exception.MossaNonValidaException;
 import Scuola.Progettini.Scacchi.Util.Casella;
 import Scuola.Progettini.Scacchi.Util.Pezzo;
 
@@ -8,22 +7,6 @@ public class Alfiere extends Pezzo {
 
     public Alfiere(char nome, int posX, int posY, Casella[][] mappa) {
         super(nome, posX, posY, mappa);
-    }
-
-    @Override
-    protected void muovi(int x, int y) {
-        Casella[][] possibili = mossePossibili();
-
-        if (x < 0 || x >= 8 || y < 0 || y >= 8 || possibili[x][y] == null) {
-            throw new MossaNonValidaException(
-                "L'alfiere non può muoversi in (" + x + ", " + y + ")"
-            );
-        }
-
-        mappa[posX][posY].inserisciPezzo(null);
-        mappa[x][y].inserisciPezzo(this);
-        posX = x;
-        posY = y;
     }
     
     @Override

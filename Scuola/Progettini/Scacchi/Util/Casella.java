@@ -8,7 +8,9 @@ public class Casella {
         this.pezzoContenuto = pezzoContenuto;
     }
 
-    public Casella() {}
+    public Casella() {
+        pezzoContenuto = null;
+    }
 
     public Pezzo getPezzoContenuto() {
         return pezzoContenuto;

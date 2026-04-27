@@ -1,6 +1,5 @@
 package Scuola.Progettini.Scacchi.Pezzi;
 
-import Scuola.Progettini.Scacchi.Exception.MossaNonValidaException;
 import Scuola.Progettini.Scacchi.Util.Casella;
 import Scuola.Progettini.Scacchi.Util.Pezzo;
 
@@ -14,19 +13,8 @@ public class Pedone extends Pezzo {
     }
 
     @Override
-    protected void muovi(int x, int y) {
-        Casella[][] possibili = mossePossibili();
-
-        if (x < 0 || x >= 8 || y < 0 || y >= 8 || possibili[x][y] == null) {
-            throw new MossaNonValidaException(
-                "Il pedone non può muoversi in (" + x + ", " + y + ")"
-            );
-        }
-
-        mappa[posX][posY].inserisciPezzo(null);
-        mappa[x][y].inserisciPezzo(this);
-        posX = x;
-        posY = y;
+    public void muovi(int x, int y) {
+        super.muovi(x, y);
         primaMossa = false;
     }
 
@@ -36,7 +24,7 @@ public class Pedone extends Pezzo {
 
         int direzione = isBianco ? 1 : -1;
 
-        int x1 = posX + direzione;
+        int x1 = posX - direzione;
         if (x1 >= 0 && x1 < 8 && mappa[x1][posY].isVuota()) {
             casellePossibili[x1][posY] = mappa[x1][posY];
 
