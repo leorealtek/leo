@@ -36,14 +36,12 @@ public abstract class Pezzo {
 
     public void mostraMossePossibili() {
         Casella[][] mossePossibili = mossePossibili();
-        for (Casella[] caselle : mossePossibili) {
-            for (Casella casella : caselle) {
-                if (casella != null) {
-                    if (casella.getPezzoContenuto() != null) {
-                        System.out.print(casella.getPezzoContenuto().getNome() + " ");
-                    } else {
-                        System.out.print("X ");
-                    }
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (mossePossibili[i][j] != null) {
+                    System.out.print("X ");
+                } else if (mappa[i][j].getPezzoContenuto() != null) {
+                    System.out.print(mappa[i][j].getPezzoContenuto().getNome() + " ");
                 } else {
                     System.out.print(". ");
                 }

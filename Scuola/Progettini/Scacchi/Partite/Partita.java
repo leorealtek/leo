@@ -52,7 +52,7 @@ public class Partita {
     }
 
     public String checkWin() {
-        boolean trovatoBianco = false, trovatoNero = true;
+        boolean trovatoBianco = false, trovatoNero = false;
         for (Casella[] caselle : mappa) {
             for (Casella casella : caselle) {
                 if (casella == null) continue;
