@@ -26,8 +26,8 @@ public abstract class Pezzo {
             );
         }
 
-        mappa[riga][colonna].inserisciPezzo(null);
         mappa[x][y].inserisciPezzo(this);
+        mappa[riga][colonna].inserisciPezzo(null);
         riga = x;
         colonna = y;
     }
