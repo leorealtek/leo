@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
+import Scuola.Progettini.Scacchi.Exception.FileNonValidoException;
 import Scuola.Progettini.Scacchi.Pezzi.Alfiere;
 import Scuola.Progettini.Scacchi.Pezzi.Cavallo;
 import Scuola.Progettini.Scacchi.Pezzi.Pedone;
@@ -16,15 +17,13 @@ public class Esercizio {
      
     private Casella[][] mappa;
     private boolean attaccaBianco;
-    private int mosseTotali;
-    private String percorsoFile;
+    private int mosseRimanenti;
 
     public Esercizio(String percorsoFile) throws IOException {
-        this.percorsoFile = percorsoFile;
-        creaMappa();
+        mappa = leggiMappaDaFile(percorsoFile);
     }
 
-    public void creaMappa() throws IOException {
+    public Casella[][] leggiMappaDaFile(String percorsoFile) throws IOException {
         Scanner s = new Scanner(new File(percorsoFile));
         Casella[][] mappa = new Casella[8][8];
         for (int i = 0; i < 8; i++) {
@@ -74,14 +73,14 @@ public class Esercizio {
                     case ' ':
                         continue;
                     default:
-                        throw new IllegalArgumentException("File non valido");
+                        throw new FileNonValidoException();
                 }
             }
         }
         attaccaBianco = (s.nextLine().toUpperCase().equals("BIANCO")) ? true : false;
-        mosseTotali = Integer.parseInt(s.nextLine().trim());
+        mosseRimanenti = Integer.parseInt(s.nextLine().trim());
         s.close();
-        this.mappa = mappa;
+        return mappa;
     }
 
     public void stampaMappa() {
@@ -105,11 +104,7 @@ public class Esercizio {
         return attaccaBianco;
     }
 
-    public int getMosseTotali() {
-        return mosseTotali;
-    }
-
-    public String getPercorsoFile() {
-        return percorsoFile;
+    public int getMosseRimanenti() {
+        return mosseRimanenti;
     }
 }
