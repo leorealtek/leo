@@ -10,7 +10,8 @@ public class Re extends Pezzo {
 
     public Re(char nome, int riga, int colonna, Casella[][] mappa) {
         super(nome, riga, colonna, mappa);
-        haMosso = false;
+        this.haMosso = !((isBianco && riga == 7 && colonna == 4)
+                      || (!isBianco && riga == 0 && colonna == 4));
     }
 
     @Override
@@ -32,13 +33,11 @@ public class Re extends Pezzo {
             int x = riga + dir[0];
             int y = colonna + dir[1];
 
-            if (x < 0 || x >= 8 || y < 0 || y >= 8) continue;
+            if (!coordinateValide(x, y)) continue;
 
             Casella casella = mappa[x][y];
 
-            if (casella.isVuota()) {
-                casellePossibili[x][y] = casella;
-            } else if (casella.getPezzoContenuto().isBianco() != this.isBianco) {
+            if (casella.isVuota() || casella.getPezzoContenuto().isBianco() != this.isBianco) {
                 casellePossibili[x][y] = casella;
             }
         }
@@ -48,82 +47,137 @@ public class Re extends Pezzo {
 
     public void arrocca(boolean latoLungo) {
         if (haMosso) {
-            throw new MossaNonValidaException(
-                "Arrocco non consentito: il Re ha già mosso."
-            );
+            throw new MossaNonValidaException("Arrocco non consentito: il Re ha già mosso.");
         }
 
-        int riga = this.riga;
-
-        int colonnaTorre;
-        int colonnaReDestinazione;
-        int colonnaTorreDestinazione;
-        int colonnaCheckInizio;
-        int colonnaCheckFine;
-
-        if (!latoLungo) {
-            colonnaTorre             = 7;
-            colonnaReDestinazione    = 6;
-            colonnaTorreDestinazione = 5;
-            colonnaCheckInizio       = 5;
-            colonnaCheckFine         = 6;
-        } else {
-            colonnaTorre             = 0;
-            colonnaReDestinazione    = 2;
-            colonnaTorreDestinazione = 3;
-            colonnaCheckInizio       = 1;
-            colonnaCheckFine         = 3;
+        int colonnaInizialeRe = 4;
+        if (this.colonna != colonnaInizialeRe) {
+            throw new MossaNonValidaException("Arrocco non consentito: il Re non è nella colonna iniziale.");
         }
+
+        if (casellaAttaccata(riga, colonna, !isBianco)) {
+            throw new MossaNonValidaException("Arrocco non consentito: il Re è sotto scacco.");
+        }
+
+        int colonnaTorre = latoLungo ? 0 : 7;
+        int colonnaReDestinazione = latoLungo ? 2 : 6;
+        int colonnaTorreDestinazione = latoLungo ? 3 : 5;
+        int primaCasellaLibera = latoLungo ? 1 : 5;
+        int ultimaCasellaLibera = latoLungo ? 3 : 6;
 
         Casella casellaTorre = mappa[riga][colonnaTorre];
         if (casellaTorre.isVuota()) {
-            throw new MossaNonValidaException(
-                "Arrocco non consentito: non c'è una Torre sul lato " + (latoLungo ? "lungo" : "corto") + "."
-            );
+            throw new MossaNonValidaException("Arrocco non consentito: non c'è una Torre sul lato " + (latoLungo ? "lungo" : "corto") + ".");
         }
 
         Pezzo pezzoTorre = casellaTorre.getPezzoContenuto();
         if (!(pezzoTorre instanceof Torre)) {
-            throw new MossaNonValidaException(
-                "Arrocco non consentito: il pezzo sul lato " + (latoLungo ? "lungo" : "corto") + " non è una Torre."
-            );
+            throw new MossaNonValidaException("Arrocco non consentito: il pezzo sul lato " + (latoLungo ? "lungo" : "corto") + " non è una Torre.");
         }
 
         Torre torre = (Torre) pezzoTorre;
         if (torre.isBianco() != this.isBianco()) {
-            throw new MossaNonValidaException(
-                "Arrocco non consentito: la Torre appartiene al colore avversario."
-            );
+            throw new MossaNonValidaException("Arrocco non consentito: la Torre appartiene al colore avversario.");
         }
 
         if (torre.haMosso()) {
-            throw new MossaNonValidaException(
-                "Arrocco non consentito: la Torre ha già mosso."
-            );
+            throw new MossaNonValidaException("Arrocco non consentito: la Torre ha già mosso.");
         }
 
-        for (int col = colonnaCheckInizio; col <= colonnaCheckFine; col++) {
+        for (int col = primaCasellaLibera; col <= ultimaCasellaLibera; col++) {
             if (!mappa[riga][col].isVuota()) {
-                throw new MossaNonValidaException(
-                    "Arrocco non consentito: la casella " +
-                    (char) ('a' + col) + (riga + 1) + " non è libera."
-                );
+                throw new MossaNonValidaException("Arrocco non consentito: una casella tra Re e Torre non è libera.");
+            }
+        }
+
+        int passo = latoLungo ? -1 : 1;
+        for (int col = colonna + passo; col != colonnaReDestinazione + passo; col += passo) {
+            if (casellaAttaccata(riga, col, !isBianco)) {
+                throw new MossaNonValidaException("Arrocco non consentito: il Re passerebbe su una casella sotto attacco.");
             }
         }
 
         mappa[riga][this.colonna].rimuoviPezzo();
         mappa[riga][colonnaTorre].rimuoviPezzo();
 
-        this.riga = riga;
-        this.colonna = colonnaReDestinazione;
+        aggiornaPosizione(riga, colonnaReDestinazione);
         this.haMosso = true;
         mappa[riga][colonnaReDestinazione].inserisciPezzo(this);
 
-        torre.muoviArrocco(riga, colonnaTorreDestinazione);
+        torre.aggiornaPosizione(riga, colonnaTorreDestinazione);
+        torre.setHaMosso(true);
         mappa[riga][colonnaTorreDestinazione].inserisciPezzo(torre);
+    }
+
+    private boolean casellaAttaccata(int rigaTarget, int colonnaTarget, boolean daBianco) {
+        int direzionePedone = daBianco ? -1 : 1;
+        int rigaPedone = rigaTarget - direzionePedone;
+        int[] colonnePedone = {colonnaTarget - 1, colonnaTarget + 1};
+        for (int col : colonnePedone) {
+            if (coordinateValide(rigaPedone, col)) {
+                Pezzo p = mappa[rigaPedone][col].getPezzoContenuto();
+                if (p instanceof Pedone && p.isBianco() == daBianco) return true;
+            }
+        }
+
+        int[][] mosseCavallo = {
+            {-2, -1}, {-2, 1}, {-1, -2}, {-1, 2},
+            {1, -2}, {1, 2}, {2, -1}, {2, 1}
+        };
+        for (int[] mossa : mosseCavallo) {
+            int x = rigaTarget + mossa[0];
+            int y = colonnaTarget + mossa[1];
+            if (coordinateValide(x, y)) {
+                Pezzo p = mappa[x][y].getPezzoContenuto();
+                if (p instanceof Cavallo && p.isBianco() == daBianco) return true;
+            }
+        }
+
+        int[][] direzioniRe = {
+            {0, 1}, {0, -1}, {1, 0}, {-1, 0},
+            {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
+        };
+        for (int[] dir : direzioniRe) {
+            int x = rigaTarget + dir[0];
+            int y = colonnaTarget + dir[1];
+            if (coordinateValide(x, y)) {
+                Pezzo p = mappa[x][y].getPezzoContenuto();
+                if (p instanceof Re && p.isBianco() == daBianco) return true;
+            }
+        }
+
+        int[][] direzioni = {
+            {0, 1}, {0, -1}, {1, 0}, {-1, 0},
+            {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
+        };
+        for (int[] dir : direzioni) {
+            int x = rigaTarget + dir[0];
+            int y = colonnaTarget + dir[1];
+            while (coordinateValide(x, y)) {
+                Pezzo p = mappa[x][y].getPezzoContenuto();
+                if (p != null) {
+                    if (p.isBianco() == daBianco) {
+                        boolean lineaDritta = dir[0] == 0 || dir[1] == 0;
+                        if ((lineaDritta && (p instanceof Torre || p instanceof Regina))
+                            || (!lineaDritta && (p instanceof Alfiere || p instanceof Regina))) {
+                            return true;
+                        }
+                    }
+                    break;
+                }
+                x += dir[0];
+                y += dir[1];
+            }
+        }
+
+        return false;
     }
 
     public boolean haMosso() {
         return haMosso;
+    }
+
+    public void setHaMosso(boolean haMosso) {
+        this.haMosso = haMosso;
     }
 }

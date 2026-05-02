@@ -9,7 +9,8 @@ public class Torre extends Pezzo {
 
     public Torre(char nome, int riga, int colonna, Casella[][] mappa) {
         super(nome, riga, colonna, mappa);
-        haMosso = false;
+        this.haMosso = !((isBianco && riga == 7 && (colonna == 0 || colonna == 7))
+                      || (!isBianco && riga == 0 && (colonna == 0 || colonna == 7)));
     }
 
     @Override
@@ -19,9 +20,8 @@ public class Torre extends Pezzo {
     }
     
     public void muoviArrocco(int x, int y) {
-        mappa[riga][colonna].inserisciPezzo(null);
-        riga = x;
-        colonna = y;
+        mappa[riga][colonna].rimuoviPezzo();
+        aggiornaPosizione(x, y);
         haMosso = true;
         mappa[riga][colonna].inserisciPezzo(this);
     }
@@ -38,7 +38,7 @@ public class Torre extends Pezzo {
             int x = riga + dir[0];
             int y = colonna + dir[1];
 
-            while (x >= 0 && x < 8 && y >= 0 && y < 8) {
+            while (coordinateValide(x, y)) {
                 Casella casella = mappa[x][y];
 
                 if (casella.isVuota()) {

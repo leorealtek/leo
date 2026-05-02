@@ -13,42 +13,37 @@ public abstract class Pezzo {
         this.nome = nome;
         this.riga = riga;
         this.colonna = colonna;
-        isBianco = Character.isUpperCase(nome);
+        this.isBianco = Character.isUpperCase(nome);
         this.mappa = mappa;
     }
 
     public void muovi(int x, int y) {
         Casella[][] possibili = mossePossibili();
 
-        if (x < 0 || x >= 8 || y < 0 || y >= 8 || possibili[x][y] == null) {
+        if (!coordinateValide(x, y) || possibili[x][y] == null) {
             throw new MossaNonValidaException(
                 "Il pezzo non può muoversi in (" + x + ", " + y + ")"
             );
         }
 
         mappa[x][y].inserisciPezzo(this);
-        mappa[riga][colonna].inserisciPezzo(null);
-        riga = x;
-        colonna = y;
+        mappa[riga][colonna].rimuoviPezzo();
+        aggiornaPosizione(x, y);
+    }
+
+    protected boolean coordinateValide(int x, int y) {
+        return x >= 0 && x < 8 && y >= 0 && y < 8;
+    }
+
+    public void aggiornaPosizione(int x, int y) {
+        if (!coordinateValide(x, y)) {
+            throw new IllegalArgumentException("Coordinate non valide: (" + x + ", " + y + ")");
+        }
+        this.riga = x;
+        this.colonna = y;
     }
 
     public abstract Casella[][] mossePossibili();
-
-    public void mostraMossePossibili() {
-        Casella[][] mossePossibili = mossePossibili();
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (mossePossibili[i][j] != null) {
-                    System.out.print("X ");
-                } else if (mappa[i][j].getPezzoContenuto() != null) {
-                    System.out.print(mappa[i][j].getPezzoContenuto().getNome() + " ");
-                } else {
-                    System.out.print(". ");
-                }
-            }
-            System.out.println();
-        }
-    }
 
     public char getNome() {
         return nome;
