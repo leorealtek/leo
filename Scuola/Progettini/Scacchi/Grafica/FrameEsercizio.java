@@ -3,15 +3,14 @@ package Scuola.Progettini.Scacchi.Grafica;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 import Scuola.Progettini.Scacchi.Exception.MossaNonValidaException;
-import Scuola.Progettini.Scacchi.Partite.Partita;
+import Scuola.Progettini.Scacchi.Partite.Esercizio;
 import Scuola.Progettini.Scacchi.Util.Casella;
 import Scuola.Progettini.Scacchi.Util.Pezzo;
-import Scuola.Progettini.Scacchi.Pezzi.Re;
-import Scuola.Progettini.Scacchi.Pezzi.Torre;
 
-public class FramePartita extends JFrame implements MouseListener {
+public class FrameEsercizio extends JFrame implements MouseListener {
 
     private static final int DIMENSIONE_SCACCHIERA = 8;
     private static final int DIMENSIONE_CASELLA = 100;
@@ -25,30 +24,44 @@ public class FramePartita extends JFrame implements MouseListener {
     private static final Color COLORE_ARROCCO = new Color(120, 170, 230);
 
     private final JLabel[][] labels;
-    private final Partita partita;
+    private final Esercizio esercizio;
     private final JLabel stato;
+    private final JLabel infoEsercizio;
+
+    private final boolean coloreCheDeveDareMatto;
+    private int mosseRimanenti;
 
     private int rigaSelezionata = -1;
     private int colonnaSelezionata = -1;
 
     private boolean erroreVisibile = false;
-    private boolean partitaFinita = false;
+    private boolean esercizioFinito = false;
     private Timer timerErrore;
 
-    public FramePartita() {
-        super("Scacchi");
+    public FrameEsercizio(String percorsoFile) throws IOException {
+        super("Esercizio");
 
-        this.partita = new Partita();
+        this.esercizio = new Esercizio(percorsoFile);
+        this.coloreCheDeveDareMatto = esercizio.getColoreCheDeveDareMatto();
+        this.mosseRimanenti = esercizio.getMosseRimanenti();
+
         this.labels = new JLabel[DIMENSIONE_SCACCHIERA][DIMENSIONE_SCACCHIERA];
-        this.stato = new JLabel("Turno: Bianco", SwingConstants.CENTER);
+        this.stato = new JLabel("", SwingConstants.CENTER);
+        this.infoEsercizio = new JLabel("", SwingConstants.CENTER);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         setResizable(false);
 
+        JPanel pannelloAlto = new JPanel(new GridLayout(2, 1));
+        pannelloAlto.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+
         stato.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
-        stato.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
-        add(stato, BorderLayout.NORTH);
+        infoEsercizio.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
+
+        pannelloAlto.add(stato);
+        pannelloAlto.add(infoEsercizio);
+        add(pannelloAlto, BorderLayout.NORTH);
 
         JPanel scacchiera = new JPanel(new GridLayout(DIMENSIONE_SCACCHIERA, DIMENSIONE_SCACCHIERA));
         scacchiera.setPreferredSize(new Dimension(
@@ -82,7 +95,7 @@ public class FramePartita extends JFrame implements MouseListener {
     }
 
     private void aggiornaGrafica() {
-        Casella[][] mappa = partita.getMappa();
+        Casella[][] mappa = esercizio.getMappa();
 
         for (int riga = 0; riga < DIMENSIONE_SCACCHIERA; riga++) {
             for (int colonna = 0; colonna < DIMENSIONE_SCACCHIERA; colonna++) {
@@ -95,23 +108,33 @@ public class FramePartita extends JFrame implements MouseListener {
             }
         }
 
-        if (rigaSelezionata != -1 && colonnaSelezionata != -1 && !partitaFinita) {
+        if (rigaSelezionata != -1 && colonnaSelezionata != -1 && !esercizioFinito) {
             labels[rigaSelezionata][colonnaSelezionata].setBackground(COLORE_SELEZIONE);
             evidenziaMossePossibili(rigaSelezionata, colonnaSelezionata);
         }
 
-        if (!erroreVisibile && !partitaFinita) {
+        aggiornaInfoEsercizio();
+
+        if (!erroreVisibile && !esercizioFinito) {
             stato.setForeground(Color.BLACK);
-            stato.setText("Turno: " + (partita.isAttaccaBianco() ? "Bianco" : "Nero"));
+            stato.setText("Turno: " + nomeColore(esercizio.isAttaccaBianco()));
         }
     }
 
+    private void aggiornaInfoEsercizio() {
+        infoEsercizio.setForeground(Color.DARK_GRAY);
+        infoEsercizio.setText(
+                "Parte: " + nomeColore(coloreCheDeveDareMatto)
+                + "  |  Mosse disponibili per dare matto: " + mosseRimanenti
+        );
+    }
+
     private void evidenziaMossePossibili(int riga, int colonna) {
-        Pezzo pezzo = partita.getMappa()[riga][colonna].getPezzoContenuto();
+        Pezzo pezzo = esercizio.getMappa()[riga][colonna].getPezzoContenuto();
         if (pezzo == null) return;
 
         Casella[][] mosse = pezzo.mossePossibili();
-        Casella[][] mappa = partita.getMappa();
+        Casella[][] mappa = esercizio.getMappa();
 
         for (int i = 0; i < DIMENSIONE_SCACCHIERA; i++) {
             for (int j = 0; j < DIMENSIONE_SCACCHIERA; j++) {
@@ -151,49 +174,7 @@ public class FramePartita extends JFrame implements MouseListener {
 
     private boolean puoArroccare(boolean latoLungo) {
         try {
-            int rigaRe = partita.isAttaccaBianco() ? 7 : 0;
-            Casella[][] mappa = partita.getMappa();
-
-            Pezzo pezzoRe = mappa[rigaRe][4].getPezzoContenuto();
-            if (!(pezzoRe instanceof Re) || pezzoRe.isBianco() != partita.isAttaccaBianco()) {
-                return false;
-            }
-
-            Re re = (Re) pezzoRe;
-            if (re.haMosso() || partita.isSottoScacco(partita.isAttaccaBianco())) {
-                return false;
-            }
-
-            int colonnaTorre = latoLungo ? 0 : 7;
-            Pezzo pezzoTorre = mappa[rigaRe][colonnaTorre].getPezzoContenuto();
-            if (!(pezzoTorre instanceof Torre) || pezzoTorre.isBianco() != partita.isAttaccaBianco()) {
-                return false;
-            }
-
-            Torre torre = (Torre) pezzoTorre;
-            if (torre.haMosso()) {
-                return false;
-            }
-
-            int primaCasellaLibera = latoLungo ? 1 : 5;
-            int ultimaCasellaLibera = latoLungo ? 3 : 6;
-
-            for (int col = primaCasellaLibera; col <= ultimaCasellaLibera; col++) {
-                if (!mappa[rigaRe][col].isVuota()) {
-                    return false;
-                }
-            }
-
-            int colonnaReDestinazione = latoLungo ? 2 : 6;
-            int passo = latoLungo ? -1 : 1;
-
-            for (int col = 4 + passo; col != colonnaReDestinazione + passo; col += passo) {
-                if (partita.casellaAttaccata(rigaRe, col, !partita.isAttaccaBianco())) {
-                    return false;
-                }
-            }
-
-            return true;
+            return esercizio.puoArroccare(latoLungo);
         } catch (RuntimeException ex) {
             return false;
         }
@@ -222,16 +203,16 @@ public class FramePartita extends JFrame implements MouseListener {
     }
 
     private void selezionaCasella(int riga, int colonna) {
-        if (partitaFinita) return;
+        if (esercizioFinito) return;
 
-        Pezzo pezzo = partita.getMappa()[riga][colonna].getPezzoContenuto();
+        Pezzo pezzo = esercizio.getMappa()[riga][colonna].getPezzoContenuto();
 
         if (pezzo == null) {
             deseleziona();
             return;
         }
 
-        if (pezzo.isBianco() != partita.isAttaccaBianco()) {
+        if (pezzo.isBianco() != esercizio.isAttaccaBianco()) {
             mostraErrore("Non è il turno di questo colore");
             deseleziona();
             return;
@@ -243,10 +224,11 @@ public class FramePartita extends JFrame implements MouseListener {
     }
 
     private void muoviSuCasella(int rigaArrivo, int colonnaArrivo) {
-        if (partitaFinita) return;
+        if (esercizioFinito) return;
 
         try {
-            Pezzo pezzo = partita.getMappa()[rigaSelezionata][colonnaSelezionata].getPezzoContenuto();
+            boolean coloreCheHaMosso = esercizio.isAttaccaBianco();
+            Pezzo pezzo = esercizio.getMappa()[rigaSelezionata][colonnaSelezionata].getPezzoContenuto();
 
             if (isTentativoArrocco(pezzo, rigaArrivo, colonnaArrivo)) {
                 boolean latoLungo = colonnaArrivo == 2;
@@ -255,13 +237,15 @@ public class FramePartita extends JFrame implements MouseListener {
                     throw new MossaNonValidaException("Arrocco non valido");
                 }
 
-                partita.arrocca(latoLungo);
+                esercizio.arrocca(latoLungo);
             } else {
-                partita.muoviPezzo(rigaSelezionata, colonnaSelezionata, rigaArrivo, colonnaArrivo);
+                esercizio.muoviPezzo(rigaSelezionata, colonnaSelezionata, rigaArrivo, colonnaArrivo);
             }
 
+            mosseRimanenti = esercizio.getMosseRimanenti();
+
             deseleziona();
-            controllaFinePartita();
+            controllaFineEsercizio(coloreCheHaMosso);
 
         } catch (MossaNonValidaException | IllegalArgumentException e) {
             mostraErrore(e.getMessage());
@@ -278,18 +262,39 @@ public class FramePartita extends JFrame implements MouseListener {
                 && (colonnaArrivo == 2 || colonnaArrivo == 6);
     }
 
-    private void controllaFinePartita() {
-        String risultato = partita.checkWin();
+    private void controllaFineEsercizio(boolean coloreCheHaMosso) {
+        String risultato = esercizio.checkWin();
 
-        if ("Nessuno".equals(risultato)) {
-            if (partita.isSottoScacco(partita.isAttaccaBianco())) {
-                stato.setForeground(Color.RED);
-                stato.setText("Scacco al " + (partita.isAttaccaBianco() ? "Bianco" : "Nero") + "!");
-            }
+        if (!"Nessuno".equals(risultato) && !risultato.startsWith("Patta")) {
+            boolean vincitoreBianco = "Bianco".equals(risultato);
+            boolean esercizioRiuscito = vincitoreBianco == coloreCheDeveDareMatto && mosseRimanenti >= 0;
+
+            finisciEsercizio(
+                    esercizioRiuscito
+                    ? "Esercizio completato! Scacco matto: vince il " + risultato
+                    : "Esercizio fallito: ha vinto il " + risultato
+            );
             return;
         }
 
-        partitaFinita = true;
+        if (risultato.startsWith("Patta")) {
+            finisciEsercizio("Esercizio fallito: la partita è patta");
+            return;
+        }
+
+        if (coloreCheHaMosso == coloreCheDeveDareMatto && mosseRimanenti == 0) {
+            finisciEsercizio("Esercizio fallito: mosse finite, non hai dato scacco matto");
+            return;
+        }
+
+        if (esercizio.isSottoScacco(esercizio.isAttaccaBianco())) {
+            stato.setForeground(Color.RED);
+            stato.setText("Scacco al " + nomeColore(esercizio.isAttaccaBianco()) + "!");
+        }
+    }
+
+    private void finisciEsercizio(String messaggio) {
+        esercizioFinito = true;
         rigaSelezionata = -1;
         colonnaSelezionata = -1;
         erroreVisibile = false;
@@ -300,15 +305,7 @@ public class FramePartita extends JFrame implements MouseListener {
 
         aggiornaGrafica();
         stato.setForeground(Color.BLACK);
-
-        if ("Patta BIANCO".equals(risultato)) {
-            stato.setText("Patta per stallo, il bianco non può muoversi");
-        } else if ("Patta NERO".equals(risultato)) {
-            stato.setText("Patta per stallo, il nero non può muoversi");
-        } else {
-            stato.setText("Scacco matto! Vince il " + risultato);
-        }
-
+        stato.setText(messaggio);
         bloccaScacchiera();
     }
 
@@ -319,7 +316,7 @@ public class FramePartita extends JFrame implements MouseListener {
     }
 
     private void mostraErrore(String messaggio) {
-        if (partitaFinita) return;
+        if (esercizioFinito) return;
 
         if (timerErrore != null && timerErrore.isRunning()) {
             timerErrore.stop();
@@ -330,12 +327,15 @@ public class FramePartita extends JFrame implements MouseListener {
         stato.setText(messaggio != null && !messaggio.isBlank() ? messaggio : "Mossa invalida");
         stato.setForeground(COLORE_ERRORE);
 
-        timerErrore = new Timer(1500, e -> {
-            erroreVisibile = false;
+        timerErrore = new Timer(1500, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                erroreVisibile = false;
 
-            if (!partitaFinita) {
-                stato.setForeground(Color.BLACK);
-                stato.setText("Turno: " + (partita.isAttaccaBianco() ? "Bianco" : "Nero"));
+                if (!esercizioFinito) {
+                    stato.setForeground(Color.BLACK);
+                    stato.setText("Turno: " + nomeColore(esercizio.isAttaccaBianco()));
+                }
             }
         });
 
@@ -345,7 +345,7 @@ public class FramePartita extends JFrame implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (partitaFinita) return;
+        if (esercizioFinito) return;
 
         JLabel label = (JLabel) e.getSource();
         int riga = (int) label.getClientProperty("riga");
@@ -361,9 +361,9 @@ public class FramePartita extends JFrame implements MouseListener {
             return;
         }
 
-        Pezzo pezzoCliccato = partita.getMappa()[riga][colonna].getPezzoContenuto();
+        Pezzo pezzoCliccato = esercizio.getMappa()[riga][colonna].getPezzoContenuto();
 
-        if (pezzoCliccato != null && pezzoCliccato.isBianco() == partita.isAttaccaBianco()) {
+        if (pezzoCliccato != null && pezzoCliccato.isBianco() == esercizio.isAttaccaBianco()) {
             selezionaCasella(riga, colonna);
             return;
         }
@@ -380,9 +380,13 @@ public class FramePartita extends JFrame implements MouseListener {
         }
     }
 
+    private String nomeColore(boolean bianco) {
+        return bianco ? "Bianco" : "Nero";
+    }
+
     @Override
     public void mouseEntered(MouseEvent e) {
-        if (partitaFinita) return;
+        if (esercizioFinito) return;
 
         JLabel label = (JLabel) e.getSource();
         label.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
@@ -390,17 +394,30 @@ public class FramePartita extends JFrame implements MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
-        if (partitaFinita) return;
+        if (esercizioFinito) return;
         aggiornaGrafica();
     }
 
-    @Override 
+    @Override
     public void mousePressed(MouseEvent e) {}
-    
-    @Override 
+
+    @Override
     public void mouseReleased(MouseEvent e) {}
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(FramePartita::new);
+        try {
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        new FrameEsercizio("/home/leo/Scrivania/leo/Scuola/Progettini/Scacchi/Partite/FileEsercizi/Esercizio.txt");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -51,24 +51,26 @@ public class Partita {
         attaccaBianco = true;
     }
 
+    public Partita(Casella[][] mappa, boolean attaccaBianco) {
+        if (mappa == null || mappa.length != 8) {
+            throw new IllegalArgumentException("La mappa deve essere una matrice 8x8.");
+        }
+
+        for (int i = 0; i < 8; i++) {
+            if (mappa[i] == null || mappa[i].length != 8) {
+                throw new IllegalArgumentException("La mappa deve essere una matrice 8x8.");
+            }
+        }
+
+        this.mappa = mappa;
+        this.attaccaBianco = attaccaBianco;
+    }
+
     private void inizializzaCaselleVuote() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 mappa[i][j] = new Casella();
             }
-        }
-    }
-
-    public void stampaMappa() {
-        for (Casella[] caselle : mappa) {
-            for (Casella casella : caselle) {
-                if (casella != null && casella.getPezzoContenuto() != null) {
-                    System.out.print(casella.getPezzoContenuto().getNome() + " ");
-                } else {
-                    System.out.print(". ");
-                }
-            }
-            System.out.println();
         }
     }
 
@@ -88,6 +90,11 @@ public class Partita {
         Casella[][] possibili = pezzo.mossePossibili();
         if (possibili[rigaArrivo][colonnaArrivo] == null) {
             throw new MossaNonValidaException("Mossa non consentita per questo pezzo.");
+        }
+
+        Pezzo pezzoDestinazione = mappa[rigaArrivo][colonnaArrivo].getPezzoContenuto();
+        if (pezzoDestinazione instanceof Re) {
+            throw new MossaNonValidaException("Mossa non consentita: il Re non può essere catturato.");
         }
 
         if (lasciaReSottoScacco(pezzo, rigaPartenza, colonnaPartenza, rigaArrivo, colonnaArrivo)) {
@@ -218,17 +225,19 @@ public class Partita {
         if (!trovatoBianco) return "Nero";
         if (!trovatoNero) return "Bianco";
 
-        boolean coloreSottoScacco = attaccaBianco;
+        boolean coloreDiTurno = attaccaBianco;
+        boolean sottoScacco = isSottoScacco(coloreDiTurno);
+        boolean haMosseLegali = esisteAlmenoUnaMossaLegale(coloreDiTurno);
 
-        if (!isSottoScacco(coloreSottoScacco)) {
-            return "Nessuno";
+        if (sottoScacco && !haMosseLegali) {
+            return coloreDiTurno ? "Nero" : "Bianco";
         }
 
-        if (esisteAlmenoUnaMossaLegale(coloreSottoScacco)) {
-            return "Nessuno";
+        if (!sottoScacco && !haMosseLegali) {
+            return "Patta " + (coloreDiTurno ? "BIANCO" : "NERO");
         }
 
-        return coloreSottoScacco ? "Nero" : "Bianco";
+        return "Nessuno";
     }
 
     private boolean esisteAlmenoUnaMossaLegale(boolean bianco) {
@@ -250,6 +259,11 @@ public class Partita {
                             continue;
                         }
 
+                        Pezzo pezzoDestinazione = mappa[rigaArrivo][colonnaArrivo].getPezzoContenuto();
+                        if (pezzoDestinazione instanceof Re) {
+                            continue;
+                        }
+
                         if (!lasciaReSottoScacco(
                                 pezzo,
                                 rigaPartenza,
@@ -264,7 +278,45 @@ public class Partita {
             }
         }
 
-        return false;
+        return esisteArroccoLegale(bianco);
+    }
+
+    private boolean esisteArroccoLegale(boolean bianco) {
+        int rigaRe = bianco ? 7 : 0;
+        if (!coordinateValide(rigaRe, 4)) return false;
+
+        Pezzo pezzoRe = mappa[rigaRe][4].getPezzoContenuto();
+        if (!(pezzoRe instanceof Re) || pezzoRe.isBianco() != bianco) return false;
+
+        Re re = (Re) pezzoRe;
+        if (re.haMosso() || isSottoScacco(bianco)) return false;
+
+        return arroccoLegale(bianco, false) || arroccoLegale(bianco, true);
+    }
+
+    private boolean arroccoLegale(boolean bianco, boolean latoLungo) {
+        int rigaRe = bianco ? 7 : 0;
+        int colonnaTorre = latoLungo ? 0 : 7;
+        int primaCasellaLibera = latoLungo ? 1 : 5;
+        int ultimaCasellaLibera = latoLungo ? 3 : 6;
+        int colonnaReDestinazione = latoLungo ? 2 : 6;
+        int passo = latoLungo ? -1 : 1;
+
+        Pezzo pezzoTorre = mappa[rigaRe][colonnaTorre].getPezzoContenuto();
+        if (!(pezzoTorre instanceof Torre) || pezzoTorre.isBianco() != bianco) return false;
+
+        Torre torre = (Torre) pezzoTorre;
+        if (torre.haMosso()) return false;
+
+        for (int col = primaCasellaLibera; col <= ultimaCasellaLibera; col++) {
+            if (!mappa[rigaRe][col].isVuota()) return false;
+        }
+
+        for (int col = 4 + passo; col != colonnaReDestinazione + passo; col += passo) {
+            if (casellaAttaccata(rigaRe, col, !bianco)) return false;
+        }
+
+        return true;
     }
 
     public void caricaMappaDaFile(String percorsoFile) throws IOException {
