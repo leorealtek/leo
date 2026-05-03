@@ -327,15 +327,12 @@ public class FrameEsercizio extends JFrame implements MouseListener {
         stato.setText(messaggio != null && !messaggio.isBlank() ? messaggio : "Mossa invalida");
         stato.setForeground(COLORE_ERRORE);
 
-        timerErrore = new Timer(1500, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                erroreVisibile = false;
+        timerErrore = new Timer(1500, e -> {
+            erroreVisibile = false;
 
-                if (!esercizioFinito) {
-                    stato.setForeground(Color.BLACK);
-                    stato.setText("Turno: " + nomeColore(esercizio.isAttaccaBianco()));
-                }
+            if (!esercizioFinito) {
+                stato.setForeground(Color.BLACK);
+                stato.setText("Turno: " + (esercizio.isAttaccaBianco() ? "Bianco" : "Nero"));
             }
         });
 
@@ -412,7 +409,11 @@ public class FrameEsercizio extends JFrame implements MouseListener {
                     try {
                         new FrameEsercizio("/home/leo/Scrivania/leo/Scuola/Progettini/Scacchi/Partite/FileEsercizi/Esercizio.txt");
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        try {
+                            new FrameEsercizio("C:/Users/leogi/Desktop/leo/Scuola/Progettini/Scacchi/Partite/FileEsercizi/Esercizio.txt");
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
                     }
                 }
             });
