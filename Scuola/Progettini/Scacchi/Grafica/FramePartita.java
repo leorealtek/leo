@@ -46,16 +46,13 @@ public class FramePartita extends FrameScacchiAstratto {
         info.setText("Mossa: " + partitaNormale.getMosse());
     }
 
-    public void usaFrame() {
-        avviaFrame();
-    }
-
-    public static void main(String[] args) {
+    @Override
+    public void creaFrame() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 FramePartita fp = new FramePartita();
-                fp.usaFrame();
+                fp.avviaFrame();
             }
         });
     }

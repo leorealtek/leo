@@ -13,13 +13,13 @@ public abstract class PartitaAstratta {
     protected Casella[][] mappa;
     protected boolean attaccaBianco;
 
-    protected PartitaAstratta() {
+    public PartitaAstratta() {
         mappa = new Casella[8][8];
         inizializzaCaselleVuote();
         attaccaBianco = true;
     }
 
-    protected PartitaAstratta(Casella[][] mappa, boolean attaccaBianco) {
+    public PartitaAstratta(Casella[][] mappa, boolean attaccaBianco) {
         validaMappa(mappa);
         this.mappa = mappa;
         this.attaccaBianco = attaccaBianco;
@@ -297,11 +297,11 @@ public abstract class PartitaAstratta {
         return esisteArroccoLegale(bianco);
     }
 
-    protected boolean esisteArroccoLegale(boolean bianco) {
+    private boolean esisteArroccoLegale(boolean bianco) {
         return arroccoLegale(bianco, false) || arroccoLegale(bianco, true);
     }
 
-    protected boolean arroccoLegale(boolean bianco, boolean latoLungo) {
+    private boolean arroccoLegale(boolean bianco, boolean latoLungo) {
         int rigaRe = bianco ? 7 : 0;
         if (!coordinateValide(rigaRe, 4)) return false;
 

@@ -50,7 +50,7 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
         creaScacchiera();
     }
 
-    protected void avviaFrame() {
+    public void avviaFrame() {
         aggiornaGrafica();
         pack();
         setLocationRelativeTo(null);
@@ -95,7 +95,7 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
         add(scacchiera, BorderLayout.CENTER);
     }
 
-    protected void aggiornaGrafica() {
+    private void aggiornaGrafica() {
         Casella[][] mappa = partita.getMappa();
 
         for (int riga = 0; riga < DIMENSIONE_SCACCHIERA; riga++) {
@@ -166,7 +166,7 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
         }
     }
 
-    protected boolean puoArroccare(boolean latoLungo) {
+    public boolean puoArroccare(boolean latoLungo) {
         try {
             return partita.puoArroccare(latoLungo);
         } catch (RuntimeException ex) {
@@ -255,8 +255,10 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
                 && (colonnaArrivo == 2 || colonnaArrivo == 6);
     }
 
-    protected void aggiornaInfoExtra() {
-    }
+
+    protected abstract void aggiornaInfoExtra();
+
+    public abstract void creaFrame();
 
     private void dopoMossaNormale(Pezzo pezzoMosso) {
         if (pezzoMosso instanceof Pedone p) {
@@ -284,13 +286,13 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
         bloccaScacchiera();
     }
 
-    protected void deseleziona() {
+    private void deseleziona() {
         rigaSelezionata = -1;
         colonnaSelezionata = -1;
         aggiornaGrafica();
     }
 
-    protected void mostraErrore(String messaggio) {
+    private void mostraErrore(String messaggio) {
         if (finito) return;
 
         if (timerErrore != null && timerErrore.isRunning()) {
@@ -346,7 +348,7 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
         muoviSuCasella(riga, colonna);
     }
 
-    protected void bloccaScacchiera() {
+    private void bloccaScacchiera() {
         for (int riga = 0; riga < DIMENSIONE_SCACCHIERA; riga++) {
             for (int colonna = 0; colonna < DIMENSIONE_SCACCHIERA; colonna++) {
                 labels[riga][colonna].removeMouseListener(this);

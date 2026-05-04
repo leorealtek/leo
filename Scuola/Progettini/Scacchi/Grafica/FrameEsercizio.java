@@ -67,10 +67,6 @@ public class FrameEsercizio extends FrameScacchiAstratto {
         }
     }
 
-    public void usaFrame() {
-        avviaFrame();
-    }
-
     private static FrameEsercizio creaFrameDaPercorsiPredefiniti() throws IOException {
         try {
             return new FrameEsercizio(PERCORSO_LINUX);
@@ -83,13 +79,14 @@ public class FrameEsercizio extends FrameScacchiAstratto {
         }
     }
 
-    public static void main(String[] args) {
+    @Override
+    public void creaFrame() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 try {
                     FrameEsercizio fe = creaFrameDaPercorsiPredefiniti();
-                    fe.usaFrame();
+                    fe.avviaFrame();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
