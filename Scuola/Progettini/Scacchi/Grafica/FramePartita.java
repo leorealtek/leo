@@ -1,15 +1,15 @@
 package Scuola.Progettini.Scacchi.Grafica;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-
 import Scuola.Progettini.Scacchi.Exception.MossaNonValidaException;
 import Scuola.Progettini.Scacchi.Partite.Partita;
-import Scuola.Progettini.Scacchi.Util.Casella;
-import Scuola.Progettini.Scacchi.Util.Pezzo;
+import Scuola.Progettini.Scacchi.Pezzi.Pedone;
 import Scuola.Progettini.Scacchi.Pezzi.Re;
 import Scuola.Progettini.Scacchi.Pezzi.Torre;
+import Scuola.Progettini.Scacchi.Util.Casella;
+import Scuola.Progettini.Scacchi.Util.Pezzo;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
 public class FramePartita extends JFrame implements MouseListener {
 
@@ -56,16 +56,6 @@ public class FramePartita extends JFrame implements MouseListener {
                 DIMENSIONE_CASELLA * DIMENSIONE_SCACCHIERA
         ));
 
-        createLabels(scacchiera);
-        add(scacchiera, BorderLayout.CENTER);
-
-        aggiornaGrafica();
-        pack();
-        setLocationRelativeTo(null);
-        setVisible(true);
-    }
-
-    public void createLabels(JPanel scacchiera) {
         for (int riga = 0; riga < DIMENSIONE_SCACCHIERA; riga++) {
             for (int colonna = 0; colonna < DIMENSIONE_SCACCHIERA; colonna++) {
                 JLabel label = new JLabel("", SwingConstants.CENTER);
@@ -79,6 +69,13 @@ public class FramePartita extends JFrame implements MouseListener {
                 scacchiera.add(label);
             }
         }
+
+        add(scacchiera, BorderLayout.CENTER);
+
+        aggiornaGrafica();
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 
     private void aggiornaGrafica() {
@@ -258,6 +255,7 @@ public class FramePartita extends JFrame implements MouseListener {
                 partita.arrocca(latoLungo);
             } else {
                 partita.muoviPezzo(rigaSelezionata, colonnaSelezionata, rigaArrivo, colonnaArrivo);
+                if (pezzo instanceof Pedone p) controllaPromozione(p);
             }
 
             deseleziona();
@@ -281,7 +279,7 @@ public class FramePartita extends JFrame implements MouseListener {
     private void controllaFinePartita() {
         String risultato = partita.checkWin();
 
-        if ("Nessuno".equals(risultato)) {
+        if (risultato.equals("Nessuno")) {
             if (partita.isSottoScacco(partita.isAttaccaBianco())) {
                 stato.setForeground(Color.RED);
                 stato.setText("Scacco al " + (partita.isAttaccaBianco() ? "Bianco" : "Nero") + "!");
@@ -301,15 +299,21 @@ public class FramePartita extends JFrame implements MouseListener {
         aggiornaGrafica();
         stato.setForeground(Color.BLACK);
 
-        if ("Patta BIANCO".equals(risultato)) {
+        if (risultato.equals("Patta BIANCO")) {
             stato.setText("Patta per stallo, il bianco non può muoversi");
-        } else if ("Patta NERO".equals(risultato)) {
+        } else if (risultato.equals("Patta NERO")) {
             stato.setText("Patta per stallo, il nero non può muoversi");
         } else {
             stato.setText("Scacco matto! Vince il " + risultato);
         }
 
         bloccaScacchiera();
+    }
+
+    private void controllaPromozione(Pedone p) {
+        Pezzo pezzo = partita.promuoviPedone(p);
+        if (pezzo == null) return;
+        partita.getMappa()[p.getRiga()][p.getColonna()].inserisciPezzo(pezzo);
     }
 
     private void deseleziona() {

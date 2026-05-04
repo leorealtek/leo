@@ -1,14 +1,13 @@
 package Scuola.Progettini.Scacchi.Grafica;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.IOException;
-
 import Scuola.Progettini.Scacchi.Exception.MossaNonValidaException;
 import Scuola.Progettini.Scacchi.Partite.Esercizio;
 import Scuola.Progettini.Scacchi.Util.Casella;
 import Scuola.Progettini.Scacchi.Util.Pezzo;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.IOException;
+import javax.swing.*;
 
 public class FrameEsercizio extends JFrame implements MouseListener {
 
@@ -410,7 +409,7 @@ public class FrameEsercizio extends JFrame implements MouseListener {
                         new FrameEsercizio("/home/leo/Scrivania/leo/Scuola/Progettini/Scacchi/Partite/FileEsercizi/Esercizio.txt");
                     } catch (IOException e) {
                         try {
-                            new FrameEsercizio("C:/Users/leogi/Desktop/leo/Scuola/Progettini/Scacchi/Partite/FileEsercizi/Esercizio.txt");
+                            new FrameEsercizio("C:/Users/leonardo.giacomin/Desktop/leo/Scuola/Progettini/Scacchi/Partite/FileEsercizi/Esercizio.txt");
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }

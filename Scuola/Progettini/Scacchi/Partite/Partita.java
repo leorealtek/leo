@@ -1,11 +1,5 @@
 package Scuola.Progettini.Scacchi.Partite;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Scanner;
-
 import Scuola.Progettini.Scacchi.Exception.FileNonValidoException;
 import Scuola.Progettini.Scacchi.Exception.MossaNonValidaException;
 import Scuola.Progettini.Scacchi.Pezzi.Alfiere;
@@ -16,6 +10,12 @@ import Scuola.Progettini.Scacchi.Pezzi.Regina;
 import Scuola.Progettini.Scacchi.Pezzi.Torre;
 import Scuola.Progettini.Scacchi.Util.Casella;
 import Scuola.Progettini.Scacchi.Util.Pezzo;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+import javax.swing.JOptionPane;
 
 public class Partita {
     private Casella[][] mappa;
@@ -393,6 +393,31 @@ public class Partita {
 
             writer.println(attaccaBianco ? "BIANCO" : "NERO");
         }
+    }
+
+    public Pezzo promuoviPedone(Pedone p) {
+        if (p.getRiga() == 0 || p.getRiga() == 7) {
+            String[] pezziDisponibili = {"Torre", "Cavallo", "Alfiere", "Donna"};
+            Pezzo[] pezzi = {
+                new Torre((p.isBianco()) ? 'T' : 't', p.getRiga(), p.getColonna(), mappa),
+                new Cavallo((p.isBianco()) ? 'C' : 'c', p.getRiga(), p.getColonna(), mappa),
+                new Alfiere((p.isBianco()) ? 'A' : 'a', p.getRiga(), p.getColonna(), mappa),
+                new Regina((p.isBianco()) ? 'D' : 'd', p.getRiga(), p.getColonna(), mappa),
+            };
+
+            int scelta = JOptionPane.showOptionDialog(
+                null,
+                "Scegli che in che pezzo vuoi promuovere il pedone",
+                "Menù di scelta",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                pezziDisponibili,
+                pezziDisponibili[3]
+            );
+            return pezzi[scelta];
+        }
+        return null;
     }
 
     private void validaCoordinate(int riga, int colonna) {
