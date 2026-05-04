@@ -1,7 +1,5 @@
 package Scuola.Progettini.Scacchi.Util;
 
-import Scuola.Progettini.Scacchi.Exception.MossaNonValidaException;
-
 public abstract class Pezzo {
     protected char nome;
     protected int riga;
@@ -18,14 +16,6 @@ public abstract class Pezzo {
     }
 
     public void muovi(int x, int y) {
-        Casella[][] possibili = mossePossibili();
-
-        if (!coordinateValide(x, y) || possibili[x][y] == null) {
-            throw new MossaNonValidaException(
-                "Il pezzo non può muoversi in (" + x + ", " + y + ")"
-            );
-        }
-
         mappa[x][y].inserisciPezzo(this);
         mappa[riga][colonna].rimuoviPezzo();
         aggiornaPosizione(x, y);

@@ -21,7 +21,7 @@ public class Alfiere extends Pezzo {
             int x = riga + dir[0];
             int y = colonna + dir[1];
 
-            while (x >= 0 && x < 8 && y >= 0 && y < 8) {
+            while (coordinateValide(x, y)) {
                 Casella casella = mappa[x][y];
 
                 if (casella.isVuota()) {
