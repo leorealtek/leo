@@ -51,7 +51,7 @@ public class Partita extends PartitaAstratta {
         mappa[7][7] = new Casella(new Torre('T', 7, 7, mappa));
 
         attaccaBianco = true;
-        mosse = 0;
+        mosse = 1;
     }
 
     public void caricaMappaDaFile(String percorsoFile) throws IOException {
@@ -90,8 +90,19 @@ public class Partita extends PartitaAstratta {
         }
     }
 
+    private boolean pattaPerMosse() {
+        int mossaIniziale = mosse;
+
+        // TODO
+
+        return false;
+    }
+
     @Override
     protected void dopoMossa(boolean coloreCheHaMosso) {
+        if (pattaPerMosse()) {
+            terminaParita();
+        }
         mosse++;
     }
 

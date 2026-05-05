@@ -131,19 +131,20 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
 
         for (int i = 0; i < DIMENSIONE_SCACCHIERA; i++) {
             for (int j = 0; j < DIMENSIONE_SCACCHIERA; j++) {
-                if (mosse[i][j] == null) continue;
+                boolean enPassant = partita.isEnPassantValido(pezzo, riga, colonna, i, j);
 
+                if (mosse[i][j] == null && !enPassant) continue;
                 if (partita.lasciaReSottoScacco(pezzo, riga, colonna, i, j)) continue;
 
                 Pezzo pezzoDestinazione = mappa[i][j].getPezzoContenuto();
-                if (pezzoDestinazione != null && pezzoDestinazione.isBianco() != pezzo.isBianco()) {
+
+                if (enPassant || (pezzoDestinazione != null && pezzoDestinazione.isBianco() != pezzo.isBianco())) {
                     labels[i][j].setBackground(COLORE_CATTURA);
                     labels[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
                 } else {
                     labels[i][j].setBackground(COLORE_MOSSA);
                     labels[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
                 }
-                
             }
         }
         evidenziaArroccoSePossibile(pezzo);

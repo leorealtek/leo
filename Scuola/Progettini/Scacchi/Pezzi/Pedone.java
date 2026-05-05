@@ -6,15 +6,20 @@ import Scuola.Progettini.Scacchi.Util.Pezzo;
 public class Pedone extends Pezzo {
 
     private boolean primaMossa;
+    private boolean secondaMossa;
 
     public Pedone(char nome, int riga, int colonna, Casella[][] mappa) {
         super(nome, riga, colonna, mappa);
         this.primaMossa = (isBianco && riga == 6) || (!isBianco && riga == 1);
+        this.secondaMossa = (isBianco && riga == 5 || riga == 4) || (!isBianco && riga == 2 || riga == 3);
     }
 
     @Override
     public void muovi(int x, int y) {
+        int rigaPrecedente = riga;
         super.muovi(x, y);
+
+        secondaMossa = Math.abs(x - rigaPrecedente) == 2;
         primaMossa = false;
     }
 
@@ -50,7 +55,15 @@ public class Pedone extends Pezzo {
         return primaMossa;
     }
 
+    public boolean isSecondaMossa() {
+        return secondaMossa;
+    }
+
     public void setPrimaMossa(boolean primaMossa) {
         this.primaMossa = primaMossa;
+    }
+
+    public void setSecondaMossa(boolean secondaMossa) {
+        this.secondaMossa = secondaMossa;
     }
 }

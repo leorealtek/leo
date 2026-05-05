@@ -12,17 +12,20 @@ public abstract class PartitaAstratta {
 
     protected Casella[][] mappa;
     protected boolean attaccaBianco;
+    protected Pedone pedoneEnPassant;
 
     public PartitaAstratta() {
         mappa = new Casella[8][8];
         inizializzaCaselleVuote();
         attaccaBianco = true;
+        pedoneEnPassant = null;
     }
 
     public PartitaAstratta(Casella[][] mappa, boolean attaccaBianco) {
         validaMappa(mappa);
         this.mappa = mappa;
         this.attaccaBianco = attaccaBianco;
+        this.pedoneEnPassant = null;
     }
 
     protected void inizializzaCaselleVuote() {
@@ -80,14 +83,18 @@ public abstract class PartitaAstratta {
         validaCoordinate(rigaArrivo, colonnaArrivo);
 
         Pezzo pezzo = mappa[rigaPartenza][colonnaPartenza].getPezzoContenuto();
+        if (pezzo == null) {
+            throw new MossaNonValidaException("Nessun pezzo selezionato.");
+        }
 
         if (pezzo.isBianco() != attaccaBianco) {
             throw new MossaNonValidaException("Non è il turno di questo colore.");
         }
 
         Casella[][] possibili = pezzo.mossePossibili();
+        boolean enPassant = isEnPassantValido(pezzo, rigaPartenza, colonnaPartenza, rigaArrivo, colonnaArrivo);
 
-        if (possibili[rigaArrivo][colonnaArrivo] == null) {
+        if (possibili[rigaArrivo][colonnaArrivo] == null && !enPassant) {
             throw new MossaNonValidaException("Mossa non consentita per questo pezzo.");
         }
 
@@ -96,9 +103,34 @@ public abstract class PartitaAstratta {
         }
 
         boolean coloreCheHaMosso = attaccaBianco;
+        int distanzaRighe = Math.abs(rigaArrivo - rigaPartenza);
+
+        if (enPassant) {
+            mappa[rigaPartenza][colonnaArrivo].rimuoviPezzo();
+        }
+
         pezzo.muovi(rigaArrivo, colonnaArrivo);
+
+        pedoneEnPassant = null;
+        if (pezzo instanceof Pedone pedone && distanzaRighe == 2) {
+            pedoneEnPassant = pedone;
+        }
+
         dopoMossa(coloreCheHaMosso);
         attaccaBianco = !attaccaBianco;
+    }
+
+    public boolean isEnPassantValido(Pezzo pezzo, int rigaPartenza, int colonnaPartenza, int rigaArrivo, int colonnaArrivo) {
+        if (!(pezzo instanceof Pedone)) return false;
+        if (pedoneEnPassant == null) return false;
+        if (pedoneEnPassant.isBianco() == pezzo.isBianco()) return false;
+        if (!mappa[rigaArrivo][colonnaArrivo].isVuota()) return false;
+
+        int direzione = pezzo.isBianco() ? -1 : 1;
+        return rigaArrivo == rigaPartenza + direzione
+                && Math.abs(colonnaArrivo - colonnaPartenza) == 1
+                && pedoneEnPassant.getRiga() == rigaPartenza
+                && pedoneEnPassant.getColonna() == colonnaArrivo;
     }
 
     public void arrocca(boolean latoLungo) {
@@ -140,6 +172,14 @@ public abstract class PartitaAstratta {
 
     public boolean lasciaReSottoScacco(Pezzo pezzo, int rigaPartenza, int colonnaPartenza, int rigaArrivo, int colonnaArrivo) {
         Pezzo catturato = mappa[rigaArrivo][colonnaArrivo].getPezzoContenuto();
+        boolean enPassant = isEnPassantValido(pezzo, rigaPartenza, colonnaPartenza, rigaArrivo, colonnaArrivo);
+        Pezzo catturatoEnPassant = null;
+
+        if (enPassant) {
+            catturatoEnPassant = mappa[rigaPartenza][colonnaArrivo].getPezzoContenuto();
+            mappa[rigaPartenza][colonnaArrivo].rimuoviPezzo();
+        }
+
         mappa[rigaArrivo][colonnaArrivo].inserisciPezzo(pezzo);
         mappa[rigaPartenza][colonnaPartenza].rimuoviPezzo();
         pezzo.aggiornaPosizione(rigaArrivo, colonnaArrivo);
@@ -148,6 +188,9 @@ public abstract class PartitaAstratta {
 
         mappa[rigaPartenza][colonnaPartenza].inserisciPezzo(pezzo);
         mappa[rigaArrivo][colonnaArrivo].inserisciPezzo(catturato);
+        if (enPassant) {
+            mappa[rigaPartenza][colonnaArrivo].inserisciPezzo(catturatoEnPassant);
+        }
         pezzo.aggiornaPosizione(rigaPartenza, colonnaPartenza);
 
         return sottoScacco;
@@ -256,6 +299,10 @@ public abstract class PartitaAstratta {
         return "Nessuno";
     }
 
+    public String terminaParita() {
+        return "Patta 50";
+    }
+
     protected boolean esisteAlmenoUnaMossaLegale(boolean bianco) {
         for (int rigaPartenza = 0; rigaPartenza < 8; rigaPartenza++) {
             for (int colonnaPartenza = 0; colonnaPartenza < 8; colonnaPartenza++) {
@@ -294,7 +341,33 @@ public abstract class PartitaAstratta {
             }
         }
 
+        if (esisteEnPassantLegale(bianco)) {
+            return true;
+        }
+
         return esisteArroccoLegale(bianco);
+    }
+
+    private boolean esisteEnPassantLegale(boolean bianco) {
+        if (pedoneEnPassant == null || pedoneEnPassant.isBianco() == bianco) return false;
+
+        int rigaPedoneAvversario = pedoneEnPassant.getRiga();
+        int colonnaPedoneAvversario = pedoneEnPassant.getColonna();
+        int direzione = bianco ? -1 : 1;
+        int rigaArrivo = rigaPedoneAvversario + direzione;
+
+        for (int colonnaPartenza : new int[] {colonnaPedoneAvversario - 1, colonnaPedoneAvversario + 1}) {
+            if (!coordinateValide(rigaPedoneAvversario, colonnaPartenza)) continue;
+
+            Pezzo pezzo = mappa[rigaPedoneAvversario][colonnaPartenza].getPezzoContenuto();
+            if (pezzo instanceof Pedone && pezzo.isBianco() == bianco
+                    && isEnPassantValido(pezzo, rigaPedoneAvversario, colonnaPartenza, rigaArrivo, colonnaPedoneAvversario)
+                    && !lasciaReSottoScacco(pezzo, rigaPedoneAvversario, colonnaPartenza, rigaArrivo, colonnaPedoneAvversario)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private boolean esisteArroccoLegale(boolean bianco) {
