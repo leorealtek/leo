@@ -2,6 +2,8 @@ package Scuola.Progettini.Scacchi.Grafica;
 
 import Scuola.Progettini.Scacchi.Partite.Partita;
 import java.awt.Color;
+import java.io.IOException;
+
 import javax.swing.SwingUtilities;
 
 public class FramePartita extends FrameScacchiAstratto {
@@ -10,6 +12,10 @@ public class FramePartita extends FrameScacchiAstratto {
 
     public FramePartita() {
         this(new Partita());
+    }
+
+    public FramePartita(String percorsoFile) throws IOException {
+        this(new Partita(percorsoFile));
     }
 
     private FramePartita(Partita partita) {

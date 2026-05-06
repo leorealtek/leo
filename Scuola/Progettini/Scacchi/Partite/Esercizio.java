@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class Esercizio extends PartitaAstratta {
 
-    private static final String[] PERCORSI_PREDEFINITI = {"Scuola/Progettini/Scacchi/Partite/FileEsercizi/Esercizio.txt"};
+    private static final String[] PERCORSI_PREDEFINITI = {"Scuola/Progettini/Scacchi/FileEsercizi/Esercizio.txt"};
 
     private boolean coloreCheDeveDareMatto;
     private int mosseRimanenti;

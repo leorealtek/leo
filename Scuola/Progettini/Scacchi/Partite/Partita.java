@@ -27,6 +27,10 @@ public class Partita extends PartitaAstratta {
         inizializzaPartitaStandard();
     }
 
+    public Partita(String percorsoFile) throws IOException{
+        caricaMappaDaFile(percorsoFile);
+    }
+
     public Partita(Casella[][] mappa, boolean attaccaBianco) {
         super(mappa, attaccaBianco);
     }
