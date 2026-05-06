@@ -1,7 +1,6 @@
 package Scuola.Progettini.Scacchi.Pezzi;
 
-import Scuola.Progettini.Scacchi.Util.Casella;
-import Scuola.Progettini.Scacchi.Util.Pezzo;
+import Scuola.Progettini.Scacchi.Util.*;
 
 public class Regina extends Pezzo {
 

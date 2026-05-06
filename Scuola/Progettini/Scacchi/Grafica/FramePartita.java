@@ -1,14 +1,16 @@
 package Scuola.Progettini.Scacchi.Grafica;
 
 import Scuola.Progettini.Scacchi.Partite.Partita;
-import java.awt.Color;
-import java.io.IOException;
 
-import javax.swing.SwingUtilities;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import javax.swing.*;
 
 public class FramePartita extends FrameScacchiAstratto {
 
     private final Partita partitaNormale;
+    private JButton salvaPartita;
 
     public FramePartita() {
         this(new Partita());
@@ -21,6 +23,71 @@ public class FramePartita extends FrameScacchiAstratto {
     private FramePartita(Partita partita) {
         super("Scacchi", partita);
         this.partitaNormale = partita;
+        this.salvaPartita = new JButton("Salva partita");
+        aggiungiPulsanteSalvaPartita();
+    }
+
+    private void aggiungiPulsanteSalvaPartita() {
+        salvaPartita = new JButton("Salva partita");
+        salvaPartita.setFocusable(false);
+
+        salvaPartita.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    File cartella = new File("Scuola/Progettini/Scacchi/FilePartite");
+
+                    if (!cartella.exists()) {
+                        cartella.mkdirs();
+                    }
+
+                    int numero = 0;
+                    File fileDaSalvare;
+
+                    do {
+                        fileDaSalvare = new File(cartella, "Partita" + numero + ".txt");
+                        numero++;
+                    } while (fileDaSalvare.exists());
+
+                    partitaNormale.salvaSuFile(fileDaSalvare.getPath());
+
+                    JOptionPane.showMessageDialog(
+                        FramePartita.this,
+                        "Partita salvata in:\n" + fileDaSalvare.getAbsolutePath(),
+                        "Salvataggio completato",
+                        JOptionPane.INFORMATION_MESSAGE
+                    );
+
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(
+                        FramePartita.this,
+                        "Errore durante il salvataggio:\n" + ex.getMessage(),
+                        "Errore",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            }
+        });
+
+        JPanel pannelloAlto = new JPanel(new BorderLayout());
+        pannelloAlto.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+
+        JPanel pannelloTesti = new JPanel(new GridLayout(2, 1));
+        pannelloTesti.add(stato);
+        pannelloTesti.add(info);
+
+        JPanel spazioSinistra = new JPanel();
+        spazioSinistra.setPreferredSize(salvaPartita.getPreferredSize());
+
+        pannelloAlto.add(spazioSinistra, BorderLayout.WEST);
+        pannelloAlto.add(pannelloTesti, BorderLayout.CENTER);
+        pannelloAlto.add(salvaPartita, BorderLayout.EAST);
+
+        getContentPane().remove(0);
+        add(pannelloAlto, BorderLayout.NORTH);
+
+        revalidate();
+        repaint();
     }
 
     @Override
@@ -61,8 +128,7 @@ public class FramePartita extends FrameScacchiAstratto {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                FramePartita fp = new FramePartita();
-                fp.avviaFrame();
+                avviaFrame();
             }
         });
     }

@@ -1,20 +1,10 @@
 package Scuola.Progettini.Scacchi.Partite;
 
-import Scuola.Progettini.Scacchi.Exception.FileNonValidoException;
-import Scuola.Progettini.Scacchi.Exception.MossaNonValidaException;
-import Scuola.Progettini.Scacchi.Pezzi.Alfiere;
-import Scuola.Progettini.Scacchi.Pezzi.Cavallo;
-import Scuola.Progettini.Scacchi.Pezzi.Pedone;
-import Scuola.Progettini.Scacchi.Pezzi.Re;
-import Scuola.Progettini.Scacchi.Pezzi.Regina;
-import Scuola.Progettini.Scacchi.Pezzi.Torre;
-import Scuola.Progettini.Scacchi.Util.Casella;
-import Scuola.Progettini.Scacchi.Util.Pezzo;
+import Scuola.Progettini.Scacchi.Exception.*;
+import Scuola.Progettini.Scacchi.Pezzi.*;
+import Scuola.Progettini.Scacchi.Util.*;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.Scanner;
 
 public class Partita extends PartitaAstratta {
@@ -63,6 +53,96 @@ public class Partita extends PartitaAstratta {
         mosse = 1;
     }
 
+        private void impostaPedoneEnPassant(int riga, int colonna) {
+        if (riga == -1 && colonna == -1) {
+            pedoneEnPassant = null;
+            return;
+        }
+
+        if (riga < 0 || riga >= 8 || colonna < 0 || colonna >= 8) {
+            throw new FileNonValidoException("Coordinate EN_PASSANT fuori dalla scacchiera.");
+        }
+
+        Pezzo pezzo = mappa[riga][colonna].getPezzoContenuto();
+
+        if (!(pezzo instanceof Pedone)) {
+            throw new FileNonValidoException("EN_PASSANT indica una casella senza pedone.");
+        }
+
+        pedoneEnPassant = (Pedone) pezzo;
+    }
+
+    private boolean reHaMosso(boolean bianco) {
+        int riga = bianco ? 7 : 0;
+        Pezzo pezzo = mappa[riga][4].getPezzoContenuto();
+
+        if (pezzo instanceof Re) {
+            return ((Re) pezzo).haMosso();
+        }
+
+        return true;
+    }
+
+    private boolean torreHaMosso(boolean bianco, boolean latoLungo) {
+        int riga = bianco ? 7 : 0;
+        int colonna = latoLungo ? 0 : 7;
+
+        Pezzo pezzo = mappa[riga][colonna].getPezzoContenuto();
+
+        if (pezzo instanceof Torre) {
+            return ((Torre) pezzo).haMosso();
+        }
+
+        return true;
+    }
+
+    private void impostaStatoArrocco(
+            boolean reBiancoHaMosso,
+            boolean torreBiancaLungaHaMosso,
+            boolean torreBiancaCortaHaMosso,
+            boolean reNeroHaMosso,
+            boolean torreNeraLungaHaMosso,
+            boolean torreNeraCortaHaMosso
+    ) {
+        impostaReHaMosso(true, reBiancoHaMosso);
+        impostaTorreHaMosso(true, true, torreBiancaLungaHaMosso);
+        impostaTorreHaMosso(true, false, torreBiancaCortaHaMosso);
+
+        impostaReHaMosso(false, reNeroHaMosso);
+        impostaTorreHaMosso(false, true, torreNeraLungaHaMosso);
+        impostaTorreHaMosso(false, false, torreNeraCortaHaMosso);
+    }
+
+    private void impostaReHaMosso(boolean bianco, boolean haMosso) {
+        int riga = bianco ? 7 : 0;
+        Pezzo pezzo = mappa[riga][4].getPezzoContenuto();
+
+        if (pezzo instanceof Re) {
+            ((Re) pezzo).setHaMosso(haMosso);
+        }
+    }
+
+    private void impostaTorreHaMosso(boolean bianco, boolean latoLungo, boolean haMosso) {
+        int riga = bianco ? 7 : 0;
+        int colonna = latoLungo ? 0 : 7;
+
+        Pezzo pezzo = mappa[riga][colonna].getPezzoContenuto();
+
+        if (pezzo instanceof Torre) {
+            ((Torre) pezzo).setHaMosso(haMosso);
+        }
+    }
+
+    private void validaRePresenti() {
+        if (trovaRe(true) == null) {
+            throw new FileNonValidoException("Nel file manca il Re bianco.");
+        }
+
+        if (trovaRe(false) == null) {
+            throw new FileNonValidoException("Nel file manca il Re nero.");
+        }
+    }
+
     public void caricaMappaDaFile(String percorsoFile) throws IOException {
         try (Scanner s = new Scanner(new File(percorsoFile))) {
             Casella[][] nuovaMappa = leggiScacchiera(s);
@@ -78,7 +158,71 @@ public class Partita extends PartitaAstratta {
                 throw new FileNonValidoException("Mosse mancanti nel file.");
             }
 
-            this.mosse = s.nextInt();
+            try {
+                this.mosse = Integer.parseInt(s.nextLine().trim());
+            } catch (NumberFormatException e) {
+                throw new FileNonValidoException("Numero mosse non valido.");
+            }
+
+            if (mosse < 1) {
+                throw new FileNonValidoException("Il numero della mossa non può essere minore di 1.");
+            }
+
+            this.ultimaMossaPerPatta = 0;
+            this.pedoneEnPassant = null;
+
+            while (s.hasNextLine()) {
+                String riga = s.nextLine().trim();
+
+                if (riga.isBlank()) {
+                    continue;
+                }
+
+                String[] parti = riga.split("\\s+");
+
+                if (parti[0].equals("ULTIMA_MOSSA_PATTA")) {
+                    if (parti.length != 2) {
+                        throw new FileNonValidoException("Riga ULTIMA_MOSSA_PATTA non valida.");
+                    }
+
+                    try {
+                        ultimaMossaPerPatta = Integer.parseInt(parti[1]);
+                    } catch (NumberFormatException e) {
+                        throw new FileNonValidoException("Valore ULTIMA_MOSSA_PATTA non valido.");
+                    }
+                }
+
+                else if (parti[0].equals("EN_PASSANT")) {
+                    if (parti.length != 3) {
+                        throw new FileNonValidoException("Riga EN_PASSANT non valida.");
+                    }
+
+                    try {
+                        int rigaPedone = Integer.parseInt(parti[1]);
+                        int colonnaPedone = Integer.parseInt(parti[2]);
+                        impostaPedoneEnPassant(rigaPedone, colonnaPedone);
+                    } catch (NumberFormatException e) {
+                        throw new FileNonValidoException("Coordinate EN_PASSANT non valide.");
+                    }
+                }
+
+                else if (parti[0].equals("ARROCCO")) {
+                    if (parti.length != 7) {
+                        throw new FileNonValidoException("Riga ARROCCO non valida.");
+                    }
+
+                    impostaStatoArrocco(
+                        Boolean.parseBoolean(parti[1]),
+                        Boolean.parseBoolean(parti[2]),
+                        Boolean.parseBoolean(parti[3]),
+                        Boolean.parseBoolean(parti[4]),
+                        Boolean.parseBoolean(parti[5]),
+                        Boolean.parseBoolean(parti[6])
+                    );
+                }
+            }
+
+            validaRePresenti();
         }
     }
 
@@ -103,6 +247,24 @@ public class Partita extends PartitaAstratta {
 
             writer.println(attaccaBianco ? "BIANCO" : "NERO");
             writer.println(mosse);
+
+            writer.println("ULTIMA_MOSSA_PATTA " + ultimaMossaPerPatta);
+
+            if (pedoneEnPassant == null) {
+                writer.println("EN_PASSANT -1 -1");
+            } else {
+                writer.println("EN_PASSANT " + pedoneEnPassant.getRiga() + " " + pedoneEnPassant.getColonna());
+            }
+
+            writer.println(
+                "ARROCCO "
+                + reHaMosso(true) + " "
+                + torreHaMosso(true, true) + " "
+                + torreHaMosso(true, false) + " "
+                + reHaMosso(false) + " "
+                + torreHaMosso(false, true) + " "
+                + torreHaMosso(false, false)
+            );
         }
     }
 

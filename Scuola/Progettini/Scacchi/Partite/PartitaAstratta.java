@@ -5,7 +5,6 @@ import Scuola.Progettini.Scacchi.Pezzi.*;
 import Scuola.Progettini.Scacchi.Util.*;
 
 import java.util.Scanner;
-
 import javax.swing.JOptionPane;
 
 public abstract class PartitaAstratta {

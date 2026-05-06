@@ -9,13 +9,11 @@ public class FrameEsercizio extends FrameScacchiAstratto {
 
     private final Esercizio esercizio;
     private final boolean coloreCheDeveDareMatto;
+    private String percorsoFile;
 
     public FrameEsercizio(String percorsoFile) throws IOException {
         this(new Esercizio(percorsoFile));
-    }
-
-    public FrameEsercizio() throws IOException{
-        this(new Esercizio());
+        this.percorsoFile = percorsoFile;
     }
 
     private FrameEsercizio(Esercizio esercizio) {
@@ -73,10 +71,15 @@ public class FrameEsercizio extends FrameScacchiAstratto {
             @Override
             public void run() {
                 try {
-                    FrameEsercizio fe = new FrameEsercizio();
+                    FrameEsercizio fe = new FrameEsercizio(percorsoFile);
                     fe.avviaFrame();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    try {
+                        FrameEsercizio fe = new FrameEsercizio(new Esercizio(percorsoFile));
+                        fe.avviaFrame();
+                    } catch (Exception ee) {
+                        ee.printStackTrace();
+                    }
                 }
             }
         });

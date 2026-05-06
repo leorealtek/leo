@@ -44,7 +44,7 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-        setResizable(false);
+        setResizable(true);
 
         creaPannelloAlto();
         creaScacchiera();
@@ -57,7 +57,7 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
         setVisible(true);
     }
 
-    private void creaPannelloAlto() {
+    protected void creaPannelloAlto() {
         stato.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
         stato.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 
