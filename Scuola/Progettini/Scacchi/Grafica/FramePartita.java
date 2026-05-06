@@ -21,6 +21,10 @@ public class FramePartita extends FrameScacchiAstratto {
     protected void controllaFine(boolean coloreCheHaMosso) {
         String risultato = partitaNormale.checkWin();
 
+        if (partitaNormale.pattaPerMosse()) {
+            finisciConMessaggio("Patta per la regola delle 50 mosse");
+        }
+
         if (risultato.equals("Nessuno")) {
             if (partitaNormale.isSottoScacco(partitaNormale.isAttaccaBianco())) {
                 stato.setForeground(Color.RED);

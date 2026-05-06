@@ -299,10 +299,6 @@ public abstract class PartitaAstratta {
         return "Nessuno";
     }
 
-    public String terminaParita() {
-        return "Patta 50";
-    }
-
     protected boolean esisteAlmenoUnaMossaLegale(boolean bianco) {
         for (int rigaPartenza = 0; rigaPartenza < 8; rigaPartenza++) {
             for (int colonnaPartenza = 0; colonnaPartenza < 8; colonnaPartenza++) {

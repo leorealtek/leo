@@ -1,5 +1,6 @@
 package Scuola.Progettini.Scacchi.Partite;
 
+import Scuola.Progettini.Scacchi.Exception.MossaNonValidaException;
 import Scuola.Progettini.Scacchi.Pezzi.Alfiere;
 import Scuola.Progettini.Scacchi.Pezzi.Cavallo;
 import Scuola.Progettini.Scacchi.Pezzi.Pedone;
@@ -7,6 +8,8 @@ import Scuola.Progettini.Scacchi.Pezzi.Re;
 import Scuola.Progettini.Scacchi.Pezzi.Regina;
 import Scuola.Progettini.Scacchi.Pezzi.Torre;
 import Scuola.Progettini.Scacchi.Util.Casella;
+import Scuola.Progettini.Scacchi.Util.Pezzo;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,6 +19,7 @@ import java.util.Scanner;
 public class Partita extends PartitaAstratta {
 
     private int mosse;
+    private int ultimaMossaPerPatta;
 
     public Partita() {
         super();
@@ -90,19 +94,60 @@ public class Partita extends PartitaAstratta {
         }
     }
 
-    private boolean pattaPerMosse() {
-        int mossaIniziale = mosse;
+    @Override
+    public void muoviPezzo(int rigaPartenza, int colonnaPartenza, int rigaArrivo, int colonnaArrivo) {
+        validaCoordinate(rigaPartenza, colonnaPartenza);
+        validaCoordinate(rigaArrivo, colonnaArrivo);
 
-        // TODO
+        Pezzo pezzo = mappa[rigaPartenza][colonnaPartenza].getPezzoContenuto();
+        if (pezzo == null) {
+            throw new MossaNonValidaException("Nessun pezzo selezionato.");
+        }
 
+        if (pezzo.isBianco() != attaccaBianco) {
+            throw new MossaNonValidaException("Non è il turno di questo colore.");
+        }
+
+        Casella[][] possibili = pezzo.mossePossibili();
+        boolean enPassant = isEnPassantValido(pezzo, rigaPartenza, colonnaPartenza, rigaArrivo, colonnaArrivo);
+
+        if (possibili[rigaArrivo][colonnaArrivo] == null && !enPassant) {
+            throw new MossaNonValidaException("Mossa non consentita per questo pezzo.");
+        }
+
+        if (lasciaReSottoScacco(pezzo, rigaPartenza, colonnaPartenza, rigaArrivo, colonnaArrivo)) {
+            throw new MossaNonValidaException("Mossa non consentita: il Re resterebbe o finirebbe sotto scacco.");
+        }
+
+        boolean coloreCheHaMosso = attaccaBianco;
+        int distanzaRighe = Math.abs(rigaArrivo - rigaPartenza);
+
+        if (enPassant) {
+            mappa[rigaPartenza][colonnaArrivo].rimuoviPezzo();
+        }
+
+        if (pezzo instanceof Pedone || mappa[rigaArrivo][colonnaArrivo].getPezzoContenuto() != null) ultimaMossaPerPatta = mosse;
+        pezzo.muovi(rigaArrivo, colonnaArrivo);
+
+        pedoneEnPassant = null;
+        if (pezzo instanceof Pedone pedone && distanzaRighe == 2) {
+            pedoneEnPassant = pedone;
+        }
+
+        dopoMossa(coloreCheHaMosso);
+        attaccaBianco = !attaccaBianco;
+    }
+
+    public boolean pattaPerMosse() {
+        if (mosse - ultimaMossaPerPatta > 50) {
+            System.out.println("patta");
+            return true;
+        }
         return false;
     }
 
     @Override
     protected void dopoMossa(boolean coloreCheHaMosso) {
-        if (pattaPerMosse()) {
-            terminaParita();
-        }
         mosse++;
     }
 
