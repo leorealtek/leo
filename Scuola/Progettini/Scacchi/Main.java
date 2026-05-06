@@ -1,10 +1,13 @@
 package Scuola.Progettini.Scacchi;
 
-import Scuola.Progettini.Scacchi.Grafica.FramePartita;
+import java.io.IOException;
+
+import Scuola.Progettini.Scacchi.Grafica.*;
+import Scuola.Progettini.Scacchi.Partite.*;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         FramePartita fp = new FramePartita();
-        fp.avviaFrame();
+        fp.creaFrame();
     }
 }

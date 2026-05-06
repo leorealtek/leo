@@ -7,15 +7,15 @@ import javax.swing.SwingUtilities;
 
 public class FrameEsercizio extends FrameScacchiAstratto {
 
-    private static final String PERCORSO_LINUX = "/home/leo/Scrivania/leo/Scuola/Progettini/Scacchi/Partite/FileEsercizi/Esercizio.txt";
-    private static final String PERCORSO_WINDOWS_1 = "C:/Users/leonardo.giacomin/Desktop/leo/Scuola/Progettini/Scacchi/Partite/FileEsercizi/Esercizio.txt";
-    private static final String PERCORSO_WINDOWS_2 = "C:/Users/leogi/Desktop/leo/Scuola/Progettini/Scacchi/Partite/FileEsercizi/Esercizio.txt";
-
     private final Esercizio esercizio;
     private final boolean coloreCheDeveDareMatto;
 
     public FrameEsercizio(String percorsoFile) throws IOException {
         this(new Esercizio(percorsoFile));
+    }
+
+    public FrameEsercizio() throws IOException{
+        this(new Esercizio());
     }
 
     private FrameEsercizio(Esercizio esercizio) {
@@ -67,25 +67,13 @@ public class FrameEsercizio extends FrameScacchiAstratto {
         }
     }
 
-    private static FrameEsercizio creaFrameDaPercorsiPredefiniti() throws IOException {
-        try {
-            return new FrameEsercizio(PERCORSO_LINUX);
-        } catch (IOException e) {
-            try {
-                return new FrameEsercizio(PERCORSO_WINDOWS_1);
-            } catch (IOException ee) {
-                return new FrameEsercizio(PERCORSO_WINDOWS_2);
-            }
-        }
-    }
-
     @Override
     public void creaFrame() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 try {
-                    FrameEsercizio fe = creaFrameDaPercorsiPredefiniti();
+                    FrameEsercizio fe = new FrameEsercizio();
                     fe.avviaFrame();
                 } catch (IOException e) {
                     e.printStackTrace();

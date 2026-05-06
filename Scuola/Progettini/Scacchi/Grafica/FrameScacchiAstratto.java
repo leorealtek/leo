@@ -50,7 +50,7 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
         creaScacchiera();
     }
 
-    public void avviaFrame() {
+    protected void avviaFrame() {
         aggiornaGrafica();
         pack();
         setLocationRelativeTo(null);

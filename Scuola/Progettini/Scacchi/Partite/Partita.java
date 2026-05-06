@@ -1,5 +1,6 @@
 package Scuola.Progettini.Scacchi.Partite;
 
+import Scuola.Progettini.Scacchi.Exception.FileNonValidoException;
 import Scuola.Progettini.Scacchi.Exception.MossaNonValidaException;
 import Scuola.Progettini.Scacchi.Pezzi.Alfiere;
 import Scuola.Progettini.Scacchi.Pezzi.Cavallo;
@@ -63,11 +64,17 @@ public class Partita extends PartitaAstratta {
             Casella[][] nuovaMappa = leggiScacchiera(s);
 
             if (!s.hasNextLine()) {
-                throw new Scuola.Progettini.Scacchi.Exception.FileNonValidoException("Turno mancante nel file.");
+                throw new FileNonValidoException("Turno mancante nel file.");
             }
 
             this.mappa = nuovaMappa;
             this.attaccaBianco = leggiTurno(s.nextLine());
+
+            if (!s.hasNextLine()) {
+                throw new FileNonValidoException("Mosse mancanti nel file.");
+            }
+
+            this.mosse = s.nextInt();
         }
     }
 
@@ -91,6 +98,7 @@ public class Partita extends PartitaAstratta {
             }
 
             writer.println(attaccaBianco ? "BIANCO" : "NERO");
+            writer.println(mosse);
         }
     }
 

@@ -8,12 +8,19 @@ import java.util.Scanner;
 
 public class Esercizio extends PartitaAstratta {
 
+    private static final String[] PERCORSI_PREDEFINITI = {"Scuola/Progettini/Scacchi/Partite/FileEsercizi/Esercizio.txt"};
+
     private boolean coloreCheDeveDareMatto;
     private int mosseRimanenti;
 
     public Esercizio(String percorsoFile) throws IOException {
         super();
         leggiMappaDaFile(percorsoFile);
+    }
+
+    public Esercizio() throws IOException {
+        super();
+        leggiDaPercorsiPredefiniti();
     }
 
     public void leggiMappaDaFile(String percorsoFile) throws IOException {
@@ -45,6 +52,21 @@ public class Esercizio extends PartitaAstratta {
         }
     }
 
+    private void leggiDaPercorsiPredefiniti() throws IOException {
+    IOException ultimoErrore = null;
+
+    for (String percorso : PERCORSI_PREDEFINITI) {
+        try {
+            leggiMappaDaFile(percorso);
+            return;
+        } catch (IOException e) {
+            ultimoErrore = e;
+        }
+    }
+
+    throw new IOException("Nessun percorso valido per Esercizio.txt", ultimoErrore);
+}
+
     @Override
     protected void dopoMossa(boolean coloreCheHaMosso) {
         scalaMosseSeServe(coloreCheHaMosso);
@@ -53,19 +75,6 @@ public class Esercizio extends PartitaAstratta {
     private void scalaMosseSeServe(boolean coloreCheHaMosso) {
         if (coloreCheHaMosso == coloreCheDeveDareMatto) {
             mosseRimanenti--;
-        }
-    }
-
-    public void stampaMappa() {
-        for (Casella[] caselle : mappa) {
-            for (Casella casella : caselle) {
-                if (casella != null && casella.getPezzoContenuto() != null) {
-                    System.out.print(casella.getPezzoContenuto().getNome() + " ");
-                } else {
-                    System.out.print(". ");
-                }
-            }
-            System.out.println();
         }
     }
 
