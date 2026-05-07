@@ -41,7 +41,7 @@ public class FramePartita extends FrameScacchiAstratto {
                         cartella.mkdirs();
                     }
 
-                    int numero = 0;
+                    int numero = 1;
                     File fileDaSalvare;
 
                     do {
@@ -57,6 +57,24 @@ public class FramePartita extends FrameScacchiAstratto {
                         "Salvataggio completato",
                         JOptionPane.INFORMATION_MESSAGE
                     );
+
+                    String[] scelte = {"Continua", "Esci"};
+
+                    int scelta = JOptionPane.showOptionDialog(
+                        null,
+                        "Vuoi continuare a giocare?",
+                        "Salvataggio partita",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        new ImageIcon("Scuola/Progettini/Scacchi/Immagini/Scelta.jpg"),
+                        scelte,
+                        scelte[0]
+                    );
+
+                    if (scelta <= 0) return;
+                    if (scelta == 1) {
+                        System.exit(0);
+                    }
 
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(
