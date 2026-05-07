@@ -143,11 +143,6 @@ public class FramePartita extends FrameScacchiAstratto {
 
     @Override
     public void creaFrame() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                avviaFrame();
-            }
-        });
+        avviaFrame();
     }
 }

@@ -3,7 +3,6 @@ package Scuola.Progettini.Scacchi.Grafica;
 import Scuola.Progettini.Scacchi.Partite.Esercizio;
 import java.awt.Color;
 import java.io.IOException;
-import javax.swing.SwingUtilities;
 
 public class FrameEsercizio extends FrameScacchiAstratto {
 
@@ -67,21 +66,16 @@ public class FrameEsercizio extends FrameScacchiAstratto {
 
     @Override
     public void creaFrame() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    FrameEsercizio fe = new FrameEsercizio(percorsoFile);
-                    fe.avviaFrame();
-                } catch (IOException e) {
-                    try {
-                        FrameEsercizio fe = new FrameEsercizio(new Esercizio(percorsoFile));
-                        fe.avviaFrame();
-                    } catch (Exception ee) {
-                        ee.printStackTrace();
-                    }
-                }
+        try {
+            FrameEsercizio fe = new FrameEsercizio(percorsoFile);
+               fe.avviaFrame();
+        } catch (IOException e) {
+            try {
+                FrameEsercizio fe = new FrameEsercizio(new Esercizio(percorsoFile));
+                fe.avviaFrame();
+               } catch (Exception ee) {
+                ee.printStackTrace();
             }
-        });
+        }
     }
 }
