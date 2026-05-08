@@ -22,6 +22,39 @@ public class Main {
         return scelta;
     }
 
+
+    private static boolean scegliConBot() {
+        int sceltaBot = mostraDialogPerScelta(
+            "Modalità partita",
+            "Vuoi giocare contro il bot?",
+            "Scuola/Progettini/Scacchi/Immagini/Pedone.png",
+            new String[]{"2 giocatori", "Contro bot"},
+            "2 giocatori"
+        );
+
+        if (sceltaBot < 0) {
+            System.exit(0);
+        }
+
+        return sceltaBot == 1;
+    }
+
+    private static int scegliDifficoltaBot() {
+        int sceltaBot = mostraDialogPerScelta(
+            "Difficoltà bot",
+            "Imposta difficoltà bot",
+            "Scuola/Progettini/Scacchi/Immagini/Pedone.png",
+            new String[]{"Facile", "Media", "Difficile"},
+            "Media"
+        );
+
+        if (sceltaBot < 0) {
+            System.exit(0);
+        }
+
+        return sceltaBot + 1;
+    }
+
     private static ArrayList<File> trovaFile(String percorsoCartella) {
         ArrayList<File> files = new ArrayList<>();
         File cartella = new File(percorsoCartella);
@@ -79,7 +112,12 @@ public class Main {
                                 );
 
             if (sceltaPartita == 0) {
-                FramePartita fp = new FramePartita();
+                boolean conBot = scegliConBot();
+                FramePartita fp = new FramePartita(conBot);
+                if (conBot) {
+                    int difficoltaBot = scegliDifficoltaBot();
+                    fp.getPartita().setProfonditaBot(difficoltaBot);
+                }
                 fp.creaFrame();
             }
 
@@ -108,8 +146,14 @@ public class Main {
 
                 int indiceFile = tendinaPartite.getSelectedIndex();
 
-                FramePartita fp = new FramePartita(files.get(indiceFile).getAbsolutePath());
+                boolean conBot = scegliConBot();
+                FramePartita fp = new FramePartita(files.get(indiceFile).getAbsolutePath(), conBot);
+                if (conBot) {
+                    int difficoltaBot = scegliDifficoltaBot();
+                    fp.getPartita().setProfonditaBot(difficoltaBot);
+                }
                 fp.creaFrame();
+                
             }
             else {
                 System.exit(0);
@@ -141,7 +185,9 @@ public class Main {
 
             int indiceFile = tendinaEsercizi.getSelectedIndex();
 
-            FrameEsercizio fe = new FrameEsercizio(files.get(indiceFile).getAbsolutePath());
+            FrameEsercizio fe = new FrameEsercizio(files.get(indiceFile).getAbsolutePath(), true);
+            int difficoltaBot = scegliDifficoltaBot();
+            fe.getPartita().setProfonditaBot(difficoltaBot);
             fe.creaFrame();
         }
 

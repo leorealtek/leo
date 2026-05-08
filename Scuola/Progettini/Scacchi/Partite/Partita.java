@@ -9,7 +9,6 @@ import java.util.Scanner;
 
 public class Partita extends PartitaAstratta {
 
-    private int mosse;
     private int ultimaMossaPerPatta;
 
     public Partita() {
@@ -53,7 +52,7 @@ public class Partita extends PartitaAstratta {
         mosse = 1;
     }
 
-        private void impostaPedoneEnPassant(int riga, int colonna) {
+    private void impostaPedoneEnPassant(int riga, int colonna) {
         if (riga == -1 && colonna == -1) {
             pedoneEnPassant = null;
             return;
@@ -314,7 +313,6 @@ public class Partita extends PartitaAstratta {
 
     public boolean pattaPerMosse() {
         if (mosse - ultimaMossaPerPatta > 50) {
-            System.out.println("patta");
             return true;
         }
         return false;

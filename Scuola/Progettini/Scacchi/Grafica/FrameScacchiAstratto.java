@@ -33,8 +33,9 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
     protected boolean erroreVisibile = false;
     protected boolean finito = false;
     protected Timer timerErrore;
+    protected boolean conBot;
 
-    protected FrameScacchiAstratto(String titolo, PartitaAstratta partita) {
+    protected FrameScacchiAstratto(String titolo, PartitaAstratta partita, boolean conBot) {
         super(titolo);
 
         this.partita = partita;
@@ -48,6 +49,7 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
 
         creaPannelloAlto();
         creaScacchiera();
+        this.conBot = conBot;
     }
 
     protected void avviaFrame() {
@@ -207,6 +209,18 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
             return;
         }
 
+        if (conBot && !partita.isAttaccaBianco()) {
+            mostraErrore("Aspetta la mossa del bot");
+            deseleziona();
+            return;
+        }
+
+        if (conBot && !pezzo.isBianco()) {
+            mostraErrore("Tu giochi con il Bianco");
+            deseleziona();
+            return;
+        }
+
         if (pezzo.isBianco() != partita.isAttaccaBianco()) {
             mostraErrore("Non è il turno di questo colore");
             deseleziona();
@@ -240,6 +254,7 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
 
             deseleziona();
             controllaFine(coloreCheHaMosso);
+            muoviBotSeServe();
 
         } catch (MossaNonValidaException | IllegalArgumentException e) {
             mostraErrore(e.getMessage());
@@ -254,6 +269,28 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
         return rigaArrivo == rigaSelezionata
                 && colonnaSelezionata == 4
                 && (colonnaArrivo == 2 || colonnaArrivo == 6);
+    }
+
+    private void muoviBotSeServe() {
+        if (!conBot || finito || partita.isAttaccaBianco()) {
+            return;
+        }
+
+        Timer timerBot = new Timer(300, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    partita.muoviPezzoConBot(false);
+                    aggiornaGrafica();
+                    controllaFine(false);
+                } catch (RuntimeException ex) {
+                    mostraErrore("Errore bot: " + ex.getMessage());
+                }
+            }
+        });
+
+        timerBot.setRepeats(false);
+        timerBot.start();
     }
 
 
@@ -305,9 +342,9 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
         stato.setText(messaggio != null && !messaggio.isBlank() ? messaggio : "Mossa invalida");
         stato.setForeground(COLORE_ERRORE);
 
-        timerErrore = new Timer(1500, new java.awt.event.ActionListener() {
+        timerErrore = new Timer(1500, new ActionListener() {
             @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 erroreVisibile = false;
 
                 if (!finito) {
@@ -381,4 +418,8 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
 
     @Override
     public void mouseReleased(MouseEvent e) {}
+
+    public PartitaAstratta getPartita() {
+        return partita;
+    }
 }

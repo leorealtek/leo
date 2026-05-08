@@ -12,16 +12,16 @@ public class FramePartita extends FrameScacchiAstratto {
     private final Partita partitaNormale;
     private JButton salvaPartita;
 
-    public FramePartita() {
-        this(new Partita());
+    public FramePartita(boolean conBot) {
+        this(new Partita(), conBot);
     }
 
-    public FramePartita(String percorsoFile) throws IOException {
-        this(new Partita(percorsoFile));
+    public FramePartita(String percorsoFile, boolean conBot) throws IOException {
+        this(new Partita(percorsoFile), conBot);
     }
 
-    private FramePartita(Partita partita) {
-        super("Scacchi", partita);
+    private FramePartita(Partita partita, boolean conBot) {
+        super("Scacchi", partita, conBot);
         this.partitaNormale = partita;
         this.salvaPartita = new JButton("Salva partita");
         aggiungiPulsanteSalvaPartita();
