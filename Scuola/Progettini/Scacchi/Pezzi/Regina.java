@@ -9,6 +9,11 @@ public class Regina extends Pezzo {
     }
 
     @Override
+    public double getValore() {
+        return 9.0d;
+    }
+
+    @Override
     public Casella[][] mossePossibili() {
         Casella[][] casellePossibili = new Casella[8][8];
         int[][] direzioni = {

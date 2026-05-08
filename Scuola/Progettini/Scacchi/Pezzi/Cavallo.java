@@ -9,6 +9,11 @@ public class Cavallo extends Pezzo {
     }
 
     @Override
+    public double getValore() {
+        return 3.0d;
+    }
+
+    @Override
     public Casella[][] mossePossibili() {
         Casella[][] casellePossibili = new Casella[8][8];
 

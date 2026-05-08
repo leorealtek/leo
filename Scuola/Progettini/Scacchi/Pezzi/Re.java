@@ -13,6 +13,11 @@ public class Re extends Pezzo {
     }
 
     @Override
+    public double getValore() {
+        return 1000.0d;
+    }
+
+    @Override
     public void muovi(int x, int y) {
         super.muovi(x, y);
         haMosso = true;

@@ -13,6 +13,11 @@ public class Torre extends Pezzo {
     }
 
     @Override
+    public double getValore() {
+        return 5.0d;
+    }
+
+    @Override
     public void muovi(int x, int y) {
         super.muovi(x, y);
         haMosso = true;

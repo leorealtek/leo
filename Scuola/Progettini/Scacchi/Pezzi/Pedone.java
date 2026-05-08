@@ -14,6 +14,11 @@ public class Pedone extends Pezzo {
     }
 
     @Override
+    public double getValore() {
+        return 1.0d;
+    }
+
+    @Override
     public void muovi(int x, int y) {
         int rigaPrecedente = riga;
         super.muovi(x, y);

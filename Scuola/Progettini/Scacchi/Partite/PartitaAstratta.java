@@ -3,7 +3,7 @@ package Scuola.Progettini.Scacchi.Partite;
 import Scuola.Progettini.Scacchi.Exception.*;
 import Scuola.Progettini.Scacchi.Pezzi.*;
 import Scuola.Progettini.Scacchi.Util.*;
-
+import java.util.ArrayList;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 
@@ -12,6 +12,7 @@ public abstract class PartitaAstratta {
     protected Casella[][] mappa;
     protected boolean attaccaBianco;
     protected Pedone pedoneEnPassant;
+    protected ArrayList<Casella[][]> tutteMossePossibili = new ArrayList<>();
 
     public PartitaAstratta() {
         mappa = new Casella[8][8];
@@ -453,6 +454,68 @@ public abstract class PartitaAstratta {
 
     protected boolean coordinateValide(int riga, int colonna) {
         return riga >= 0 && riga < 8 && colonna >= 0 && colonna < 8;
+    }
+
+    private double valutaPosizione(Casella[][] scacchiera) {
+        double pezziBianchi = 0;
+        double pezziNeri = 0;
+
+        for (int i = 0; i < scacchiera.length; i++) {
+            for (int j = 0; j < scacchiera[i].length; j++) {
+                Pezzo p = scacchiera[i][j].getPezzoContenuto();
+                if (p == null) continue;
+                if (p.isBianco()) pezziBianchi += p.getValore();
+                else pezziNeri += p.getValore();
+            }
+        }
+
+        return pezziBianchi - pezziNeri;
+    }
+
+    private double minimax(Casella[][] scacchiera, int profondita, boolean toccaBianco) {
+        if (profondita == 0) return valutaPosizione(scacchiera);
+
+        if (toccaBianco) {
+            double maxPoint = Integer.MIN_VALUE;
+            for (Casella[][] scacchieraAttuale : tutteMossePossibili) {
+                double val = minimax(scacchieraAttuale, profondita - 1, false);
+                maxPoint = Math.max(val, maxPoint);
+            }
+            return maxPoint;
+        }
+        else{
+            double minPoint = Integer.MAX_VALUE;
+            for (Casella[][] scacchieraAttuale : tutteMossePossibili) {
+                double val = minimax(scacchieraAttuale, profondita - 1, true);
+                minPoint = Math.min(val, minPoint);
+            }
+            return minPoint;
+        }
+    }
+
+    public Casella[][] trovaPosizioneMigliore(boolean toccaBianco) {
+        creaTutteMosseDisponibli(toccaBianco);
+        double valMigliore = minimax(mappa, 2, toccaBianco);
+        for (Casella[][] scacchiera : tutteMossePossibili) {
+            if (valutaPosizione(scacchiera) == valMigliore) {
+                return scacchiera;
+            }
+        }
+        return null;
+    }
+
+    private void creaTutteMosseDisponibli(boolean toccaBianco) {
+        tutteMossePossibili.clear();
+        for (int i = 0; i < mappa.length; i++) {
+            for (int j = 0; j < mappa[i].length; j++) {
+                Pezzo p = mappa[i][j].getPezzoContenuto();
+                if (p != null) {
+                    if (p.isBianco() == toccaBianco) {
+                        tutteMossePossibili.add(p.mossePossibili());
+                    }
+                }
+            }
+        }
     }
 
     public Casella[][] getMappa() {

@@ -7,6 +7,11 @@ public class Alfiere extends Pezzo {
     public Alfiere(char nome, int riga, int colonna, Casella[][] mappa) {
         super(nome, riga, colonna, mappa);
     }
+
+    @Override
+    public double getValore() {
+        return 3.0d;
+    }
     
     @Override
     public Casella[][] mossePossibili() {

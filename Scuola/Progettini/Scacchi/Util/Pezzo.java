@@ -39,6 +39,8 @@ public abstract class Pezzo {
         return nome;
     }
 
+    public abstract double getValore();
+
     public int getRiga() {
         return riga;
     }
