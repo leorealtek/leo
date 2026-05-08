@@ -52,6 +52,62 @@ public class Partita extends PartitaAstratta {
         mosse = 1;
     }
 
+    @Override
+    public void muoviPezzoConBot(boolean turnoBianco) {
+        if (turnoBianco != attaccaBianco) {
+            throw new MossaNonValidaException("Non è il turno del bot.");
+        }
+
+        Casella[][] mappaPrima = mappa;
+        Casella[][] migliore = bot.trovaPosizioneMigliore(turnoBianco);
+
+        if (migliore == null || migliore == mappa) {
+            return;
+        }
+
+        if (botHaMossoPedoneOCatturato(mappaPrima, migliore, turnoBianco)) {
+            ultimaMossaPerPatta = mosse;
+        }
+
+        mappa = migliore;
+        pedoneEnPassant = bot.getPedoneEnPassantMigliore();
+
+        dopoMossa(turnoBianco);
+        attaccaBianco = !attaccaBianco;
+    }
+
+    private boolean botHaMossoPedoneOCatturato(Casella[][] prima, Casella[][] dopo, boolean coloreBot) {
+        int pezziPrima = 0;
+        int pezziDopo = 0;
+
+        boolean pedoneMosso = false;
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Pezzo pezzoPrima = prima[i][j].getPezzoContenuto();
+                Pezzo pezzoDopo = dopo[i][j].getPezzoContenuto();
+
+                if (pezzoPrima != null) {
+                    pezziPrima++;
+                }
+
+                if (pezzoDopo != null) {
+                    pezziDopo++;
+                }
+
+                if (pezzoPrima instanceof Pedone && pezzoPrima.isBianco() == coloreBot) {
+                    if (pezzoDopo == null || pezzoDopo != pezzoPrima) {
+                        pedoneMosso = true;
+                    }
+                }
+            }
+        }
+
+        boolean cattura = pezziDopo < pezziPrima;
+
+        return pedoneMosso || cattura;
+    }
+
     private void impostaPedoneEnPassant(int riga, int colonna) {
         if (riga == -1 && colonna == -1) {
             pedoneEnPassant = null;

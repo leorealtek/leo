@@ -13,36 +13,67 @@ import Scuola.Progettini.Scacchi.Pezzi.Torre;
 
 public class Bot {
     private int profondita;
-    private Casella[][] mappa;
     private PartitaAstratta partita;
+    private Pedone pedoneEnPassantMigliore;
 
     public Bot(int profondita) {
         this.profondita = profondita;
     }
 
     private double valutaPosizione(Casella[][] scacchiera) {
-        double pezziBianchi = 0;
-        double pezziNeri = 0;
+        double valore = 0;
 
         for (int i = 0; i < scacchiera.length; i++) {
             for (int j = 0; j < scacchiera[i].length; j++) {
                 Pezzo p = scacchiera[i][j].getPezzoContenuto();
-                if (p == null) continue;
-                if (p.isBianco()) pezziBianchi += p.getValore();
-                else pezziNeri += p.getValore();
+
+                if (p == null) {
+                    continue;
+                }
+
+                double valorePezzo = p.getValore();
+
+                if ((i == 3 || i == 4) && (j == 3 || j == 4)) {
+                    valorePezzo += 0.3;
+                } else if ((i >= 2 && i <= 5) && (j >= 2 && j <= 5)) {
+                    valorePezzo += 0.1;
+                }
+
+                if (p instanceof Pedone) {
+                    if (p.isBianco()) {
+                        valorePezzo += (6 - i) * 0.05;
+                    } else {
+                        valorePezzo += (i - 1) * 0.05;
+                    }
+                }
+
+                if (p.isBianco()) {
+                    valore += valorePezzo;
+                } else {
+                    valore -= valorePezzo;
+                }
             }
         }
 
-        return pezziBianchi - pezziNeri;
+        return valore;
     }
 
-    private double valutaPosizioneFinale(Casella[][] scacchiera, boolean toccaBianco) {
-        Casella[][] mappaPrecedente = this.mappa;
-        this.mappa = scacchiera;
+    private double valutaPosizioneFinale(Casella[][] scacchiera, Pedone pedoneEnPassant, boolean toccaBianco) {
+        Casella[][] mappaPrecedente = partita.getMappa();
+        Pedone pedoneEnPassantPrecedente = partita.getPedoneEnPassant();
+
+        partita.setMappa(scacchiera);
+        partita.setPedoneEnPassant(pedoneEnPassant);
 
         try {
+            ArrayList<Pedone> enPassantMosse = new ArrayList<>();
             boolean sottoScacco = partita.isSottoScacco(toccaBianco);
-            boolean haMosse = !creaTutteMosseDisponibili(scacchiera, toccaBianco).isEmpty();
+            boolean haMosse = !creaTutteMosseDisponibili(
+                    scacchiera,
+                    pedoneEnPassant,
+                    toccaBianco,
+                    enPassantMosse
+            ).isEmpty();
 
             if (sottoScacco && !haMosse) {
                 return toccaBianco ? -100000 : 100000;
@@ -54,23 +85,53 @@ public class Bot {
 
             return valutaPosizione(scacchiera);
         } finally {
-            this.mappa = mappaPrecedente;
+            partita.setMappa(mappaPrecedente);
+            partita.setPedoneEnPassant(pedoneEnPassantPrecedente);
         }
     }
 
-    private double minimax(Casella[][] scacchiera, int profondita, boolean toccaBianco) {
-        List<Casella[][]> mosse = creaTutteMosseDisponibili(scacchiera, toccaBianco);
+    private double minimax(
+            Casella[][] scacchiera,
+            Pedone pedoneEnPassant,
+            int profondita,
+            double alpha,
+            double beta,
+            boolean toccaBianco
+    ) {
+        ArrayList<Pedone> enPassantMosse = new ArrayList<>();
+        List<Casella[][]> mosse = creaTutteMosseDisponibili(
+                scacchiera,
+                pedoneEnPassant,
+                toccaBianco,
+                enPassantMosse
+        );
 
         if (profondita == 0 || mosse.isEmpty()) {
-            return valutaPosizioneFinale(scacchiera, toccaBianco);
+            return valutaPosizioneFinale(scacchiera, pedoneEnPassant, toccaBianco);
         }
 
         if (toccaBianco) {
             double maxPoint = Double.NEGATIVE_INFINITY;
 
-            for (Casella[][] scacchieraAttuale : mosse) {
-                double val = minimax(scacchieraAttuale, profondita - 1, false);
+            for (int i = 0; i < mosse.size(); i++) {
+                Casella[][] scacchieraAttuale = mosse.get(i);
+                Pedone enPassantAttuale = enPassantMosse.get(i);
+
+                double val = minimax(
+                        scacchieraAttuale,
+                        enPassantAttuale,
+                        profondita - 1,
+                        alpha,
+                        beta,
+                        false
+                );
+
                 maxPoint = Math.max(maxPoint, val);
+                alpha = Math.max(alpha, val);
+
+                if (beta <= alpha) {
+                    break;
+                }
             }
 
             return maxPoint;
@@ -78,19 +139,47 @@ public class Bot {
 
         double minPoint = Double.POSITIVE_INFINITY;
 
-        for (Casella[][] scacchieraAttuale : mosse) {
-            double val = minimax(scacchieraAttuale, profondita - 1, true);
+        for (int i = 0; i < mosse.size(); i++) {
+            Casella[][] scacchieraAttuale = mosse.get(i);
+            Pedone enPassantAttuale = enPassantMosse.get(i);
+
+            double val = minimax(
+                    scacchieraAttuale,
+                    enPassantAttuale,
+                    profondita - 1,
+                    alpha,
+                    beta,
+                    true
+            );
+
             minPoint = Math.min(minPoint, val);
+            beta = Math.min(beta, val);
+
+            if (beta <= alpha) {
+                break;
+            }
         }
 
         return minPoint;
     }
 
     public Casella[][] trovaPosizioneMigliore(boolean toccaBianco) {
-        List<Casella[][]> mosse = creaTutteMosseDisponibili(mappa, toccaBianco);
+        if (partita == null) {
+            throw new IllegalStateException("Devi prima chiamare setPartita(partita)");
+        }
+
+        pedoneEnPassantMigliore = null;
+
+        ArrayList<Pedone> enPassantMosse = new ArrayList<>();
+        List<Casella[][]> mosse = creaTutteMosseDisponibili(
+                partita.getMappa(),
+                partita.getPedoneEnPassant(),
+                toccaBianco,
+                enPassantMosse
+        );
 
         if (mosse.isEmpty()) {
-            return mappa;
+            return partita.getMappa();
         }
 
         Casella[][] migliore = null;
@@ -98,23 +187,45 @@ public class Bot {
         if (toccaBianco) {
             double valoreMigliore = Double.NEGATIVE_INFINITY;
 
-            for (Casella[][] scacchiera : mosse) {
-                double valore = minimax(scacchiera, profondita - 1, false);
+            for (int i = 0; i < mosse.size(); i++) {
+                Casella[][] scacchiera = mosse.get(i);
+                Pedone enPassant = enPassantMosse.get(i);
+
+                double valore = minimax(
+                        scacchiera,
+                        enPassant,
+                        profondita - 1,
+                        Double.NEGATIVE_INFINITY,
+                        Double.POSITIVE_INFINITY,
+                        false
+                );
 
                 if (valore > valoreMigliore) {
                     valoreMigliore = valore;
                     migliore = scacchiera;
+                    pedoneEnPassantMigliore = enPassant;
                 }
             }
         } else {
             double valoreMigliore = Double.POSITIVE_INFINITY;
 
-            for (Casella[][] scacchiera : mosse) {
-                double valore = minimax(scacchiera, profondita - 1, true);
+            for (int i = 0; i < mosse.size(); i++) {
+                Casella[][] scacchiera = mosse.get(i);
+                Pedone enPassant = enPassantMosse.get(i);
+
+                double valore = minimax(
+                        scacchiera,
+                        enPassant,
+                        profondita - 1,
+                        Double.NEGATIVE_INFINITY,
+                        Double.POSITIVE_INFINITY,
+                        true
+                );
 
                 if (valore < valoreMigliore) {
                     valoreMigliore = valore;
                     migliore = scacchiera;
+                    pedoneEnPassantMigliore = enPassant;
                 }
             }
         }
@@ -194,11 +305,121 @@ public class Bot {
         scacchiera[riga][colonna].inserisciPezzo(new Regina(nomeRegina, riga, colonna, scacchiera));
     }
 
-    private List<Casella[][]> creaTutteMosseDisponibili(Casella[][] scacchiera, boolean toccaBianco) {
+    private boolean arroccoLegaleBot(Casella[][] scacchiera, boolean bianco, boolean latoLungo) {
+        int rigaRe = bianco ? 7 : 0;
+
+        Pezzo pezzoRe = scacchiera[rigaRe][4].getPezzoContenuto();
+
+        if (!(pezzoRe instanceof Re re)) {
+            return false;
+        }
+
+        if (pezzoRe.isBianco() != bianco) {
+            return false;
+        }
+
+        if (re.haMosso()) {
+            return false;
+        }
+
+        if (partita.isSottoScacco(bianco)) {
+            return false;
+        }
+
+        int colonnaTorre = latoLungo ? 0 : 7;
+        int primaCasellaLibera = latoLungo ? 1 : 5;
+        int ultimaCasellaLibera = latoLungo ? 3 : 6;
+        int colonnaReDestinazione = latoLungo ? 2 : 6;
+        int passo = latoLungo ? -1 : 1;
+
+        Pezzo pezzoTorre = scacchiera[rigaRe][colonnaTorre].getPezzoContenuto();
+
+        if (!(pezzoTorre instanceof Torre torre)) {
+            return false;
+        }
+
+        if (pezzoTorre.isBianco() != bianco) {
+            return false;
+        }
+
+        if (torre.haMosso()) {
+            return false;
+        }
+
+        for (int col = primaCasellaLibera; col <= ultimaCasellaLibera; col++) {
+            if (!scacchiera[rigaRe][col].isVuota()) {
+                return false;
+            }
+        }
+
+        for (int col = 4 + passo; col != colonnaReDestinazione + passo; col += passo) {
+            if (partita.casellaAttaccata(rigaRe, col, !bianco)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void aggiungiArroccoSePossibile(
+            Casella[][] scacchiera,
+            boolean toccaBianco,
+            boolean latoLungo,
+            List<Casella[][]> mosseDisponibili,
+            ArrayList<Pedone> enPassantMosse
+    ) {
+        if (!arroccoLegaleBot(scacchiera, toccaBianco, latoLungo)) {
+            return;
+        }
+
+        Casella[][] nuovaScacchiera = copiaMappa(scacchiera);
+
+        int rigaRe = toccaBianco ? 7 : 0;
+        int colonnaTorre = latoLungo ? 0 : 7;
+        int colonnaReDestinazione = latoLungo ? 2 : 6;
+        int colonnaTorreDestinazione = latoLungo ? 3 : 5;
+
+        Pezzo pezzoRe = nuovaScacchiera[rigaRe][4].getPezzoContenuto();
+        Pezzo pezzoTorre = nuovaScacchiera[rigaRe][colonnaTorre].getPezzoContenuto();
+
+        if (!(pezzoRe instanceof Re re)) {
+            return;
+        }
+
+        if (!(pezzoTorre instanceof Torre torre)) {
+            return;
+        }
+
+        nuovaScacchiera[rigaRe][4].rimuoviPezzo();
+        nuovaScacchiera[rigaRe][colonnaTorre].rimuoviPezzo();
+
+        re.aggiornaPosizione(rigaRe, colonnaReDestinazione);
+        re.setHaMosso(true);
+        nuovaScacchiera[rigaRe][colonnaReDestinazione].inserisciPezzo(re);
+
+        torre.aggiornaPosizione(rigaRe, colonnaTorreDestinazione);
+        torre.setHaMosso(true);
+        nuovaScacchiera[rigaRe][colonnaTorreDestinazione].inserisciPezzo(torre);
+
+        mosseDisponibili.add(nuovaScacchiera);
+
+        // Dopo l'arrocco l'en passant precedente non è più valido
+        enPassantMosse.add(null);
+    }
+
+    private List<Casella[][]> creaTutteMosseDisponibili(
+            Casella[][] scacchiera,
+            Pedone pedoneEnPassant,
+            boolean toccaBianco,
+            ArrayList<Pedone> enPassantMosse
+    ) {
         List<Casella[][]> mosseDisponibili = new ArrayList<>();
 
-        Casella[][] mappaPrecedente = this.mappa;
-        this.mappa = scacchiera;
+        Casella[][] mappaPrecedente = partita.getMappa();
+        Pedone pedoneEnPassantPrecedente = partita.getPedoneEnPassant();
+
+        partita.setMappa(scacchiera);
+        partita.setPedoneEnPassant(pedoneEnPassant);
 
         try {
             for (int rigaPartenza = 0; rigaPartenza < 8; rigaPartenza++) {
@@ -215,7 +436,13 @@ public class Bot {
                     for (int rigaArrivo = 0; rigaArrivo < 8; rigaArrivo++) {
                         for (int colonnaArrivo = 0; colonnaArrivo < 8; colonnaArrivo++) {
 
-                            boolean enPassant = partita.isEnPassantValido(p, rigaPartenza, colonnaPartenza, rigaArrivo, colonnaArrivo);
+                            boolean enPassant = partita.isEnPassantValido(
+                                    p,
+                                    rigaPartenza,
+                                    colonnaPartenza,
+                                    rigaArrivo,
+                                    colonnaArrivo
+                            );
 
                             if (mosse[rigaArrivo][colonnaArrivo] == null && !enPassant) {
                                 continue;
@@ -240,30 +467,57 @@ public class Bot {
                             Casella[][] nuovaScacchiera = copiaMappa(scacchiera);
                             Pezzo pezzoCopiato = nuovaScacchiera[rigaPartenza][colonnaPartenza].getPezzoContenuto();
 
+                            Pedone nuovoPedoneEnPassant = null;
+                            int distanzaRighe = Math.abs(rigaArrivo - rigaPartenza);
+
                             if (enPassant) {
                                 nuovaScacchiera[rigaPartenza][colonnaArrivo].rimuoviPezzo();
                             }
 
                             pezzoCopiato.muovi(rigaArrivo, colonnaArrivo);
+
+                            if (pezzoCopiato instanceof Pedone pedone && distanzaRighe == 2) {
+                                nuovoPedoneEnPassant = pedone;
+                            }
+
                             promuoviPedoneAutomaticamente(nuovaScacchiera, rigaArrivo, colonnaArrivo);
 
                             mosseDisponibili.add(nuovaScacchiera);
+                            enPassantMosse.add(nuovoPedoneEnPassant);
                         }
                     }
                 }
             }
+
+            aggiungiArroccoSePossibile(
+                    scacchiera,
+                    toccaBianco,
+                    false,
+                    mosseDisponibili,
+                    enPassantMosse
+            );
+
+            aggiungiArroccoSePossibile(
+                    scacchiera,
+                    toccaBianco,
+                    true,
+                    mosseDisponibili,
+                    enPassantMosse
+            );
+
         } finally {
-            this.mappa = mappaPrecedente;
+            partita.setMappa(mappaPrecedente);
+            partita.setPedoneEnPassant(pedoneEnPassantPrecedente);
         }
 
         return mosseDisponibili;
     }
 
-    public void setProfonditaBot(int profondita) {
-        if (profondita < 1) {
-            throw new IllegalArgumentException("La profondità del bot deve essere almeno 1.");
-        }
+    public Pedone getPedoneEnPassantMigliore() {
+        return pedoneEnPassantMigliore;
+    }
 
-        this.profondita = profondita;
+    public void setPartita(PartitaAstratta partita) {
+        this.partita = partita;
     }
 }

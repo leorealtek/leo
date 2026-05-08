@@ -141,8 +141,4 @@ public class FramePartita extends FrameScacchiAstratto {
         info.setText("Mossa: " + partitaNormale.getMosse());
     }
 
-    @Override
-    public void creaFrame() {
-        avviaFrame();
-    }
 }

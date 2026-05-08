@@ -49,11 +49,14 @@ public class Main {
             "Media"
         );
 
+        if (sceltaBot == 0) sceltaBot += 1;
+        if (sceltaBot == 1 || sceltaBot == 2) sceltaBot += 2;
+
         if (sceltaBot < 0) {
             System.exit(0);
         }
 
-        return sceltaBot + 1;
+        return sceltaBot;
     }
 
     private static ArrayList<File> trovaFile(String percorsoCartella) {
@@ -120,7 +123,7 @@ public class Main {
                     Bot bot = new Bot(difficoltaBot);
                     fp.getPartita().setBot(bot);
                 }
-                fp.creaFrame();
+                fp.avviaFrame();
             }
 
             else if (sceltaPartita == 1) {
@@ -155,7 +158,7 @@ public class Main {
                     Bot bot = new Bot(difficoltaBot);
                     fp.getPartita().setBot(bot);
                 }
-                fp.creaFrame();
+                fp.avviaFrame();
                 
             }
             else {
@@ -192,7 +195,7 @@ public class Main {
             int difficoltaBot = scegliDifficoltaBot();
             Bot bot = new Bot(difficoltaBot);
             fe.getPartita().setBot(bot);
-            fe.creaFrame();
+            fe.avviaFrame();
             
         }
 

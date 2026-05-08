@@ -52,7 +52,7 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
         this.conBot = conBot;
     }
 
-    protected void avviaFrame() {
+    public void avviaFrame() {
         aggiornaGrafica();
         pack();
         setLocationRelativeTo(null);
@@ -295,8 +295,6 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
 
 
     protected abstract void aggiornaInfoExtra();
-
-    public abstract void creaFrame();
 
     private void dopoMossaNormale(Pezzo pezzoMosso) {
         if (pezzoMosso instanceof Pedone p) {

@@ -135,7 +135,8 @@ public abstract class PartitaAstratta {
         }
 
         mappa = migliore;
-        pedoneEnPassant = null;
+        pedoneEnPassant = bot.getPedoneEnPassantMigliore();
+
         dopoMossa(turnoBianco);
         attaccaBianco = !attaccaBianco;
     }
@@ -479,6 +480,10 @@ public abstract class PartitaAstratta {
     public Casella[][] getMappa() {
         return mappa;
     }
+    
+    public void setMappa(Casella[][] mappa) {
+        this.mappa = mappa;
+    }
 
     public boolean isAttaccaBianco() {
         return attaccaBianco;
@@ -486,5 +491,17 @@ public abstract class PartitaAstratta {
 
     public void setBot(Bot bot) {
         this.bot = bot;
+
+        if (bot != null) {
+            bot.setPartita(this);
+        }
+    }
+
+    public Pedone getPedoneEnPassant() {
+        return pedoneEnPassant;
+    }
+
+    public void setPedoneEnPassant(Pedone pedoneEnPassant) {
+        this.pedoneEnPassant = pedoneEnPassant;
     }
 }
