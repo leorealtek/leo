@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 import Scuola.Progettini.Scacchi.Grafica.*;
+import Scuola.Progettini.Scacchi.Util.Bot;
 
 public class Main {
 
@@ -116,7 +117,8 @@ public class Main {
                 FramePartita fp = new FramePartita(conBot);
                 if (conBot) {
                     int difficoltaBot = scegliDifficoltaBot();
-                    fp.getPartita().setProfonditaBot(difficoltaBot);
+                    Bot bot = new Bot(difficoltaBot);
+                    fp.getPartita().setBot(bot);
                 }
                 fp.creaFrame();
             }
@@ -150,7 +152,8 @@ public class Main {
                 FramePartita fp = new FramePartita(files.get(indiceFile).getAbsolutePath(), conBot);
                 if (conBot) {
                     int difficoltaBot = scegliDifficoltaBot();
-                    fp.getPartita().setProfonditaBot(difficoltaBot);
+                    Bot bot = new Bot(difficoltaBot);
+                    fp.getPartita().setBot(bot);
                 }
                 fp.creaFrame();
                 
@@ -187,8 +190,10 @@ public class Main {
 
             FrameEsercizio fe = new FrameEsercizio(files.get(indiceFile).getAbsolutePath(), true);
             int difficoltaBot = scegliDifficoltaBot();
-            fe.getPartita().setProfonditaBot(difficoltaBot);
+            Bot bot = new Bot(difficoltaBot);
+            fe.getPartita().setBot(bot);
             fe.creaFrame();
+            
         }
 
         if (sceltaIniziale < 0) {
