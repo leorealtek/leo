@@ -403,7 +403,6 @@ public class Bot {
 
         mosseDisponibili.add(nuovaScacchiera);
 
-        // Dopo l'arrocco l'en passant precedente non è più valido
         enPassantMosse.add(null);
     }
 
