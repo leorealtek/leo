@@ -1,6 +1,6 @@
 package Scuola.Progettini.BlackJack;
 
-public class Carta{
+public class Carta {
     private final String seme;
     private final char valore;
 
@@ -9,22 +9,46 @@ public class Carta{
         this.valore = valore;
     }
 
+    public int getPunti() {
+        if (valore == '1') {
+            return 11;
+        }
+
+        if (valore == 'X' || valore == 'J' || valore == 'Q' || valore == 'K') {
+            return 10;
+        }
+
+        return valore - '0';
+    }
+
+    public boolean isAsso() {
+        return valore == '1';
+    }
+
+    @Override
     public String toString() {
         switch (valore) {
             case '1':
-                return "Carta: Asso di " + seme;
-            case '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9':
-                return "Carta: " + valore + "di " + seme;
+                return "Asso di " + seme;
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                return valore + " di " + seme;
             case 'X':
-                return "Carta: Dieci di " + seme;
+                return "Dieci di " + seme;
             case 'J':
-                return "Carta: Jack di " + seme;
+                return "Jack di " + seme;
             case 'Q':
-                return "Carta: Donna di " + seme;
+                return "Donna di " + seme;
             case 'K':
-                return "Carta: Re di " + seme;
+                return "Re di " + seme;
             default:
-                return "";
+                return "Carta non valida";
         }
     }
 
