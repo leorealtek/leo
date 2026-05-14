@@ -52,13 +52,12 @@ public class Banco {
     }
 
     public void distribuisciCarteIniziali() {
-        for (Giocatore giocatore : giocatori) {
-            giocatore.pescaCarta();
-            giocatore.pescaCarta();
+        for (int i = 0; i < 2; i++) {
+            for (Giocatore giocatore : giocatori) {
+                giocatore.pescaCarta();
+            }
+            dealer.pescaCarta();
         }
-
-        dealer.pescaCarta();
-        dealer.pescaCarta();
     }
 
     public void turnoDealer() {
