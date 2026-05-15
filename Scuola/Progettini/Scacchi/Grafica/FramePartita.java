@@ -124,13 +124,29 @@ public class FramePartita extends FrameScacchiAstratto {
             return;
         }
 
-        if (risultato.equals("Patta BIANCO")) {
-            finisciConMessaggio("Patta per stallo, il bianco non può muoversi");
-        } else if (risultato.equals("Patta NERO")) {
-            finisciConMessaggio("Patta per stallo, il nero non può muoversi");
-        } else {
-            finisciConMessaggio("Scacco matto! Vince il " + risultato);
+        switch (risultato) {
+            case "Patta BIANCO":
+                finisciConMessaggio("Patta per stallo, il bianco non può muoversi");
+                break;
+            case "Patta NERO":
+                finisciConMessaggio("Patta per stallo, il nero non può muoversi");
+                break;
+            default:
+                finisciConMessaggio("Scacco matto! Vince il " + risultato);
+                break;
         }
+    }
+
+    @Override
+    protected void bloccaScacchiera() {
+        for (int riga = 0; riga < DIMENSIONE_SCACCHIERA; riga++) {
+            for (int colonna = 0; colonna < DIMENSIONE_SCACCHIERA; colonna++) {
+                labels[riga][colonna].removeMouseListener(this);
+                labels[riga][colonna].setEnabled(false);
+            }
+        }
+        salvaPartita.removeMouseListener(this);
+        salvaPartita.setEnabled(false);
     }
 
     @Override

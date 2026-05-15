@@ -384,7 +384,7 @@ public abstract class FrameScacchiAstratto extends JFrame implements MouseListen
         muoviSuCasella(riga, colonna);
     }
 
-    private void bloccaScacchiera() {
+    protected void bloccaScacchiera() {
         for (int riga = 0; riga < DIMENSIONE_SCACCHIERA; riga++) {
             for (int colonna = 0; colonna < DIMENSIONE_SCACCHIERA; colonna++) {
                 labels[riga][colonna].removeMouseListener(this);

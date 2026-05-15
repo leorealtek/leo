@@ -1,8 +1,5 @@
 package Scuola.Progettini.Scacchi.Util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import Scuola.Progettini.Scacchi.Partite.PartitaAstratta;
 import Scuola.Progettini.Scacchi.Pezzi.Alfiere;
 import Scuola.Progettini.Scacchi.Pezzi.Cavallo;
@@ -10,6 +7,8 @@ import Scuola.Progettini.Scacchi.Pezzi.Pedone;
 import Scuola.Progettini.Scacchi.Pezzi.Re;
 import Scuola.Progettini.Scacchi.Pezzi.Regina;
 import Scuola.Progettini.Scacchi.Pezzi.Torre;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Bot {
     private int profondita;
@@ -27,9 +26,7 @@ public class Bot {
             for (int j = 0; j < scacchiera[i].length; j++) {
                 Pezzo p = scacchiera[i][j].getPezzoContenuto();
 
-                if (p == null) {
-                    continue;
-                }
+                if (p == null) continue;
 
                 double valorePezzo = p.getValore();
 

@@ -1,11 +1,10 @@
 package Scuola.Progettini.Scacchi;
 
+import Scuola.Progettini.Scacchi.Grafica.*;
+import Scuola.Progettini.Scacchi.Util.Bot;
 import java.io.*;
 import java.util.ArrayList;
 import javax.swing.*;
-
-import Scuola.Progettini.Scacchi.Grafica.*;
-import Scuola.Progettini.Scacchi.Util.Bot;
 
 public class Main {
 
@@ -115,54 +114,47 @@ public class Main {
                                     "Crea nuova partita"
                                 );
 
-            if (sceltaPartita == 0) {
-                boolean conBot = scegliConBot();
-                FramePartita fp = new FramePartita(conBot);
-                if (conBot) {
-                    int difficoltaBot = scegliDifficoltaBot();
-                    Bot bot = new Bot(difficoltaBot);
-                    fp.getPartita().setBot(bot);
-                }
-                fp.avviaFrame();
-            }
-
-            else if (sceltaPartita == 1) {
-                ArrayList<File> files = trovaFile("Scuola/Progettini/Scacchi/FilePartite");
-
-                String[] nomiFile = new String[files.size()];
-
-                for (int i = 0; i < nomiFile.length; i++) {
-                    nomiFile[i] = files.get(i).getName().replace(".txt", "");
-                }
-
-                JComboBox<String> tendinaPartite = new JComboBox<String>(nomiFile);
-
-                int sceltaFile = mostraDialogPerScelta(
-                                    "Scegli partita", 
-                                    tendinaPartite, 
-                                    "Scuola/Progettini/Scacchi/Immagini/File.png",
-                                    null,
-                                    null
-                                );
-
-                if (sceltaFile != JOptionPane.OK_OPTION) {
+            switch (sceltaPartita) {
+                case 0:
+                    {
+                        boolean conBot = scegliConBot();
+                        FramePartita fp = new FramePartita(conBot);
+                        if (conBot) {
+                            int difficoltaBot = scegliDifficoltaBot();
+                            Bot bot = new Bot(difficoltaBot);
+                            fp.getPartita().setBot(bot);
+                        }       fp.avviaFrame();
+                        break;
+                    }
+                case 1:
+                    {
+                        ArrayList<File> files = trovaFile("Scuola/Progettini/Scacchi/FilePartite");
+                        String[] nomiFile = new String[files.size()];
+                        for (int i = 0; i < nomiFile.length; i++) {
+                            nomiFile[i] = files.get(i).getName().replace(".txt", "");
+                        }       
+                        JComboBox<String> tendinaPartite = new JComboBox<>(nomiFile);
+                        int sceltaFile = mostraDialogPerScelta(
+                                "Scegli partita",
+                                tendinaPartite,
+                                "Scuola/Progettini/Scacchi/Immagini/File.png",
+                                null,
+                                null
+                        );
+                        if (sceltaFile != JOptionPane.OK_OPTION) {
+                            System.exit(0);
+                        }       int indiceFile = tendinaPartite.getSelectedIndex();
+                        boolean conBot = scegliConBot();
+                        FramePartita fp = new FramePartita(files.get(indiceFile).getAbsolutePath(), conBot);
+                        if (conBot) {
+                            int difficoltaBot = scegliDifficoltaBot();
+                            Bot bot = new Bot(difficoltaBot);
+                            fp.getPartita().setBot(bot);
+                        }       fp.avviaFrame();
+                        break;
+                    }
+                default:
                     System.exit(0);
-                }
-
-                int indiceFile = tendinaPartite.getSelectedIndex();
-
-                boolean conBot = scegliConBot();
-                FramePartita fp = new FramePartita(files.get(indiceFile).getAbsolutePath(), conBot);
-                if (conBot) {
-                    int difficoltaBot = scegliDifficoltaBot();
-                    Bot bot = new Bot(difficoltaBot);
-                    fp.getPartita().setBot(bot);
-                }
-                fp.avviaFrame();
-                
-            }
-            else {
-                System.exit(0);
             }
         }
 

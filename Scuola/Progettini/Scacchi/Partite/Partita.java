@@ -3,7 +3,6 @@ package Scuola.Progettini.Scacchi.Partite;
 import Scuola.Progettini.Scacchi.Exception.*;
 import Scuola.Progettini.Scacchi.Pezzi.*;
 import Scuola.Progettini.Scacchi.Util.*;
-
 import java.io.*;
 import java.util.Scanner;
 
@@ -131,8 +130,8 @@ public class Partita extends PartitaAstratta {
         int riga = bianco ? 7 : 0;
         Pezzo pezzo = mappa[riga][4].getPezzoContenuto();
 
-        if (pezzo instanceof Re) {
-            return ((Re) pezzo).haMosso();
+        if (pezzo instanceof Re p) {
+            return p.haMosso();
         }
 
         return true;
@@ -144,8 +143,8 @@ public class Partita extends PartitaAstratta {
 
         Pezzo pezzo = mappa[riga][colonna].getPezzoContenuto();
 
-        if (pezzo instanceof Torre) {
-            return ((Torre) pezzo).haMosso();
+        if (pezzo instanceof Torre t) {
+            return t.haMosso();
         }
 
         return true;
@@ -172,8 +171,8 @@ public class Partita extends PartitaAstratta {
         int riga = bianco ? 7 : 0;
         Pezzo pezzo = mappa[riga][4].getPezzoContenuto();
 
-        if (pezzo instanceof Re) {
-            ((Re) pezzo).setHaMosso(haMosso);
+        if (pezzo instanceof Re re) {
+            re.setHaMosso(haMosso);
         }
     }
 
@@ -183,8 +182,8 @@ public class Partita extends PartitaAstratta {
 
         Pezzo pezzo = mappa[riga][colonna].getPezzoContenuto();
 
-        if (pezzo instanceof Torre) {
-            ((Torre) pezzo).setHaMosso(haMosso);
+        if (pezzo instanceof Torre t) {
+            t.setHaMosso(haMosso);
         }
     }
 
@@ -368,10 +367,7 @@ public class Partita extends PartitaAstratta {
     }
 
     public boolean pattaPerMosse() {
-        if (mosse - ultimaMossaPerPatta > 50) {
-            return true;
-        }
-        return false;
+        return mosse - ultimaMossaPerPatta > 50;
     }
 
     @Override
